@@ -251,6 +251,7 @@ network make_network(int n)
 void forward_network(network net, network_state state)
 {
     state.workspace = net.workspace;
+    state.workspace_cpu = net.workspace_cpu;
     int i;
     for(i = 0; i < net.n; ++i){
         state.index = i;
@@ -452,6 +453,8 @@ int recalculate_workspace_size(network *net)
     if (gpu_index >= 0) {
         printf("\n try to allocate additional workspace_size = %1.2f MB \n", (float)workspace_size / 1000000);
         net->workspace = cuda_make_array(0, workspace_size / sizeof(float) + 1);
+        free(net->workspace_cpu);
+        net->workspace_cpu = (float*)calloc(1, workspace_size);
         printf(" CUDA allocate done! \n");
     }
     else {
@@ -566,6 +569,9 @@ int resize_network(network *net, int w, int h)
     if(gpu_index >= 0){
         printf(" try to allocate additional workspace_size = %1.2f MB \n", (float)workspace_size / 1000000);
         net->workspace = cuda_make_array(0, workspace_size/sizeof(float) + 1);
+        free(net->workspace_cpu);
+        net->workspace_cpu = (float*)calloc(1,workspace_size);
+
         net->input_state_gpu = cuda_make_array(0, size);
         if (cudaSuccess == cudaHostAlloc(&net->input_pinned_cpu, size * sizeof(float), cudaHostRegisterMapped))
             net->input_pinned_cpu_flag = 1;
@@ -1008,7 +1014,11 @@ void free_network(network net)
     free(net.seen);
 
 #ifdef GPU
-    if (gpu_index >= 0) cuda_free(net.workspace);
+    if (gpu_index >= 0){
+        cuda_free(net.workspace);
+        free(net.workspace_cpu);
+    }
+
     else free(net.workspace);
     if (net.input_state_gpu) cuda_free(net.input_state_gpu);
     if (net.input_pinned_cpu) {   // CPU

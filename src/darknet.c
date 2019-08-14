@@ -4,6 +4,7 @@
 #include <stdio.h>
 #if defined(_MSC_VER) && defined(_DEBUG)
 #include <crtdbg.h>
+#include <pthread.h>
 #endif
 
 #include "parser.h"
@@ -11,7 +12,6 @@
 #include "dark_cuda.h"
 #include "blas.h"
 #include "connected_layer.h"
-
 
 extern void predict_classifier(char *datacfg, char *cfgfile, char *weightfile, char *filename, int top);
 extern void run_voxel(int argc, char **argv);
@@ -31,6 +31,19 @@ extern void run_cifar(int argc, char **argv);
 extern void run_go(int argc, char **argv);
 extern void run_art(int argc, char **argv);
 extern void run_super(int argc, char **argv);
+
+//global variables for runtime switching.
+extern int test_extern = 1972;
+extern int *test_extern_arr = NULL;
+
+//DetectorParameter structure for multi-threading.
+DetectorParams *_g_detector_params;
+//!end of DetectorParameter structure init.
+
+void thread_test_function(int a, int b)
+{
+    printf("this is a : %d\n, this is b : %d\n");
+}
 
 void average(int argc, char *argv[])
 {
@@ -432,9 +445,22 @@ int main(int argc, char **argv)
 #ifdef _DEBUG
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
+    _g_detector_params = (DetectorParams*)malloc(sizeof(DetectorParams));
+    test_extern_arr = (int*)malloc(sizeof(int)*25);
+    int j;
+    int i;
+    int thr_id;
+    int status;
 
-	int i;
-	for (i = 0; i < argc; ++i) {
+    //initialize meta_params for per-layer source alloc.
+    //cpu = 0, gpu = 1. default test: all gpu.
+    for(i=0;i<24;i++)
+        test_extern_arr[i] = 1;
+    //src customization. last layer must return data to cpu.
+    test_extern_arr[24] = 0;
+    test_extern_arr[2] = 0;
+    test_extern_arr[4] = 0;
+    for (i = 0; i < argc; ++i) {
 		if (!argv[i]) continue;
 		strip_args(argv[i]);
 	}
@@ -538,5 +564,6 @@ int main(int argc, char **argv)
     } else {
         fprintf(stderr, "Not an option: %s\n", argv[1]);
     }
+    free(_g_detector_params);
     return 0;
 }

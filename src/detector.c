@@ -21,6 +21,7 @@ typedef __compar_fn_t comparison_fn_t;
 int check_mistakes = 0;
 
 static int coco_ids[] = { 1,2,3,4,5,6,7,8,9,10,11,13,14,15,16,17,18,19,20,21,22,23,24,25,27,28,31,32,33,34,35,36,37,38,39,40,41,42,43,44,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,67,70,72,73,74,75,76,77,78,79,80,81,82,84,85,86,87,88,89,90 };
+extern int *test_extern_arr;
 
 void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, int ngpus, int clear, int dont_show, int calc_map, int mjpeg_port, int show_imgs)
 {
@@ -1271,6 +1272,8 @@ void calc_anchors(char *datacfg, int num_of_clusters, int width, int height, int
 void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filename, float thresh,
     float hier_thresh, int dont_show, int ext_output, int save_labels, char *outfile, int letter_box)
 {
+
+    int iter;
     list *options = read_data_cfg(datacfg);
     char *name_list = option_find_str(options, "names", "data/names.list");
     int names_size = 0;
@@ -1303,6 +1306,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
     int j;
     float nms = .45;    // 0.4F
     while (1) {
+        
         if (filename) {
             strncpy(input, filename, 256);
             if (strlen(input) > 0)
@@ -1393,6 +1397,9 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         }
 
         if (filename) break;
+        for(iter=0;iter<25;iter++){
+            test_extern_arr[iter] = 0;
+        }
     }
 
     if (outfile) {

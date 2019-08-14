@@ -896,7 +896,7 @@ void forward_convolutional_layer(convolutional_layer l, network_state state)
     if (l.xnor && (!l.align_bit_weights || state.train)) {
         if (!l.align_bit_weights || state.train) {
             binarize_weights(l.weights, l.n, l.nweights, l.binary_weights);
-            //printf("\n binarize_weights l.align_bit_weights = %p \n", l.align_bit_weights);
+            printf("\n binarize_weights l.align_bit_weights = %p \n", l.align_bit_weights);
         }
         swap_binary(&l);
         binarize_cpu(state.input, l.c*l.h*l.w*l.batch, l.binary_input);
@@ -915,18 +915,19 @@ void forward_convolutional_layer(convolutional_layer l, network_state state)
         for (j = 0; j < l.groups; ++j)
         {
             float *a = l.weights +j*l.nweights / l.groups;
-            float *b = state.workspace;
+            float *b = state.workspace_cpu;
             float *c = l.output +(i*l.groups + j)*n*m;
+            printf("this is workspace_cpu:%d\n",b[0]);
 
             //gemm(0,0,m,n,k,1,a,k,b,n,1,c,n);
             //gemm_nn_custom(m, n, k, 1, a, k, b, n, c, n);
             if (l.xnor && l.align_bit_weights && !state.train)
             {
                 memset(b, 0, l.bit_align*l.size*l.size*l.c * sizeof(float));
-
+                
                 if (l.c % 32 == 0)
                 {
-                    //printf(" l.index = %d - new XNOR \n", l.index);
+                    printf(" l.index = %d - new XNOR \n", l.index);
 
                     int ldb_align = l.lda_align;
                     size_t new_ldb = k + (ldb_align - k%ldb_align); // (k / 8 + 1) * 8;
@@ -934,7 +935,7 @@ void forward_convolutional_layer(convolutional_layer l, network_state state)
                     //size_t t_bit_input_size = t_intput_size / 8;// +1;
 
                     int re_packed_input_size = l.c * l.w * l.h;
-                    memset(state.workspace, 0, re_packed_input_size * sizeof(float));
+                    memset(state.workspace_cpu, 0, re_packed_input_size * sizeof(float));
 
                     const size_t new_c = l.c / 32;
                     size_t in_re_packed_input_size = new_c * l.w * l.h + 1;
@@ -944,10 +945,10 @@ void forward_convolutional_layer(convolutional_layer l, network_state state)
                     //uint32_t *bin_re_packed_input = calloc(new_c * l.w * l.h + 1, sizeof(uint32_t));
 
                     // float32x4 by channel (as in cuDNN)
-                    repack_input(state.input, state.workspace, l.w, l.h, l.c);
+                    repack_input(state.input, state.workspace_cpu, l.w, l.h, l.c);
 
                     // 32 x floats -> 1 x uint32_t
-                    float_to_bit(state.workspace, (unsigned char *)l.bin_re_packed_input, l.c * l.w * l.h);
+                    float_to_bit(state.workspace_cpu, (unsigned char *)l.bin_re_packed_input, l.c * l.w * l.h);
 
                     //free(re_packed_input);
 
@@ -958,7 +959,7 @@ void forward_convolutional_layer(convolutional_layer l, network_state state)
                     // // then exit from if()
 
 
-                    im2col_cpu_custom((float *)l.bin_re_packed_input, new_c, l.h, l.w, l.size, l.stride, l.pad, state.workspace);
+                    im2col_cpu_custom((float *)l.bin_re_packed_input, new_c, l.h, l.w, l.size, l.stride, l.pad, state.workspace_cpu);
                     //im2col_cpu((float *)bin_re_packed_input, new_c, l.h, l.w, l.size, l.stride, l.pad, b);
 
                     //free(bin_re_packed_input);
@@ -973,7 +974,7 @@ void forward_convolutional_layer(convolutional_layer l, network_state state)
 
     // // then exit from if()
 
-                    transpose_uint32((uint32_t *)state.workspace, (uint32_t*)l.t_bit_input, new_k, n, n, new_ldb);
+                    transpose_uint32((uint32_t *)state.workspace_cpu, (uint32_t*)l.t_bit_input, new_k, n, n, new_ldb);
 
                     // the main GEMM function
                     gemm_nn_custom_bin_mean_transposed(m, n, k, 1, (unsigned char*)l.align_bit_weights, new_ldb, (unsigned char*)l.t_bit_input, new_ldb, c, n, l.mean_arr);
@@ -991,10 +992,10 @@ void forward_convolutional_layer(convolutional_layer l, network_state state)
                 { // else (l.c % 32 != 0)
 
                     //--------------------------------------------------------
-                    //printf(" l.index = %d - old XNOR \n", l.index);
+                    printf(" l.index = %d - old XNOR \n", l.index);
 
                     //im2col_cpu_custom_align(state.input, l.c, l.h, l.w, l.size, l.stride, l.pad, b, l.bit_align);
-                    im2col_cpu_custom_bin(state.input, l.c, l.h, l.w, l.size, l.stride, l.pad, state.workspace, l.bit_align);
+                    im2col_cpu_custom_bin(state.input, l.c, l.h, l.w, l.size, l.stride, l.pad, state.workspace_cpu, l.bit_align);
 
                     //size_t output_size = l.outputs;
                     //float *count_output = calloc(output_size, sizeof(float));
@@ -1016,7 +1017,7 @@ void forward_convolutional_layer(convolutional_layer l, network_state state)
                         //size_t ldb_align = 256; // 256 bit for AVX2
                         int ldb_align = l.lda_align;
                         size_t new_ldb = k + (ldb_align - k%ldb_align);
-                        size_t t_intput_size = binary_transpose_align_input(k, n, state.workspace, &l.t_bit_input, ldb_align, l.bit_align);
+                        size_t t_intput_size = binary_transpose_align_input(k, n, state.workspace_cpu, &l.t_bit_input, ldb_align, l.bit_align);
 
                         // 5x times faster than gemm()-float32
                         gemm_nn_custom_bin_mean_transposed(m, n, k, 1, (unsigned char*)l.align_bit_weights, new_ldb, (unsigned char*)l.t_bit_input, new_ldb, c, n, l.mean_arr);
@@ -1039,7 +1040,7 @@ void forward_convolutional_layer(convolutional_layer l, network_state state)
 
             }
             else {
-                //printf(" l.index = %d - FP32 \n", l.index);
+                printf(" l.index = %d - FP32 \n", l.index);
                 float *im = state.input + (i*l.groups + j)*(l.c / l.groups)*l.h*l.w;
                 if (l.size == 1) {
                     b = im;

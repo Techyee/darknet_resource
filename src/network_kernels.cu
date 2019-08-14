@@ -42,52 +42,77 @@ float * get_network_output_gpu_layer(network net, int i);
 float * get_network_delta_gpu_layer(network net, int i);
 float * get_network_output_gpu(network net);
 
+extern int test_extern;
+extern int* test_extern_arr;
 void forward_network_gpu(network net, network_state state)
 {
     //cudaDeviceSynchronize();
     //printf("\n");
     state.workspace = net.workspace;
+    state.workspace_cpu = net.workspace_cpu;
     int i;
+    double _time;
+    double time;
     for(i = 0; i < net.n; ++i){
+        printf("external integer test : %d\n",test_extern_arr[i]);
         state.index = i;
         layer l = net.layers[i];
         if(l.delta_gpu && state.train){
             fill_ongpu(l.outputs * l.batch, 0, l.delta_gpu, 1);
         }
-#ifdef EXE_TIME        
-        double time  = get_time_point();
+#ifdef SRC_SWITCH       
+        time  = get_time_point();
+        if (test_extern_arr[i] == 0){
+            l.forward(l,state);
+        }
+        else{
+            l.forward_gpu(l, state);
+            CHECK_CUDA(cudaDeviceSynchronize());
+        }
+        printf("layer: %3d type: %15s - Predicted in %8.5f milli-seconds.\n", i, get_layer_string(l.type), ((double)get_time_point() -time) / 1000);
+#endif
+
+#ifdef EXE_TIME
+        double time = get_time_point();
+        printf("%3dth %15s\n",i, get_layer_string(l.type));
         l.forward_gpu(l, state);
         CHECK_CUDA(cudaDeviceSynchronize());
-        printf("layer: %3d type: %15s - Predicted in %8.5f milli-seconds.\n", i, get_layer_string(l.type), ((double)get_time_point() -time) / 1000);
-#else   
-        l.forward_gpu(l, state);
-#endif 
+        printf("%10.3f\n\n",((double)get_time_point() - time) / 1000);
+#endif
         if(net.wait_stream)
             cudaStreamSynchronize(get_cuda_stream());
-        state.input = l.output_gpu;
-        //cudaDeviceSynchronize();
-/*
-        cuda_pull_array(l.output_gpu, l.output, l.batch*l.outputs);
-        if (l.out_w >= 0 && l.out_h >= 1 && l.c >= 3) {
-            int j;
-            for (j = 0; j < l.out_c; ++j) {
-                image img = make_image(l.out_w, l.out_h, 3);
-                memcpy(img.data, l.output + l.out_w*l.out_h*j, l.out_w*l.out_h * 1 * sizeof(float));
-                memcpy(img.data + l.out_w*l.out_h * 1, l.output + l.out_w*l.out_h*j, l.out_w*l.out_h * 1 * sizeof(float));
-                memcpy(img.data + l.out_w*l.out_h * 2, l.output + l.out_w*l.out_h*j, l.out_w*l.out_h * 1 * sizeof(float));
-                char buff[256];
-                sprintf(buff, "layer-%d slice-%d", i, j);
-                show_image(img, buff);
-                save_image(img, buff);
+
+#ifdef SRC_SWITCH
+        if(test_extern_arr[i] == 0){//currently running on CPU
+            if(test_extern_arr[i+1] == 0){//next is running on CPU
+                state.input = l.output;    
             }
-            cvWaitKey(0); // wait press-key in console
-            cvDestroyAllWindows();
+            else{//next is running on GPU
+                printf("[network_kernels.cu line 78] push_cuda_overhead :");
+                _time = get_time_point();
+                cuda_push_array(l.output_gpu, l.output, l.batch*l.outputs);
+                state.input = l.output_gpu;
+                printf(" %8.5f milli-seconds,sizeof output :%d \n",((double)get_time_point() - _time)/1000,l.batch*l.outputs);
+            }
         }
-*/
+        else{//currently running on GPU
+            if(test_extern_arr[i+1] == 0){//next is running on CPU
+                printf("[network_kernels.cu line 86] pull_cuda_overhead :");
+                _time = get_time_point();
+                cuda_pull_array(l.output_gpu, l.output, l.batch*l.outputs);
+                state.input = l.output;
+                printf(" %8.5f milli-seconds, sizeof output:%d \n",((double)get_time_point() - _time)/1000,l.batch*l.outputs);
+            }
+            else{//next is running on GPU
+                state.input = l.output_gpu;
+            }
+        }
+#endif
+
+#ifdef EXE_TIME
+        state.input = l.output_gpu;
+#endif
     }
-    //cudaStreamSynchronize(get_cuda_stream());   // sync CUDA-functions
-    //cudaDeviceSynchronize();
-    //show_total_time();
 }
 
 void backward_network_gpu(network net, network_state state)
@@ -465,8 +490,15 @@ float train_networks(network *nets, int n, data d, int interval)
 
 float *get_network_output_layer_gpu(network net, int i)
 {
+    double _time = get_time_point();
     layer l = net.layers[i];
-    if(l.type != REGION) cuda_pull_array(l.output_gpu, l.output, l.outputs*l.batch);
+    if(l.type != REGION){
+        if(test_extern_arr[i] == 1){//from gpu
+            cuda_pull_array(l.output_gpu, l.output, l.outputs*l.batch);
+        }
+    }
+
+    printf("end of get_net_output, time is %8.5f millisec\n",((double)get_time_point() - _time)/1000);
     return l.output;
 }
 
@@ -479,19 +511,32 @@ float *get_network_output_gpu(network net)
 
 float *network_predict_gpu(network net, float *input)
 {
+    double _time_cp;
+    double _time = get_time_point();
     if (net.gpu_index != cuda_get_device())
         cuda_set_device(net.gpu_index);
     int size = get_network_input_size(net) * net.batch;
     network_state state;
     state.index = 0;
     state.net = net;
-    //state.input = cuda_make_array(input, size);   // memory will be allocated in the parse_network_cfg_custom()
-    state.input = net.input_state_gpu;
-    memcpy(net.input_pinned_cpu, input, size * sizeof(float));
-    cuda_push_array(state.input, net.input_pinned_cpu, size);
+    //state.input = cuda_make_array(input, size);   // memory will be allocated in the parse_network_cfg_custom() 
+    
+    if (test_extern_arr[0] == 0){//first network runs on cpu.
+        memcpy(net.input_pinned_cpu, input, size*sizeof(float));
+        state.input = net.input_pinned_cpu;
+        printf("this is input%d\n",*state.input);
+    }
+    else{//first network runs on gpu.
+        state.input = net.input_state_gpu;
+        _time_cp = get_time_point();
+        memcpy(net.input_pinned_cpu, input, size * sizeof(float));
+        cuda_push_array(state.input, net.input_pinned_cpu, size);
+        printf("end of memcpy+cuda_push, time is  %8.5f millisec\n",((double)get_time_point()-_time_cp)/1000);
+    }
     state.truth = 0;
     state.train = 0;
     state.delta = 0;
+    printf("end of net_pred_gpu, time is %8.5f millisec\n",((double)get_time_point()-_time)/1000);
     forward_network_gpu(net, state);
     float *out = get_network_output_gpu(net);
     //cuda_free(state.input);   // will be freed in the free_network()

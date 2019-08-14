@@ -45,6 +45,24 @@
 #endif
 #endif
 
+struct DetectorParams;
+typedef struct DetectorParams DetectorParams;
+typedef struct DetectorParams
+{
+  char *_datacfg;
+  char *_cfgfile;
+  char *_weightfile;
+  char *_filename;
+  float _thresh;
+  float _hier_thresh;
+  int _dont_show;
+  int _ext_output;
+  int _save_labels;
+  char *_outfile;
+  int _letter_box;
+}DetectorParams;
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -626,6 +644,7 @@ typedef struct network {
     float *truth;
     float *delta;
     float *workspace;
+    float *workspace_cpu; //for per-layer execution. allows conv to run on cpu.
     int train;
     int index;
     float *cost;
@@ -657,6 +676,7 @@ typedef struct network_state {
     float *input;
     float *delta;
     float *workspace;
+    float *workspace_cpu;
     int train;
     int index;
     network net;
