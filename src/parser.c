@@ -1370,11 +1370,10 @@ void load_convolutional_weights(layer l, FILE *fp)
         push_convolutional_layer(l);
     }
 #endif
-
 #ifdef Quantize
     convert_float2int(l.biases_INT8,l.biases);
     convert_float2int(l.scales_INT8,l.scales);
-    convert_float2int(l.rolling_mean_INT8, l.rolling_mean_);
+    convert_float2int(l.rolling_mean_INT8, l.rolling_mean);
     convert_float2int(l.rolling_variance_INT8, l.rolling_variance);
     convert_float2int(l.weights_INT8, l.weights);
 #endif
@@ -1428,6 +1427,7 @@ void load_weights_upto(network *net, char *filename, int cutoff)
     int i;
     for(i = 0; i < net->n && i < cutoff; ++i){
         layer l = net->layers[i];
+        printf(" I AM LAYER %s\n", get_layer_string(l.type));
         if (l.dontload) continue;
         if(l.type == CONVOLUTIONAL && l.share_layer == NULL){
             load_convolutional_weights(l, fp);

@@ -546,7 +546,7 @@ convolutional_layer make_convolutional_layer(int batch, int steps, int h, int w,
 #endif
 
 #ifdef Quantize
-    l.biase_INT8 = (int *)calloc(n,sizeof(int));
+    l.biases_INT8 = (int *)calloc(n,sizeof(int));
     l.scales_INT8 = (int*)calloc(n, sizeof(int));
     l.rolling_mean_INT8 = (int*)calloc(n, sizeof(int));
     l.rolling_variance_INT8 = (int*)calloc(n, sizeof(int));
@@ -913,7 +913,7 @@ void forward_convolutional_layer(convolutional_layer l, network_state state)
     int out_w = convolutional_out_width(l);
     int i, j;
 
-    fill_cpu(l.outputs*l.batch, 0, l.output, 1);
+    fill_cpu(l.outputs*l.batch, 0, l.output_INT8, 1);
 
     if (l.xnor && (!l.align_bit_weights || state.train)) {
         if (!l.align_bit_weights || state.train) {
@@ -931,7 +931,7 @@ void forward_convolutional_layer(convolutional_layer l, network_state state)
 
     static int u = 0;
     u++;
-
+    printf("AM I IN HERE?\n");
     for(i = 0; i < l.batch; ++i)
     {
         for (j = 0; j < l.groups; ++j)

@@ -90,14 +90,6 @@ void gemm(int TA, int TB, int M, int N, int K, float ALPHA,
     gemm_cpu( TA,  TB,  M, N, K, ALPHA,A,lda, B, ldb,BETA,C,ldc);
 }
 
-void gemm(int TA, int TB, int M, int N, int K, float ALPHA,
-        float *A, int lda,
-        float *B, int ldb,
-        float BETA,
-        float *C, int ldc)
-{
-    gemm_cpu( TA,  TB,  M, N, K, ALPHA,A,lda, B, ldb,BETA,C,ldc);
-}
 //--------------------------------------------
 // XNOR bitwise GEMM for binary neural network
 //--------------------------------------------

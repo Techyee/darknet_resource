@@ -65,6 +65,7 @@ void forward_network_gpu(network net, network_state state)
 //        printf("external integer test : %d\n",test_extern_arr[i]);
         state.index = i;
         layer l = net.layers[i];
+        printf("I AM LAYER : %s\n", get_layer_string(l.type));
         if(l.delta_gpu && state.train){
             fill_ongpu(l.outputs * l.batch, 0, l.delta_gpu, 1);
         }

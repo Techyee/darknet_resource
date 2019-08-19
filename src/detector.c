@@ -1283,6 +1283,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
     network net = parse_network_cfg_custom(cfgfile, 1, 1); // set batch=1
     if (weightfile) {
         load_weights(&net, weightfile);
+        printf("Weight load complete\n");
     }
   // Our approach should not use layer fusion  
   // fuse_conv_batchnorm(net);

@@ -572,7 +572,7 @@ struct layer {
     int * rolling_mean_INT8;
     int * rolling_variance_INT8;
     int * weights_INT8;
-    int * ouput_INT8;
+    int * output_INT8;
 #endif
 
 
