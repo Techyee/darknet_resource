@@ -1021,6 +1021,7 @@ network parse_network_cfg_custom(char *filename, int batch, int time_steps)
             net.workspace = cuda_make_array(0, workspace_size / sizeof(float) + 1);
            //for per-layer execution.
             net.workspace_cpu = (float*)calloc(1, workspace_size);
+            net.workspace_cpu_INT8 = (int*)calloc(1,workspace_size);
         }
         else {
             net.workspace = (float*)calloc(1, workspace_size);
