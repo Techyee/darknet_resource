@@ -657,6 +657,7 @@ typedef struct network {
     float *delta;
     float *workspace;
     float *workspace_cpu; //for per-layer execution. allows conv to run on cpu.
+    int *workspace_cpu_INT8;
     int train;
     int index;
     float *cost;
@@ -689,7 +690,6 @@ typedef struct network_state {
     float *delta;
     float *workspace;
     float *workspace_cpu;
-    int *workspace_cpu_INT8;
     int train;
     int index;
     network net;
