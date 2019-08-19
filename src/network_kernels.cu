@@ -52,6 +52,7 @@ void forward_network_gpu(network net, network_state state)
     //printf("\n");
     state.workspace = net.workspace;
     state.workspace_cpu = net.workspace_cpu;
+    state.workspace_cpu_INT8 = net.workspace_cpu_INT8;
     int i;
     int *res_arr;
     double _time;

@@ -690,6 +690,7 @@ typedef struct network_state {
     float *delta;
     float *workspace;
     float *workspace_cpu;
+    int *workspace_cpu_INT8;
     int train;
     int index;
     network net;
