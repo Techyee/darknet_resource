@@ -44,6 +44,8 @@ float * get_network_output_gpu(network net);
 
 extern int test_extern;
 extern int* test_extern_arr;
+extern int* test_extern_arr2;
+
 void forward_network_gpu(network net, network_state state)
 {
     //cudaDeviceSynchronize();
@@ -51,10 +53,16 @@ void forward_network_gpu(network net, network_state state)
     state.workspace = net.workspace;
     state.workspace_cpu = net.workspace_cpu;
     int i;
+    int *res_arr;
     double _time;
     double time;
+
+    res_arr = test_extern_arr;
+    if(net.t_idx == 2){
+        res_arr = test_extern_arr2;
+    }
     for(i = 0; i < net.n; ++i){
-        printf("external integer test : %d\n",test_extern_arr[i]);
+//        printf("external integer test : %d\n",test_extern_arr[i]);
         state.index = i;
         layer l = net.layers[i];
         if(l.delta_gpu && state.train){
@@ -62,7 +70,7 @@ void forward_network_gpu(network net, network_state state)
         }
 #ifdef SRC_SWITCH       
         time  = get_time_point();
-        if (test_extern_arr[i] == 0){
+        if (res_arr[i] == 0){
             l.forward(l,state);
         }
         else{
@@ -83,8 +91,8 @@ void forward_network_gpu(network net, network_state state)
             cudaStreamSynchronize(get_cuda_stream());
 
 #ifdef SRC_SWITCH
-        if(test_extern_arr[i] == 0){//currently running on CPU
-            if(test_extern_arr[i+1] == 0){//next is running on CPU
+        if(res_arr[i] == 0){//currently running on CPU
+            if(res_arr[i+1] == 0){//next is running on CPU
                 state.input = l.output;    
             }
             else{//next is running on GPU
@@ -96,7 +104,7 @@ void forward_network_gpu(network net, network_state state)
             }
         }
         else{//currently running on GPU
-            if(test_extern_arr[i+1] == 0){//next is running on CPU
+            if(res_arr[i+1] == 0){//next is running on CPU
                 printf("[network_kernels.cu line 86] pull_cuda_overhead :");
                 _time = get_time_point();
                 cuda_pull_array(l.output_gpu, l.output, l.batch*l.outputs);
@@ -511,6 +519,7 @@ float *get_network_output_gpu(network net)
 
 float *network_predict_gpu(network net, float *input)
 {
+    int* res_arr; // change the scope of memory according to resource allocation.
     double _time_cp;
     double _time = get_time_point();
     if (net.gpu_index != cuda_get_device())
@@ -521,10 +530,16 @@ float *network_predict_gpu(network net, float *input)
     state.net = net;
     //state.input = cuda_make_array(input, size);   // memory will be allocated in the parse_network_cfg_custom() 
     
-    if (test_extern_arr[0] == 0){//first network runs on cpu.
+    if (net.t_idx == 1){
+        res_arr = test_extern_arr;
+    }
+    else{
+        res_arr = test_extern_arr2;
+    }
+    if (res_arr[0] == 0){//first network runs on cpu.
         memcpy(net.input_pinned_cpu, input, size*sizeof(float));
         state.input = net.input_pinned_cpu;
-        printf("this is input%d\n",*state.input);
+  //      printf("this is input%d\n",*state.input);
     }
     else{//first network runs on gpu.
         state.input = net.input_state_gpu;

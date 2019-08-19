@@ -35,6 +35,7 @@ extern void run_super(int argc, char **argv);
 //global variables for runtime switching.
 extern int test_extern = 1972;
 extern int *test_extern_arr = NULL;
+extern int *test_extern_arr2 = NULL;
 
 //DetectorParameter structure for multi-threading.
 DetectorParams *_g_detector_params;
@@ -447,6 +448,7 @@ int main(int argc, char **argv)
 #endif
     _g_detector_params = (DetectorParams*)malloc(sizeof(DetectorParams));
     test_extern_arr = (int*)malloc(sizeof(int)*25);
+    test_extern_arr2 = (int*)malloc(sizeof(int)*25);
     int j;
     int i;
     int thr_id;
@@ -454,12 +456,13 @@ int main(int argc, char **argv)
 
     //initialize meta_params for per-layer source alloc.
     //cpu = 0, gpu = 1. default test: all gpu.
-    for(i=0;i<24;i++)
-        test_extern_arr[i] = 1;
-    //src customization. last layer must return data to cpu.
+    for(i=0;i<24;i++){
+        test_extern_arr[i] = 0;
+        test_extern_arr2[i] = 0;
+    }
     test_extern_arr[24] = 0;
-    test_extern_arr[2] = 0;
-    test_extern_arr[4] = 0;
+    test_extern_arr[24] = 0;
+    //src customization. last layer must return data to cpu.
     for (i = 0; i < argc; ++i) {
 		if (!argv[i]) continue;
 		strip_args(argv[i]);
@@ -561,6 +564,10 @@ int main(int argc, char **argv)
         visualize(argv[2], (argc > 3) ? argv[3] : 0);
     } else if (0 == strcmp(argv[1], "imtest")){
         test_resize(argv[2]);
+    } else if (0 == strcmp(argv[1], "thread")){
+        multi_thread(argc,argv);
+    } else if (0 == strcmp(argv[1], "deepdive")){
+        deep_dive(argc,argv);
     } else {
         fprintf(stderr, "Not an option: %s\n", argv[1]);
     }
