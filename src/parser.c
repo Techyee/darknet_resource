@@ -1372,9 +1372,11 @@ void load_convolutional_weights(layer l, FILE *fp)
 #endif
 #ifdef Quantize
     convert_float2int(l.biases_INT8,l.biases);
-    convert_float2int(l.scales_INT8,l.scales);
-    convert_float2int(l.rolling_mean_INT8, l.rolling_mean);
-    convert_float2int(l.rolling_variance_INT8, l.rolling_variance);
+    if (l.batch_normalize && (!l.dontloadscales)){
+        convert_float2int(l.scales_INT8,l.scales);
+        convert_float2int(l.rolling_mean_INT8, l.rolling_mean);
+        convert_float2int(l.rolling_variance_INT8, l.rolling_variance);
+    }
     convert_float2int(l.weights_INT8, l.weights);
 #endif
 }
