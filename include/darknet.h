@@ -565,6 +565,17 @@ struct layer {
     cudnnPoolingDescriptor_t poolingDesc;
 #endif  // CUDNN
 #endif  // GPU
+
+#ifdef Quantize
+    int * biases_INT8;
+    int * scales_INT8;
+    int * rolling_mean_INT8;
+    int * rolling_variance_INT8;
+    int * weights_INT8;
+    int * ouput_INT8;
+#endif
+
+
 };
 
 
@@ -678,6 +689,7 @@ typedef struct network_state {
     float *delta;
     float *workspace;
     float *workspace_cpu;
+    int *workspace_cpu_INT8;
     int train;
     int index;
     network net;

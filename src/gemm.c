@@ -90,7 +90,14 @@ void gemm(int TA, int TB, int M, int N, int K, float ALPHA,
     gemm_cpu( TA,  TB,  M, N, K, ALPHA,A,lda, B, ldb,BETA,C,ldc);
 }
 
-
+void gemm(int TA, int TB, int M, int N, int K, float ALPHA,
+        float *A, int lda,
+        float *B, int ldb,
+        float BETA,
+        float *C, int ldc)
+{
+    gemm_cpu( TA,  TB,  M, N, K, ALPHA,A,lda, B, ldb,BETA,C,ldc);
+}
 //--------------------------------------------
 // XNOR bitwise GEMM for binary neural network
 //--------------------------------------------
@@ -1982,6 +1989,22 @@ void gemm_nn(int M, int N, int K, float ALPHA,
     }
 }
 
+void gemm_nn_INT8(int M, int N, int K, float ALPHA,
+    int *A, int lda,
+    int *B, int ldb,
+    int *C, int ldc)
+{
+    int i, j, k;
+    for (i = 0; i < M; ++i) {
+        for (k = 0; k < K; ++k) {
+            PUT_IN_REGISTER int A_PART = (int)ALPHA * A[i * lda + k];
+            for (j = 0; j < N; ++j) {
+                C[i*ldc + j] += A_PART*B[k*ldb + j];
+            }
+        }
+    }
+}
+
 void gemm_nn_fast(int M, int N, int K, float ALPHA,
     float *A, int lda,
     float *B, int ldb,
@@ -1992,6 +2015,22 @@ void gemm_nn_fast(int M, int N, int K, float ALPHA,
     for (i = 0; i < M; ++i) {
         for (k = 0; k < K; ++k) {
             PUT_IN_REGISTER float A_PART = ALPHA*A[i*lda + k];
+            for (j = 0; j < N; ++j) {
+                C[i*ldc + j] += A_PART*B[k*ldb + j];
+            }
+        }
+    }
+}
+void gemm_nn_fast_INT8(int M, int N, int K, float ALPHA,
+    int *A, int lda,
+    int *B, int ldb,
+    int *C, int ldc)
+{
+    int i, j, k;
+    #pragma omp parallel for
+    for (i = 0; i < M; ++i) {
+        for (k = 0; k < K; ++k) {
+            PUT_IN_REGISTER int A_PART = (int)ALPHA*A[i*lda + k];
             for (j = 0; j < N; ++j) {
                 C[i*ldc + j] += A_PART*B[k*ldb + j];
             }
@@ -2361,7 +2400,24 @@ void activate_array_cpu_custom(float *x, const int n, const ACTIVATION a)
         }
     }
 }
-
+void activate_array_cpu_custom_INT8(int *x, const int n, const ACTIVATION a)
+{
+    int i;
+    if (a == LINEAR)
+    {
+    }
+    else if (a == LEAKY)
+    {
+        for (i = 0; i < n; ++i) {
+            x[i] = (x[i]>0) ? x[i] : .1*x[i];
+        }
+    }
+    else {
+        for (i = 0; i < n; ++i) {
+            x[i] = activate((float)x[i], a);
+        }
+    }
+}
 void float_to_bit(float *src, unsigned char *dst, size_t size)
 {
     size_t dst_size = size / 8 + 1;
@@ -2609,6 +2665,23 @@ void gemm_nt(int M, int N, int K, float ALPHA,
     }
 }
 
+void gemm_nt_INT8(int M, int N, int K, float ALPHA,
+        int *A, int lda,
+        int *B, int ldb,
+        int *C, int ldc)
+{
+    int i,j,k;
+    for(i = 0; i < M; ++i){
+        for(j = 0; j < N; ++j){
+            PUT_IN_REGISTER int sum = 0;
+            for(k = 0; k < K; ++k){
+                sum += ALPHA*A[i*lda+k]*B[j*ldb + k];
+            }
+            C[i*ldc+j] += sum;
+        }
+    }
+}
+
 void gemm_tn(int M, int N, int K, float ALPHA,
         float *A, int lda,
         float *B, int ldb,
@@ -2618,6 +2691,22 @@ void gemm_tn(int M, int N, int K, float ALPHA,
     for(i = 0; i < M; ++i){
         for(k = 0; k < K; ++k){
             PUT_IN_REGISTER float A_PART = ALPHA * A[k * lda + i];
+            for(j = 0; j < N; ++j){
+                C[i*ldc+j] += A_PART*B[k*ldb+j];
+            }
+        }
+    }
+}
+
+void gemm_tn_INT8(int M, int N, int K, float ALPHA,
+        int *A, int lda,
+        int *B, int ldb,
+        int *C, int ldc)
+{
+    int i,j,k;
+    for(i = 0; i < M; ++i){
+        for(k = 0; k < K; ++k){
+            PUT_IN_REGISTER int A_PART = (int)ALPHA * A[k * lda + i];
             for(j = 0; j < N; ++j){
                 C[i*ldc+j] += A_PART*B[k*ldb+j];
             }
@@ -2642,6 +2731,22 @@ void gemm_tt(int M, int N, int K, float ALPHA,
     }
 }
 
+void gemm_tt_INT8(int M, int N, int K, float ALPHA,
+        int *A, int lda,
+        int *B, int ldb,
+        int *C, int ldc)
+{
+    int i,j,k;
+    for(i = 0; i < M; ++i){
+        for(j = 0; j < N; ++j){
+            PUT_IN_REGISTER int sum = 0;
+            for(k = 0; k < K; ++k){
+                sum += ALPHA*A[i+k*lda]*B[k+j*ldb];
+            }
+            C[i*ldc+j] += sum;
+        }
+    }
+}
 
 void gemm_cpu(int TA, int TB, int M, int N, int K, float ALPHA,
         float *A, int lda,
@@ -2678,7 +2783,41 @@ void gemm_cpu(int TA, int TB, int M, int N, int K, float ALPHA,
         }
     }
 }
+void gemm_cpu_INT8(int TA, int TB, int M, int N, int K, float ALPHA,
+        int *A, int lda,
+        int *B, int ldb,
+        float BETA,
+        int *C, int ldc)
+{
+    //printf("cpu: %d %d %d %d %d %f %d %d %f %d\n",TA, TB, M, N, K, ALPHA, lda, ldb, BETA, ldc);
+    if (BETA != 1){
+        int i, j;
+        for(i = 0; i < M; ++i){
+            for(j = 0; j < N; ++j){
+                C[i*ldc + j] *= (int)BETA;
+            }
+        }
+    }
 
+    is_avx();   // initialize static variable
+    if (is_fma_avx2() && !TA && !TB) {
+        gemm_nn_fast_INT8(M, N, K, ALPHA, A, lda, B, ldb, C, ldc);
+    }
+    else {
+        int t;
+        #pragma omp parallel for
+        for (t = 0; t < M; ++t) {
+            if (!TA && !TB)
+                gemm_nn_INT8(1, N, K, ALPHA, A + t*lda, lda, B, ldb, C + t*ldc, ldc);
+            else if (TA && !TB)
+                gemm_tn_INT8(1, N, K, ALPHA, A + t, lda, B, ldb, C + t*ldc, ldc);
+            else if (!TA && TB)
+                gemm_nt_INT8(1, N, K, ALPHA, A + t*lda, lda, B, ldb, C + t*ldc, ldc);
+            else
+                gemm_tt_INT8(1, N, K, ALPHA, A + t, lda, B, ldb, C + t*ldc, ldc);
+        }
+    }
+}
 #ifdef GPU
 
 #include <math.h>

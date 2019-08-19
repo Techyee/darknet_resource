@@ -1370,7 +1370,27 @@ void load_convolutional_weights(layer l, FILE *fp)
         push_convolutional_layer(l);
     }
 #endif
+
+#ifdef Quantize
+    convert_float2int(l.biases_INT8,l.biases);
+    convert_float2int(l.scales_INT8,l.scales);
+    convert_float2int(l.rolling_mean_INT8, l.rolling_mean_);
+    convert_float2int(l.rolling_variance_INT8, l.rolling_variance);
+    convert_float2int(l.weights_INT8, l.weights);
+#endif
 }
+
+void convert_float2int(int * dest, float * src)
+{
+    int n;
+    int i;
+    n = sizeof(src)/sizeof(float);
+
+    for(i =0; i<n ;i++){
+        dest[i] = (int)src[i];
+    }
+}
+
 
 
 void load_weights_upto(network *net, char *filename, int cutoff)

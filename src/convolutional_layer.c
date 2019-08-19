@@ -544,6 +544,15 @@ convolutional_layer make_convolutional_layer(int batch, int steps, int h, int w,
 #endif
     }
 #endif
+
+#ifdef Quantize
+    l.biase_INT8 = (int *)calloc(n,sizeof(int));
+    l.scales_INT8 = (int*)calloc(n, sizeof(int));
+    l.rolling_mean_INT8 = (int*)calloc(n, sizeof(int));
+    l.rolling_variance_INT8 = (int*)calloc(n, sizeof(int));
+    l.weights_INT8 = (int *)calloc(l.nweights, sizeof(int));
+    l.output_INT8 = (int *)calloc(total_batch*l.outputs, sizeof(int));
+#endif 
     l.workspace_size = get_convolutional_workspace_size(l);
 
     //fprintf(stderr, "conv  %5d %2d x%2d /%2d  %4d x%4d x%4d   ->  %4d x%4d x%4d\n", n, size, size, stride, w, h, c, l.out_w, l.out_h, l.out_c);
@@ -672,6 +681,18 @@ void resize_convolutional_layer(convolutional_layer *l, int w, int h)
 }
 
 void add_bias(float *output, float *biases, int batch, int n, int size)
+{
+    int i,j,b;
+    for(b = 0; b < batch; ++b){
+        for(i = 0; i < n; ++i){
+            for(j = 0; j < size; ++j){
+                output[(b*n + i)*size + j] += biases[i];
+            }
+        }
+    }
+}
+
+void add_bias_INT8(int *output, int *biases, int batch, int n, int size)
 {
     int i,j,b;
     for(b = 0; b < batch; ++b){
@@ -887,6 +908,204 @@ size_t binary_transpose_align_input(int k, int n, float *b, char **t_bit_input, 
 
 void forward_convolutional_layer(convolutional_layer l, network_state state)
 {
+#ifdef Quantize
+    int out_h = convolutional_out_height(l);
+    int out_w = convolutional_out_width(l);
+    int i, j;
+
+    fill_cpu(l.outputs*l.batch, 0, l.output, 1);
+
+    if (l.xnor && (!l.align_bit_weights || state.train)) {
+        if (!l.align_bit_weights || state.train) {
+            binarize_weights(l.weights, l.n, l.nweights, l.binary_weights);
+            printf("\n binarize_weights l.align_bit_weights = %p \n", l.align_bit_weights);
+        }
+        swap_binary(&l);
+        binarize_cpu(state.input, l.c*l.h*l.w*l.batch, l.binary_input);
+        state.input = l.binary_input;
+    }
+
+    int m = l.n / l.groups;
+    int k = l.size*l.size*l.c / l.groups;
+    int n = out_h*out_w;
+
+    static int u = 0;
+    u++;
+
+    for(i = 0; i < l.batch; ++i)
+    {
+        for (j = 0; j < l.groups; ++j)
+        {
+            int *a = l.weights_INT8 +j*l.nweights / l.groups;
+            int *b = state.workspace_cpu_INT8;
+            int *c = l.output_INT8 +(i*l.groups + j)*n*m;
+            printf("this is workspace_cpu:%d\n",b[0]);
+
+            //gemm(0,0,m,n,k,1,a,k,b,n,1,c,n);
+            //gemm_nn_custom(m, n, k, 1, a, k, b, n, c, n);
+            if (l.xnor && l.align_bit_weights && !state.train)
+            {
+                memset(b, 0, l.bit_align*l.size*l.size*l.c * sizeof(float));
+                
+                if (l.c % 32 == 0)
+                {
+                    printf(" l.index = %d - new XNOR \n", l.index);
+
+                    int ldb_align = l.lda_align;
+                    size_t new_ldb = k + (ldb_align - k%ldb_align); // (k / 8 + 1) * 8;
+                    //size_t t_intput_size = new_ldb * l.bit_align;// n;
+                    //size_t t_bit_input_size = t_intput_size / 8;// +1;
+
+                    int re_packed_input_size = l.c * l.w * l.h;
+                    memset(state.workspace_cpu, 0, re_packed_input_size * sizeof(float));
+
+                    const size_t new_c = l.c / 32;
+                    size_t in_re_packed_input_size = new_c * l.w * l.h + 1;
+                    memset(l.bin_re_packed_input, 0, in_re_packed_input_size * sizeof(uint32_t));
+
+                    //float *re_packed_input = calloc(l.c * l.w * l.h, sizeof(float));
+                    //uint32_t *bin_re_packed_input = calloc(new_c * l.w * l.h + 1, sizeof(uint32_t));
+
+                    // float32x4 by channel (as in cuDNN)
+                    repack_input(state.input, state.workspace_cpu, l.w, l.h, l.c);
+
+                    // 32 x floats -> 1 x uint32_t
+                    float_to_bit(state.workspace_cpu, (unsigned char *)l.bin_re_packed_input, l.c * l.w * l.h);
+
+                    //free(re_packed_input);
+
+                    // slow - convolution the packed inputs and weights: float x 32 by channel (as in cuDNN)
+                    //convolution_repacked((uint32_t *)bin_re_packed_input, (uint32_t *)l.align_bit_weights, l.output,
+                    //    l.w, l.h, l.c, l.n, l.size, l.pad, l.new_lda, l.mean_arr);
+
+                    // // then exit from if()
+
+
+                    im2col_cpu_custom((float *)l.bin_re_packed_input, new_c, l.h, l.w, l.size, l.stride, l.pad, state.workspace_cpu);
+                    //im2col_cpu((float *)bin_re_packed_input, new_c, l.h, l.w, l.size, l.stride, l.pad, b);
+
+                    //free(bin_re_packed_input);
+
+                    int new_k = l.size*l.size*l.c / 32;
+
+                    // good for (l.c == 64)
+                    //gemm_nn_bin_32bit_packed(m, n, new_k, 1,
+                    //    l.align_bit_weights, l.new_lda/32,
+                    //    b, n,
+                    //    c, n, l.mean_arr);
+
+    // // then exit from if()
+
+                    transpose_uint32((uint32_t *)state.workspace_cpu, (uint32_t*)l.t_bit_input, new_k, n, n, new_ldb);
+
+                    // the main GEMM function
+                    gemm_nn_custom_bin_mean_transposed(m, n, k, 1, (unsigned char*)l.align_bit_weights, new_ldb, (unsigned char*)l.t_bit_input, new_ldb, c, n, l.mean_arr);
+
+                    // // alternative GEMM
+                    //gemm_nn_bin_transposed_32bit_packed(m, n, new_k, 1,
+                    //    l.align_bit_weights, l.new_lda/32,
+                    //    t_bit_input, new_ldb / 32,
+                    //    c, n, l.mean_arr);
+
+                    //free(t_bit_input);
+
+                }
+                else
+                { // else (l.c % 32 != 0)
+
+                    //--------------------------------------------------------
+                    printf(" l.index = %d - old XNOR \n", l.index);
+
+                    //im2col_cpu_custom_align(state.input, l.c, l.h, l.w, l.size, l.stride, l.pad, b, l.bit_align);
+                    im2col_cpu_custom_bin(state.input, l.c, l.h, l.w, l.size, l.stride, l.pad, state.workspace_cpu, l.bit_align);
+
+                    //size_t output_size = l.outputs;
+                    //float *count_output = calloc(output_size, sizeof(float));
+                    //size_t bit_output_size = output_size / 8 + 1;
+                    //char *bit_output = calloc(bit_output_size, sizeof(char));
+
+                    //size_t intput_size = n * k; // (out_h*out_w) X (l.size*l.size*l.c) : after im2col()
+                    //size_t bit_input_size = intput_size / 8 + 1;
+                    //char *bit_input = calloc(bit_input_size, sizeof(char));
+
+                    //size_t weights_size = k * m; //l.size*l.size*l.c*l.n; // l.nweights
+                    //size_t bit_weights_size = weights_size / 8 + 1;
+
+                    //char *bit_weights = calloc(bit_weights_size, sizeof(char));
+                    //float *mean_arr = calloc(l.n, sizeof(float));
+
+                    // transpose B from NxK to KxN (x-axis (ldb = l.size*l.size*l.c) - should be multiple of 8 bits)
+                    {
+                        //size_t ldb_align = 256; // 256 bit for AVX2
+                        int ldb_align = l.lda_align;
+                        size_t new_ldb = k + (ldb_align - k%ldb_align);
+                        size_t t_intput_size = binary_transpose_align_input(k, n, state.workspace_cpu, &l.t_bit_input, ldb_align, l.bit_align);
+
+                        // 5x times faster than gemm()-float32
+                        gemm_nn_custom_bin_mean_transposed(m, n, k, 1, (unsigned char*)l.align_bit_weights, new_ldb, (unsigned char*)l.t_bit_input, new_ldb, c, n, l.mean_arr);
+
+                        //gemm_nn_custom_bin_mean_transposed(m, n, k, 1, bit_weights, k, t_bit_input, new_ldb, c, n, mean_arr);
+
+                        //free(t_input);
+                        //free(t_bit_input);
+                        //}
+                    }
+
+                }
+
+                add_bias(l.output, l.biases, l.batch, l.n, out_h*out_w);
+
+                //activate_array(l.output, m*n*l.batch, l.activation);
+                if (l.activation == SWISH) activate_array_swish(l.output, l.outputs*l.batch, l.output_sigmoid, l.output);
+                else activate_array_cpu_custom(l.output, m*n*l.batch, l.activation);
+                return;
+
+            }
+            else {
+                printf(" l.index = %d - INT8 \n", l.index);
+                float *im = state.input + (i*l.groups + j)*(l.c / l.groups)*l.h*l.w;
+                // Quantize input // Could be problem in here
+                int * im_INT8 = (int)im;                    
+
+                if (l.size == 1) {
+                    b = im_INT8;
+                }
+                else {
+                    //im2col_cpu(im, l.c / l.groups, l.h, l.w, l.size, l.stride, l.pad, b);
+
+                    im2col_cpu_ext_INT8(im_INT8,   // input
+                        l.c / l.groups,     // input channels
+                        l.h, l.w,           // input size (h, w)
+                        l.size, l.size,     // kernel size (h, w)
+                        l.pad, l.pad,       // padding (h, w)
+                        l.stride, l.stride, // stride (h, w)
+                        l.dilation, l.dilation, // dilation (h, w)
+                        b);                 // output
+
+                }
+
+                gemm_cpu_INT8(0, 0, m, n, k, 1, a, k, b, n, 1, c, n);
+                // bit-count to float
+            }
+            //c += n*m;
+            //state.input += l.c*l.h*l.w;
+        }
+    }
+
+    if(l.batch_normalize){
+        forward_batchnorm_layer(l, state);
+    }
+    add_bias_INT8(l.output_INT8, l.biases_INT8, l.batch, l.n, out_h*out_w);
+
+    //activate_array(l.output, m*n*l.batch, l.activation);
+    if (l.activation == SWISH) activate_array_swish(l.output, l.outputs*l.batch, l.output_sigmoid, l.output);
+    else activate_array_cpu_custom_INT8(l.output_INT8, l.outputs*l.batch, l.activation);
+
+    if(l.binary || l.xnor) swap_binary(&l);
+    
+    covert_int2float(l.output, l.output_INT8);
+
+#else
     int out_h = convolutional_out_height(l);
     int out_w = convolutional_out_width(l);
     int i, j;
@@ -1077,9 +1296,19 @@ void forward_convolutional_layer(convolutional_layer l, network_state state)
     else activate_array_cpu_custom(l.output, l.outputs*l.batch, l.activation);
 
     if(l.binary || l.xnor) swap_binary(&l);
+#endif
 }
 
+void covert_int2float(float * dest, int * src)
+{   
+    int n;
+    int i;
+    n = sizeof(src)/sizeof(int);
 
+    for(i = 0; i < n; i++){
+        dest[i] = (float)src[i];
+    }
+}
 void backward_convolutional_layer(convolutional_layer l, network_state state)
 {
     int i, j;

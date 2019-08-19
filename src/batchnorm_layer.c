@@ -145,7 +145,12 @@ void forward_batchnorm_layer(layer l, network_state state)
         normalize_cpu(l.output, l.mean, l.variance, l.batch, l.out_c, l.out_h*l.out_w);
         copy_cpu(l.outputs*l.batch, l.output, 1, l.x_norm, 1);
     } else {
+#ifdef Quantize
+        normalize_cpu_INT8(l.output, l.rolling_mean_INT8, l.rolling_variance_INT8, l.batch, l.out_c, l.out_h*l.out_w);
+#else
         normalize_cpu(l.output, l.rolling_mean, l.rolling_variance, l.batch, l.out_c, l.out_h*l.out_w);
+#endif
+
     }
     scale_bias(l.output, l.scales, l.batch, l.out_c, l.out_h*l.out_w);
 }

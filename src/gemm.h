@@ -100,6 +100,12 @@ void gemm_cpu(int TA, int TB, int M, int N, int K, float ALPHA,
         float BETA,
         float *C, int ldc);
 
+void gemm_cpu_INT8(int TA, int TB, int M, int N, int K, float ALPHA,
+        int *A, int lda,
+        int *B, int ldb,
+        float BETA,
+        int *C, int ldc);
+
 #ifdef GPU
 void gemm_ongpu(int TA, int TB, int M, int N, int K, float ALPHA,
         float *A_gpu, int lda,

@@ -139,6 +139,19 @@ void normalize_cpu(float *x, float *mean, float *variance, int batch, int filter
     }
 }
 
+void normalize_cpu_INT8(int *x, int *mean, int *variance, int batch, int filters, int spatial)
+{
+    int b, f, i;
+    for(b = 0; b < batch; ++b){
+        for(f = 0; f < filters; ++f){
+            for(i = 0; i < spatial; ++i){
+                int index = b*filters*spatial + f*spatial + i;
+                x[index] = (x[index] - mean[f])/(sqrt(variance[f]));
+            }
+        }
+    }
+}
+
 void const_cpu(int N, float ALPHA, float *X, int INCX)
 {
     int i;
