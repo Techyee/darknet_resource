@@ -931,7 +931,6 @@ void forward_convolutional_layer(convolutional_layer l, network_state state)
 
     static int u = 0;
     u++;
-    printf("AM I IN HERE?\n");
     for(i = 0; i < l.batch; ++i)
     {
         for (j = 0; j < l.groups; ++j)
@@ -1066,7 +1065,6 @@ void forward_convolutional_layer(convolutional_layer l, network_state state)
                 float *im = state.input + (i*l.groups + j)*(l.c / l.groups)*l.h*l.w;
                 // Quantize input // Could be problem in here
                 int * im_INT8 = (int)im;                    
-
                 if (l.size == 1) {
                     b = im_INT8;
                 }

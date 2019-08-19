@@ -102,7 +102,7 @@ void im2col_cpu_ext_INT8(const int* data_im, const int channels,
     const int dilation_h, const int dilation_w,
     int* data_col)
 {
-//    printf("entered inside\n");
+    //printf("entered inside\n");
     const int output_h = (height + 2 * pad_h -
         (dilation_h * (kernel_h - 1) + 1)) / stride_h + 1;
     const int output_w = (width + 2 * pad_w -
