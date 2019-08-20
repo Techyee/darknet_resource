@@ -128,6 +128,7 @@ typedef struct size_params{
     int c;
     int index;
     int time_steps;
+    int quantized;
     network net;
 } size_params;
 
@@ -182,7 +183,11 @@ convolutional_layer parse_convolutional(list *options, size_params params, netwo
     int xnor = option_find_int_quiet(options, "xnor", 0);
     int use_bin_output = option_find_int_quiet(options, "bin_output", 0);
 
-    convolutional_layer layer = make_convolutional_layer(batch,1,h,w,c,n,groups,size,stride,dilation,padding,activation, batch_normalize, binary, xnor, params.net.adam, use_bin_output, params.index, share_layer);
+    int quantized = params.quantized;
+
+    //TODO: IF LAYER IS 1ST OR LAST, DISABLED QUANTIZATION
+
+    convolutional_layer layer = make_convolutional_layer(batch,1,h,w,c,n,groups,size,stride,dilation,padding,activation, batch_normalize, binary, xnor, params.net.adam, use_bin_output, params.index, share_layer, quantized);
     layer.flipped = option_find_int_quiet(options, "flipped", 0);
     layer.dot = option_find_float_quiet(options, "dot", 0);
 
@@ -773,6 +778,23 @@ void parse_net_options(list *options, network *net)
     char *policy_s = option_find_str(options, "policy", "constant");
     net->policy = get_policy(policy_s);
     net->burn_in = option_find_int_quiet(options, "burn_in", 0);
+    char * a = option_find_str(options, "input_calibration", 0);
+
+    if(a) {
+        int len = strlen(a);
+        int n = 1;
+        int i ;
+        for (i =0; i < len; ++i){
+            if( a[i] == ',') ++n;
+        }
+        net->input_calibration_size = n;
+        net->input_calibration = (float *)calloc(n, sizeof(float));
+        for (i =0; i < n; ++i){
+            float coef =atof(a);
+            net->input_calibration[i] = coef;
+            a = strchr(a,',') + 1;
+        }
+    }
 #ifdef CUDNN_HALF
     if (net->gpu_index >= 0) {
         int compute_capability = get_gpu_compute_capability(net->gpu_index);
@@ -842,17 +864,20 @@ int is_network(section *s)
 
 network parse_network_cfg(char *filename)
 {
-    return parse_network_cfg_custom(filename, 0, 0);
+    return parse_network_cfg_custom(filename, 0, 0, 0);
 }
 
-network parse_network_cfg_custom(char *filename, int batch, int time_steps)
+network parse_network_cfg_custom(char *filename, int batch, int time_steps, int quantized)
 {
     list *sections = read_cfg(filename);
     node *n = sections->front;
     if(!n) error("Config file has no sections");
     network net = make_network(sections->size - 1);
+    net.quantized = quantized;
+    net.do_input_calibration = 0;
     net.gpu_index = gpu_index;
     size_params params;
+    params.quantized = quantized;
 
     section *s = (section *)n->val;
     list *options = s->options;

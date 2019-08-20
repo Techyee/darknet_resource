@@ -201,6 +201,7 @@ struct layer {
     ACTIVATION activation;
     COST_TYPE cost_type;
     void(*forward)   (struct layer, struct network_state);
+    void(*forward_quantized) (struct layer, struct netowkr_state);
     void(*backward)  (struct layer, struct network_state);
     void(*update)    (struct layer, int, float, float, float);
     void(*forward_gpu)   (struct layer, struct network_state);
@@ -332,12 +333,19 @@ struct layer {
 
     float *biases;
     float *bias_updates;
+    int *biases_quant;
 
     float *scales;
     float *scale_updates;
 
     float *weights;
     float *weight_updates;
+    int * weights_int8;
+
+    // Quantization
+    float weights_quant_multipler;
+    float input_quant_multipler;
+    float output_multipler;
 
     float scale_x_y;
     float iou_normalizer;
@@ -360,6 +368,7 @@ struct layer {
     float *col_image;
     float * delta;
     float * output;
+    int * output_int8;
     float * output_sigmoid;
     int delta_pinned;
     int output_pinned;
@@ -575,6 +584,13 @@ typedef enum {
 
 // network.h
 typedef struct network {
+
+    int input_calibration_size;
+    float *input_calibration;
+    int do_input_calibration;
+    int quantized;
+    
+    
     int t_idx; 
     int n;
     int batch;
@@ -680,6 +696,7 @@ typedef struct network_state {
     float *workspace_cpu;
     int train;
     int index;
+    int * input_int8;
     network net;
 } network_state;
 
@@ -859,7 +876,7 @@ LIB_API float *network_predict_image_letterbox(network *net, image im);
 LIB_API float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, float thresh_calc_avg_iou, const float iou_thresh, const int map_points, int letter_box, network *existing_net);
 LIB_API void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, int ngpus, int clear, int dont_show, int calc_map, int mjpeg_port, int show_imgs);
 LIB_API void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filename, float thresh,
-    float hier_thresh, int dont_show, int ext_output, int save_labels, char *outfile, int letter_box);
+    float hier_thresh, int dont_show, int ext_output, int save_labels, char *outfile, int letter_box, int quantized);
 LIB_API int network_width(network *net);
 LIB_API int network_height(network *net);
 LIB_API void optimize_picture(network *net, image orig, int max_layer, float scale, float rate, float thresh, int norm);

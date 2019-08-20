@@ -56,7 +56,7 @@ void forward_network_gpu(network net, network_state state)
     int *res_arr;
     double _time;
     double time;
-
+    
     res_arr = test_extern_arr;
     if(net.t_idx == 2){
         res_arr = test_extern_arr2;
@@ -71,7 +71,11 @@ void forward_network_gpu(network net, network_state state)
 #ifdef SRC_SWITCH       
         time  = get_time_point();
         if (res_arr[i] == 0){
-            l.forward(l,state);
+            if (l.tpye == CONVOLUTIONAL && net.quantized == 1){
+                l.forward_quantized(l, state);
+            }else{
+                l.forward(l,state);
+            }
         }
         else{
             l.forward_gpu(l, state);

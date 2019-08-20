@@ -37,6 +37,150 @@
 #include "upsample_layer.h"
 #include "parser.h"
 
+#define W_MAX_VAL (256/2 - 1) 
+#define R_MULT (32)
+
+int * get_distribution(float *arr_ptr, int arr_size, int number_of_ranges, float start_range)
+{
+    //const int number_of_ranges = 32;
+    //const float start_range = 1.F / 65536;
+    int *count = calloc(number_of_ranges, sizeof(int));
+    float min_val = 10000, max_val = 0;
+
+    int i, j;
+    for (i = 0; i < arr_size; ++i) {
+        float w = arr_ptr[i];
+
+        float cur_range = start_range;
+        for (j = 0; j < number_of_ranges; ++j) {
+            if (fabs(cur_range) <= w && w < fabs(cur_range * 2))
+                count[j]++;// , printf("found \n");
+            cur_range *= 2;
+            //printf("%f, ", w);
+        }
+    }
+
+    return count;
+}
+
+float get_multiplier(float *arr_ptr, int arr_size, int bits_length)
+{
+    const int number_of_ranges = 32;
+    const float start_range = 1.F / 65536;
+
+    int i, j;
+    int *count = get_distribution(arr_ptr, arr_size, number_of_ranges, start_range);
+
+    int max_count_range = 0;
+    int index_max_count = 0;
+    for (j = 0; j < number_of_ranges; ++j) {
+        int counter = 0;
+        for (i = j; i < (j + bits_length) && i < number_of_ranges; ++i)
+        {
+            counter += count[i];
+            //counter += log2(count[i]);
+        }
+        if (max_count_range < counter) {
+            max_count_range = counter;
+            index_max_count = j;
+        }
+    }
+    //index_max_count = index_max_count + 2;    // optimal shift multipler
+    float multiplier = 1 / (start_range * powf(2., (float)index_max_count));
+    //printf(" max_count_range = %d, index_max_count = %d, multiplier = %g \n",
+    //    max_count_range, index_max_count, multiplier);
+    free(count);
+    return multiplier;
+}
+
+void quantinization_and_get_multipliers(network net)
+{
+
+    // ----------- entropy_calibration(,, 1.0 / 16, 4096); - FULL ----------------------
+    //float input_mult[] = { 256, 4,32,64,32,32,32,32,32,64,64,64,64,64,128,64,128,128,64,128,64,128,128 };    // divided 4 - full works
+    int counter = 0;
+    //const int input_mult_size = sizeof(input_mult) / sizeof(float);
+
+    int j;
+    for (j = 0; j < net.n; ++j) {
+        layer *l = &net.layers[j];
+
+        if (l->type == CONVOLUTIONAL) {
+            size_t const weights_size = l->size*l->size*l->c*l->n;
+            size_t const filter_size = l->size*l->size*l->c;
+
+            int i, k, fil;
+
+            // get optimal multipliers - for Weights
+            //float *weights_multiplier = (float *)calloc(l->n, sizeof(float));
+            //l->output_multipler = (float *)calloc(l->n, sizeof(float));
+
+            //float weights_multiplier_single = entropy_calibration(l->weights, weights_size, 1.0 / (2048), (2048));
+
+            //float weights_multiplier_single = entropy_calibration(l->weights, weights_size, 1.0 / 4096, 4096) / 2;
+            //if (j == 0) weights_multiplier_single = entropy_calibration(l->weights, weights_size, 1.0 / 2, 2048);
+
+            float old_weight_mult = get_multiplier(l->weights, weights_size, 8) / 4;    // good [2 - 8], best 4
+            float weights_multiplier_single = old_weight_mult;
+
+            //float old_weight_mult = get_multiplier(l->weights, weights_size, 7) / 4;
+            printf(" old_weight_mult = %f, weights_multiplier_single = %f \n\n", old_weight_mult, weights_multiplier_single);
+            //weights_multiplier_single = old_weight_mult;
+
+
+            l->weights_quant_multipler = weights_multiplier_single;
+
+
+
+            for (fil = 0; fil < l->n; ++fil) {
+                for (i = 0; i < filter_size; ++i) {
+                    float w = l->weights[fil*filter_size + i] * l->weights_quant_multipler;// [fil];
+                    l->weights_int8[fil*filter_size + i] = max_abs(w, W_MAX_VAL);
+                    //l->weights_int8[fil*filter_size + i] = max_abs(lround(w), W_MAX_VAL);
+                }
+            }
+
+
+            if (counter >= net.input_calibration_size) {
+                printf("\n Warning: input_calibration= in the cfg-file has less values %d than convolutional layers %d \n",
+                    net.input_calibration_size, counter);
+            }
+
+            //l->input_quant_multipler = 40;//(counter < net.input_calibration_size) ? net.input_calibration[counter] : 16;    // best 40
+            l->input_quant_multipler = (counter < net.input_calibration_size) ? net.input_calibration[counter] : 40;
+
+
+            ++counter;
+
+            //float current_input_mult = 40;//(counter < net.input_calibration_size) ? net.input_calibration[counter] : 16;
+            float current_input_mult = (counter < net.input_calibration_size) ? net.input_calibration[counter] : 40;
+
+
+            for (fil = 0; fil < l->n; ++fil) {
+                if (counter == 1) l->output_multipler = current_input_mult / (l->weights_quant_multipler * l->input_quant_multipler / R_MULT);
+                if (counter == 2) l->output_multipler = current_input_mult / (l->weights_quant_multipler * l->input_quant_multipler / R_MULT);
+                else if (counter >= 2) l->output_multipler = current_input_mult / (l->weights_quant_multipler * l->input_quant_multipler / R_MULT);
+            }
+
+
+            // quantinization Biases
+            for (fil = 0; fil < l->n; ++fil) {
+                // calculate optimal multipliers - for Biases
+                float biases_multipler = (l->output_multipler * l->weights_quant_multipler * l->input_quant_multipler / R_MULT);
+
+                l->biases_quant[fil] = l->biases[fil] * biases_multipler;
+            }
+
+            printf(" Multiplers: weights %g, input %g, output %g \n",
+                l->weights_quant_multipler, l->input_quant_multipler, l->output_multipler);
+        }
+        else {
+            printf(" Skip layer: %d \n", l->type);
+        }
+    }
+
+}
+
 load_args get_base_args(network *net)
 {
     load_args args = { 0 };
@@ -679,7 +823,7 @@ float *network_predict(network net, float *input)
 #ifdef GPU
     if(gpu_index >= 0)  return network_predict_gpu(net, input);
 #endif
-
+    
     network_state state;
     state.net = net;
     state.index = 0;
