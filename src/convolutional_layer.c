@@ -483,7 +483,7 @@ convolutional_layer make_convolutional_layer(int batch, int steps, int h, int w,
 
         l.biases = (float*)calloc(n, sizeof(float));
         l.bias_updates = (float*)calloc(n, sizeof(float));
-        l.biases_quant = (int*)calloc(n, sizeof(int8_t)); //NEED TO CHECK WHERE INT8 OR FLOAT
+        l.biases_quant = (float*)calloc(n, sizeof(float)); //NEED TO CHECK WHERE INT8 OR FLOAT
     }
 
     // float scale = 1./sqrt(size*size*c);

@@ -460,6 +460,8 @@ int main(int argc, char **argv)
         test_extern_arr[i] = 0;
         test_extern_arr2[i] = 0;
     }
+    test_extern_arr[16] =1;
+    test_extern_arr[23] =1;
     test_extern_arr[24] = 0;
     test_extern_arr[24] = 0;
     //src customization. last layer must return data to cpu.

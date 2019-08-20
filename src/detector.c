@@ -1347,16 +1347,18 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         //network_predict_image(&net, im); letterbox = 1;
         printf("%s: Predicted in %lf milli-seconds.\n", input, ((double)get_time_point() - time) / 1000);
         //printf("%s: Predicted in %f seconds.\n", input, (what_time_is_it_now()-time));
-
+        
         int nboxes = 0;
         detection *dets = get_network_boxes(&net, im.w, im.h, thresh, hier_thresh, 0, 1, &nboxes, letter_box);
+        
         if (nms) do_nms_sort(dets, nboxes, l.classes, nms);
         draw_detections_v3(im, dets, nboxes, thresh, names, alphabet, l.classes, ext_output);
         save_image(im, "predictions");
+        
         if (!dont_show) {
             show_image(im, "predictions");
         }
-
+        
         if (outfile) {
             if (json_buf) {
                 char *tmp = ", \n";
@@ -1368,7 +1370,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
             fwrite(json_buf, sizeof(char), strlen(json_buf), json_file);
             free(json_buf);
         }
-
+        
         // pseudo labeling concept - fast.ai
         if (save_labels)
         {
@@ -1388,7 +1390,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
                     }
                 }
                 if (class_id >= 0) {
-                    sprintf(buff, "%d %2.4f %2.4f %2.4f %2.4f\n", class_id, dets[i].bbox.x, dets[i].bbox.y, dets[i].bbox.w, dets[i].bbox.h);
+                    //sprintf(buff, "%d %2.4f %2.4f %2.4f %2.4f\n", class_id, dets[i].bbox.x, dets[i].bbox.y, dets[i].bbox.w, dets[i].bbox.h);
                     fwrite(buff, sizeof(char), strlen(buff), fw);
                 }
             }
@@ -1398,7 +1400,6 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         free_detections(dets, nboxes);
         free_image(im);
         free_image(sized);
-
         if (!dont_show) {
             wait_until_press_key_cv();
             destroy_all_windows_cv();

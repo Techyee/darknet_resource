@@ -40,6 +40,7 @@
 #define W_MAX_VAL (256/2 - 1) 
 #define R_MULT (32)
 
+
 int * get_distribution(float *arr_ptr, int arr_size, int number_of_ranges, float start_range)
 {
     //const int number_of_ranges = 32;
@@ -59,7 +60,6 @@ int * get_distribution(float *arr_ptr, int arr_size, int number_of_ranges, float
             //printf("%f, ", w);
         }
     }
-
     return count;
 }
 
@@ -69,6 +69,7 @@ float get_multiplier(float *arr_ptr, int arr_size, int bits_length)
     const float start_range = 1.F / 65536;
 
     int i, j;
+    
     int *count = get_distribution(arr_ptr, arr_size, number_of_ranges, start_range);
 
     int max_count_range = 0;
@@ -104,7 +105,6 @@ void quantinization_and_get_multipliers(network net)
     int j;
     for (j = 0; j < net.n; ++j) {
         layer *l = &net.layers[j];
-
         if (l->type == CONVOLUTIONAL) {
             size_t const weights_size = l->size*l->size*l->c*l->n;
             size_t const filter_size = l->size*l->size*l->c;
@@ -119,10 +119,8 @@ void quantinization_and_get_multipliers(network net)
 
             //float weights_multiplier_single = entropy_calibration(l->weights, weights_size, 1.0 / 4096, 4096) / 2;
             //if (j == 0) weights_multiplier_single = entropy_calibration(l->weights, weights_size, 1.0 / 2, 2048);
-
-            float old_weight_mult = get_multiplier(l->weights, weights_size, 8) / 4;    // good [2 - 8], best 4
+            float old_weight_mult = get_multiplier(l->weights, l->nweights, 8) / 4;    // good [2 - 8], best 4
             float weights_multiplier_single = old_weight_mult;
-
             //float old_weight_mult = get_multiplier(l->weights, weights_size, 7) / 4;
             printf(" old_weight_mult = %f, weights_multiplier_single = %f \n\n", old_weight_mult, weights_multiplier_single);
             //weights_multiplier_single = old_weight_mult;
@@ -155,7 +153,6 @@ void quantinization_and_get_multipliers(network net)
             //float current_input_mult = 40;//(counter < net.input_calibration_size) ? net.input_calibration[counter] : 16;
             float current_input_mult = (counter < net.input_calibration_size) ? net.input_calibration[counter] : 40;
 
-
             for (fil = 0; fil < l->n; ++fil) {
                 if (counter == 1) l->output_multipler = current_input_mult / (l->weights_quant_multipler * l->input_quant_multipler / R_MULT);
                 if (counter == 2) l->output_multipler = current_input_mult / (l->weights_quant_multipler * l->input_quant_multipler / R_MULT);
@@ -175,7 +172,7 @@ void quantinization_and_get_multipliers(network net)
                 l->weights_quant_multipler, l->input_quant_multipler, l->output_multipler);
         }
         else {
-            printf(" Skip layer: %d \n", l->type);
+            printf(" Skip layer: %s \n", get_layer_string(l->type));
         }
     }
 
