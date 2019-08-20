@@ -201,7 +201,7 @@ struct layer {
     ACTIVATION activation;
     COST_TYPE cost_type;
     void(*forward)   (struct layer, struct network_state);
-    void(*forward_quantized) (struct layer, struct netowkr_state);
+    void(*forward_quantized) (struct layer, struct network_state);
     void(*backward)  (struct layer, struct network_state);
     void(*update)    (struct layer, int, float, float, float);
     void(*forward_gpu)   (struct layer, struct network_state);

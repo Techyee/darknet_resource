@@ -24,7 +24,7 @@
 #define PUT_IN_REGISTER register
 #endif
 
-
+#define R_MULT (32)
 void gemm_nn_int8_int16(int M, int N, int K, int8_t ALPHA,
     int8_t *A, int lda,
     int8_t *B, int ldb,

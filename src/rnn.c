@@ -234,7 +234,7 @@ void test_char_rnn(char *cfgfile, char *weightfile, int num, char *seed, float t
     char *base = basecfg(cfgfile);
     fprintf(stderr, "%s\n", base);
 
-    network net = parse_network_cfg_custom(cfgfile, 1, 1);  // batch=1, time_steps=1
+    network net = parse_network_cfg_custom(cfgfile, 1, 1, 0);  // batch=1, time_steps=1
     if(weightfile){
         load_weights(&net, weightfile);
     }

@@ -42,7 +42,7 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
 
         cuda_set_device(gpus[0]);
         printf(" Prepare additional network for mAP calculation...\n");
-        net_map = parse_network_cfg_custom(cfgfile, 1, 1);
+        net_map = parse_network_cfg_custom(cfgfile, 1, 1, 0);
         const int net_classes = net_map.layers[net_map.n - 1].classes;
 
         int k;  // free memory unnecessary arrays
@@ -440,7 +440,7 @@ void validate_detector(char *datacfg, char *cfgfile, char *weightfile, char *out
     int *map = 0;
     if (mapf) map = read_map(mapf);
 
-    network net = parse_network_cfg_custom(cfgfile, 1, 1);    // set batch=1
+    network net = parse_network_cfg_custom(cfgfile, 1, 1, 0);    // set batch=1
     if (weightfile) {
         load_weights(&net, weightfile);
     }
@@ -569,7 +569,7 @@ void validate_detector(char *datacfg, char *cfgfile, char *weightfile, char *out
 
 void validate_detector_recall(char *datacfg, char *cfgfile, char *weightfile)
 {
-    network net = parse_network_cfg_custom(cfgfile, 1, 1);    // set batch=1
+    network net = parse_network_cfg_custom(cfgfile, 1, 1, 0);    // set batch=1
     if (weightfile) {
         load_weights(&net, weightfile);
     }
@@ -686,7 +686,7 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
         free_network_recurrent_state(*existing_net);
     }
     else {
-        net = parse_network_cfg_custom(cfgfile, 1, 1);    // set batch=1
+        net = parse_network_cfg_custom(cfgfile, 1, 1, 0);    // set batch=1
         if (weightfile) {
             load_weights(&net, weightfile);
         }
@@ -1417,7 +1417,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
     }
 
     // free memory
-    free_ptrs((void**)names, net.layers[net.n - 1].classes;
+    free_ptrs((void**)names, net.layers[net.n - 1].classes);
     free_list_contents_kvp(options);
     free_list(options);
 

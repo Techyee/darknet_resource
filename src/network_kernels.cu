@@ -71,7 +71,7 @@ void forward_network_gpu(network net, network_state state)
 #ifdef SRC_SWITCH       
         time  = get_time_point();
         if (res_arr[i] == 0){
-            if (l.tpye == CONVOLUTIONAL && net.quantized == 1){
+            if (l.type == CONVOLUTIONAL && net.quantized == 1){
                 l.forward_quantized(l, state);
             }else{
                 l.forward(l,state);

@@ -144,7 +144,7 @@ void deep_dive(int argc, char **argv)
     char **names = get_labels_custom(name_list, &names_size); //get_labels(name_list);
 
     image **alphabet = load_alphabet();
-    network net = parse_network_cfg_custom(cfgfile, 1, 1); // set batch=1
+    network net = parse_network_cfg_custom(cfgfile, 1, 1, 0); // set batch=1
     network net2;
 
     printf("copying network info...\n");
