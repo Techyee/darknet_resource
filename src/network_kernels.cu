@@ -502,6 +502,7 @@ float *get_network_output_layer_gpu(network net, int i)
     layer l = net.layers[i];
     if(l.type != REGION){
         if(test_extern_arr[i] == 1){//from gpu
+            printf("pulled from gpu.\n");
             cuda_pull_array(l.output_gpu, l.output, l.outputs*l.batch);
         }
     }
@@ -514,13 +515,15 @@ float *get_network_output_gpu(network net)
 {
     int i;
     for(i = net.n-1; i > 0; --i) if(net.layers[i].type != COST) break;
+    printf("target layer i is %d.\n",i);
     return get_network_output_layer_gpu(net, i);
 }
 
 float *network_predict_gpu(network net, float *input)
 {
     int* res_arr; // change the scope of memory according to resource allocation.
-    double _time_cp;
+    double _time_cp; //gpu_memcpy_timer.
+
     double _time = get_time_point();
     if (net.gpu_index != cuda_get_device())
         cuda_set_device(net.gpu_index);
@@ -543,7 +546,7 @@ float *network_predict_gpu(network net, float *input)
     }
     else{//first network runs on gpu.
         state.input = net.input_state_gpu;
-        _time_cp = get_time_point();
+        _time_cp = get_time_point();//init timer.
         memcpy(net.input_pinned_cpu, input, size * sizeof(float));
         cuda_push_array(state.input, net.input_pinned_cpu, size);
         printf("end of memcpy+cuda_push, time is  %8.5f millisec\n",((double)get_time_point()-_time_cp)/1000);

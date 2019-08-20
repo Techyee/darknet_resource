@@ -451,15 +451,64 @@ int main(int argc, char **argv)
     test_extern_arr2 = (int*)malloc(sizeof(int)*25);
     int j;
     int i;
-    int thr_id;
-    int status;
+    int k;
+    //load device alloc config from csv file.
+    int temp_idx;
+    char str_temp[1024];
+    char *p;
+    int cnt;
+    int alloc_idx[25];
 
-    //initialize meta_params for per-layer source alloc.
+    //open file and load cfg.
+    FILE *pFile = NULL;
+    cnt = 0;
+    pFile = fopen("test.csv", "r");
+    if(pFile !=NULL)
+    {
+        fgets(str_temp,1024,pFile);
+        p = strtok(str_temp, ",");
+        while (p != NULL){
+            alloc_idx[cnt]=atoi(p);
+            cnt++;
+            p=strtok(NULL,",");
+        }
+    }
+    fclose(pFile);
+    test_extern_arr = alloc_idx;
+    for(cnt=0;cnt<24;cnt++){
+        printf("csv reading test : %d\n",test_extern_arr[cnt]);
+    }
+
+    //DEPRICATED CODE::initialize meta_params for per-layer source alloc.
+    /*
     //cpu = 0, gpu = 1. default test: all gpu.
     for(i=0;i<24;i++){
-        test_extern_arr[i] = 0;
+        test_extern_arr[i] = 1;
         test_extern_arr2[i] = 0;
     }
+    for(k=0;k<20;k++){
+        test_extern_arr[k] = 0;
+    }
+    //CONV on GPU.
+    
+    test_extern_arr[0] = 1;
+    test_extern_arr[2] = 1;
+    test_extern_arr[4] = 1;
+    test_extern_arr[6] = 1;
+    test_extern_arr[8] = 1;
+    test_extern_arr[10] = 1; 
+    test_extern_arr[12] = 1; 
+    test_extern_arr[13] = 1;
+    test_extern_arr[14] = 1;
+    test_extern_arr[15] = 1;
+    test_extern_arr[18] = 1;
+    test_extern_arr[21] = 1;
+    test_extern_arr[22] = 1;
+    */
+    for (i=0;i<24;i++){
+        test_extern_arr2[i]=0;
+    }
+
     test_extern_arr[24] = 0;
     test_extern_arr[24] = 0;
     //src customization. last layer must return data to cpu.
