@@ -95,6 +95,17 @@ void im2col_cpu_ext(const float* data_im, const int channels,
     }
 }
 
+int8_t im2col_get_pixel_int8(int8_t *im, int height, int width, int channels,
+    int row, int col, int channel, int pad)
+{
+    row -= pad;
+    col -= pad;
+
+    if (row < 0 || col < 0 ||
+        row >= height || col >= width) return 0;
+    return im[col + width*(row + height*channel)];
+}
+
 void im2col_cpu_int8(int8_t* data_im,
     int channels, int height, int width,
     int ksize, int stride, int pad, int8_t* data_col)

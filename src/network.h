@@ -104,6 +104,7 @@ void backward_network_gpu(network net, network_state state);
 void update_network_gpu(network net);
 #endif
 
+void quantinization_and_get_multipliers(network net);
 float get_current_seq_subdivisions(network net);
 int get_sequence_value(network net);
 float get_current_rate(network net);

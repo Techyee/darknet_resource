@@ -1292,7 +1292,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
     calculate_binary_weights(net);
     
     if (quantized){
-        quantization_and_get_mulitpliers(net);
+        quantinization_and_get_multipliers(net);
     }
 
     if (net.layers[net.n - 1].classes != names_size) {

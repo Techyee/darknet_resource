@@ -25,6 +25,13 @@
 #endif
 
 #define R_MULT (32)
+
+int max_abs(int src, int max_val)
+{
+    if (abs(src) > abs(max_val)) src = (src > 0) ? max_val : -max_val;
+    return src;
+}
+
 void gemm_nn_int8_int16(int M, int N, int K, int8_t ALPHA,
     int8_t *A, int lda,
     int8_t *B, int ldb,
