@@ -331,13 +331,19 @@ struct layer {
     float *binary_weights;
 
     float *biases;
+    float *biases_quant;
     float *bias_updates;
+
+    int quantized;
 
     float *scales;
     float *scale_updates;
 
     float *weights;
+    int8_t * weights_int8;
     float *weight_updates;
+    float weights_quant_multipler;
+    float input_quant_multipler;
 
     float scale_x_y;
     float iou_normalizer;
@@ -360,6 +366,8 @@ struct layer {
     float *col_image;
     float * delta;
     float * output;
+    float output_multipler;
+    int8_t * output_int8;
     float * output_sigmoid;
     int delta_pinned;
     int output_pinned;
@@ -575,9 +583,12 @@ typedef enum {
 
 // network.h
 typedef struct network {
+    int quantized;
     int t_idx; 
     int n;
     int batch;
+    float *input_calibration;
+    int input_calibration_size;
     uint64_t *seen;
     int *t;
     float epoch;
@@ -650,6 +661,7 @@ typedef struct network {
     int index;
     float *cost;
     float clip;
+    int do_input_calibration;
 
 #ifdef GPU
     //float *input_gpu;

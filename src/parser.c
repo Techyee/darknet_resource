@@ -121,6 +121,7 @@ void parse_data(char *data, float *a, int n)
 }
 
 typedef struct size_params{
+    int quantized;
     int batch;
     int inputs;
     int h;
@@ -182,7 +183,8 @@ convolutional_layer parse_convolutional(list *options, size_params params, netwo
     int xnor = option_find_int_quiet(options, "xnor", 0);
     int use_bin_output = option_find_int_quiet(options, "bin_output", 0);
 
-    convolutional_layer layer = make_convolutional_layer(batch,1,h,w,c,n,groups,size,stride,dilation,padding,activation, batch_normalize, binary, xnor, params.net.adam, use_bin_output, params.index, share_layer);
+    int quantized = params.quantized;
+    convolutional_layer layer = make_convolutional_layer(batch,1,h,w,c,n,groups,size,stride,dilation,padding,activation, batch_normalize, binary, xnor, params.net.adam, use_bin_output, params.index, share_layer, quantized);
     layer.flipped = option_find_int_quiet(options, "flipped", 0);
     layer.dot = option_find_float_quiet(options, "dot", 0);
 
@@ -743,6 +745,22 @@ void parse_net_options(list *options, network *net)
     net->batch *= net->time_steps;
     net->subdivisions = subdivs;
 
+    char *a = option_find_str(options, "input_calibration", 0);
+    if (a) {
+        int len = strlen(a);
+        int n = 1;
+        int i;
+        for (i = 0; i < len; ++i) {
+            if (a[i] == ',') ++n;
+        }
+        net->input_calibration_size = n;
+        net->input_calibration = (float *)calloc(n, sizeof(float));
+        for (i = 0; i < n; ++i) {
+            float coef = atof(a);
+            net->input_calibration[i] = coef;
+            a = strchr(a, ',') + 1;
+        }
+    }
     net->adam = option_find_int_quiet(options, "adam", 0);
     if(net->adam){
         net->B1 = option_find_float(options, "B1", .9);
@@ -847,12 +865,21 @@ network parse_network_cfg(char *filename)
 
 network parse_network_cfg_custom(char *filename, int batch, int time_steps)
 {
+    int quantized = 0;
+    if(batch == 11){
+        quantized = 1;
+        batch = 1;
+    }
+
     list *sections = read_cfg(filename);
     node *n = sections->front;
     if(!n) error("Config file has no sections");
     network net = make_network(sections->size - 1);
+    net.quantized = quantized;
+    net.do_input_calibration = 0;
     net.gpu_index = gpu_index;
     size_params params;
+    params.quantized = quantized;
 
     section *s = (section *)n->val;
     list *options = s->options;
@@ -886,6 +913,14 @@ network parse_network_cfg_custom(char *filename, int batch, int time_steps)
         layer l = { (LAYER_TYPE)0 };
         LAYER_TYPE lt = string_to_layer_type(s->type);
         if(lt == CONVOLUTIONAL){
+            node * tmp = n->next;
+            if(tmp) tmp = tmp->next;
+            if(tmp){
+                if (string_to_layer_type(((section *)tmp->val)->type) == YOLO) {
+                    params.quantized = 0;    // mAP = 53.60%
+                    //printf("\n\n i = %d \n\n", count);
+                }
+            }
             l = parse_convolutional(options, params, net);
         }else if(lt == LOCAL){
             l = parse_local(options, params);

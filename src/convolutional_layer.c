@@ -332,13 +332,13 @@ void cudnn_convolutional_setup(layer *l, int cudnn_preference)
 #endif
 #endif
 
-convolutional_layer make_convolutional_layer(int batch, int steps, int h, int w, int c, int n, int groups, int size, int stride, int dilation, int padding, ACTIVATION activation, int batch_normalize, int binary, int xnor, int adam, int use_bin_output, int index, convolutional_layer *share_layer)
+convolutional_layer make_convolutional_layer(int batch, int steps, int h, int w, int c, int n, int groups, int size, int stride, int dilation, int padding, ACTIVATION activation, int batch_normalize, int binary, int xnor, int adam, int use_bin_output, int index, convolutional_layer *share_layer, int quantized)
 {
     int total_batch = batch*steps;
     int i;
     convolutional_layer l = { (LAYER_TYPE)0 };
     l.type = CONVOLUTIONAL;
-
+    l.quantized = quantized;
     if (xnor) groups = 1;   // disable groups for XNOR-net
     if (groups < 1) groups = 1;
 
@@ -371,9 +371,11 @@ convolutional_layer make_convolutional_layer(int batch, int steps, int h, int w,
     }
     else {
         l.weights = (float*)calloc(l.nweights, sizeof(float));
+        l.weights_int8 = calloc(c*n*size*size, sizeof(int8_t));
         l.weight_updates = (float*)calloc(l.nweights, sizeof(float));
 
         l.biases = (float*)calloc(n, sizeof(float));
+        l.biases_quant = calloc(n, sizeof(float));
         l.bias_updates = (float*)calloc(n, sizeof(float));
     }
 
@@ -390,6 +392,7 @@ convolutional_layer make_convolutional_layer(int batch, int steps, int h, int w,
     l.activation = activation;
 
     l.output = (float*)calloc(total_batch*l.outputs, sizeof(float));
+    l.output_int8 = calloc(l.batch*l.outputs, sizeof(int8_t));
     l.delta  = (float*)calloc(total_batch*l.outputs, sizeof(float));
 
     l.forward = forward_convolutional_layer;

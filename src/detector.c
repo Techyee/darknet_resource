@@ -1270,7 +1270,7 @@ void calc_anchors(char *datacfg, int num_of_clusters, int width, int height, int
 
 
 void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filename, float thresh,
-    float hier_thresh, int dont_show, int ext_output, int save_labels, char *outfile, int letter_box)
+    float hier_thresh, int dont_show, int ext_output, int save_labels, char *outfile, int letter_box, int quantized)
 {
 
     int iter;
@@ -1278,9 +1278,13 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
     char *name_list = option_find_str(options, "names", "data/names.list");
     int names_size = 0;
     char **names = get_labels_custom(name_list, &names_size); //get_labels(name_list);
-
+    network net;
     image **alphabet = load_alphabet();
-    network net = parse_network_cfg_custom(cfgfile, 1, 1); // set batch=1
+    if(quantized){
+        net = parse_network_cfg_custom(cfgfile, 11, 1);
+    }else{
+        net = parse_network_cfg_custom(cfgfile, 1, 1); // set batch=1
+    }
     if (weightfile) {
         load_weights(&net, weightfile);
     }
@@ -1293,6 +1297,11 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         if (net.layers[net.n - 1].classes > names_size) getchar();
     }
     srand(2222222);
+    if (quantized) {
+        printf("\n\n Quantinization! \n\n");
+        quantinization_and_get_multipliers(net);
+    }
+
     char buff[256];
     char *input = buff;
     char *json_buf = NULL;
