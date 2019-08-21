@@ -150,7 +150,7 @@ void quantinization_and_get_multipliers(network net)
                     l->weights_int8[fil*filter_size + i] = max_abs(w, W_MAX_VAL);
                     //l->weights_int8[fil*filter_size + i] = max_abs(lround(w), W_MAX_VAL);
                     printf("Original weights : %f\n",l->weights[fil*filter_size + i]);
-                    printf("Quantized weights : %f\n",l->weights_int8[fil*filter_size + i]);
+                    printf("Quantized weights : %d\n",l->weights_int8[fil*filter_size + i]);
                 }
             }
 
@@ -189,7 +189,7 @@ void quantinization_and_get_multipliers(network net)
                 l->weights_quant_multipler, l->input_quant_multipler, l->output_multipler);
         }
         else {
-            printf(" Skip layer: %d \n", get_layer_stirng(l->type));
+            printf(" Skip layer: %d \n", get_layer_string(l->type));
         }
     }
 
