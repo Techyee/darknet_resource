@@ -23,6 +23,14 @@
 void forward_xnor_layer(layer l, network_state state);
 #endif
 
+
+#define W_MAX_VAL (256/2 - 1)    // 7-bit (1-bit sign)
+#define I_MAX_VAL (256/2 - 1)    // 7-bit (1-bit sign)
+#define R_MAX_VAL (256*256/2 - 1)    // 31-bit (1-bit sign)
+
+
+#define R_MULT (32)    // 4 - 32
+
 void swap_binary(convolutional_layer *l)
 {
     float *swap = l->weights;
@@ -396,6 +404,7 @@ convolutional_layer make_convolutional_layer(int batch, int steps, int h, int w,
     l.delta  = (float*)calloc(total_batch*l.outputs, sizeof(float));
 
     l.forward = forward_convolutional_layer;
+    l.forward_quant = forward_convolutional_layer_quant;
     l.backward = backward_convolutional_layer;
     l.update = update_convolutional_layer;
     if(binary){
@@ -887,6 +896,110 @@ size_t binary_transpose_align_input(int k, int n, float *b, char **t_bit_input, 
     return t_intput_size;
 }
 
+void forward_convolutional_layer_quant(layer l, network_state state)
+{
+    int out_h = (l.h + 2 * l.pad - l.size) / l.stride + 1;    // output_height=input_height for stride=1 and pad=1
+    int out_w = (l.w + 2 * l.pad - l.size) / l.stride + 1;    // output_width=input_width for stride=1 and pad=1
+    int i, f, j;
+    int const out_size = out_h*out_w;
+    size_t const weights_size = l.size*l.size*l.c*l.n;
+
+    // fill zero (ALPHA)
+    //for (i = 0; i < l.outputs; ++i) l.output[i] = 0;
+
+    // l.n - number of filters on this layer
+    // l.c - channels of input-array
+    // l.h - height of input-array
+    // l.w - width of input-array
+    // l.size - width and height of filters (the same size for all filters)
+
+
+    //draw_distribution(l.weights, weights_size, "weights");
+    //draw_distribution(state.input, l.inputs, "input");
+
+    //typedef int32_t conv_t;    // l.output
+    typedef int16_t conv_t;    // l.output
+    conv_t *output_q = calloc(l.outputs, sizeof(conv_t));
+
+
+    state.input_int8 = (int *)calloc(l.inputs, sizeof(int));
+    int z;
+    for (z = 0; z < l.inputs; ++z) {
+        //int16_t src = lround(state.input[k] * net.layers[0].input_quant_multipler);
+        int16_t src = state.input[z] * l.input_quant_multipler;
+        state.input_int8[z] = max_abs(src, I_MAX_VAL);
+    }
+
+    ////////////////////////////////////
+    // cudnnConvolutionBiasActivationForward()
+    // y = act ( alpha1 * conv(x) + alpha2 * z + bias )
+    // int8 = activation( float * conv(int8) + float * int8 + float )
+    // int8 = activation( conv(input_int8) + bias_float ) // X_INT8x4 or X_INT8
+    // https://docs.nvidia.com/deeplearning/sdk/cudnn-developer-guide/index.html#cudnnConvolutionBiasActivationForward
+    ///////////////////////////////////
+
+
+    // 1. Convolution !!!
+    int fil;
+
+    // cuDNN: y = conv(x)
+    int m = l.n;
+    int k = l.size*l.size*l.c;
+    int n = out_h*out_w;
+    int8_t *a = l.weights_int8;
+    int8_t *b = (int8_t *)state.workspace_cpu;
+    conv_t *c = output_q;    // int16_t
+
+    // convolution as GEMM (as part of BLAS)
+    //for (i = 0; i < l.batch; ++i) {
+    im2col_cpu_int8(state.input_int8, l.c, l.h, l.w, l.size, l.stride, l.pad, b);    // here
+    //gemm_nn_int8_int16(m, n, k, 1, a, k, b, n, c, n);    // single-thread gemm
+
+    int t;    // multi-thread gemm
+    #pragma omp parallel for
+    for (t = 0; t < m; ++t) {
+        gemm_nn_int8_int16(1, n, k, 1, a + t*k, k, b, n, c + t*n, n);
+        //gemm_nn_int8_int16_conv16(1, n, k, 1, a + t*k, k, b, n, c + t*n, n);
+        //gemm_nn_int8_int32(1, n, k, 1, a + t*k, k, b, n, c + t*n, n); // conv_t should be int32_t
+    }
+    //}
+
+    free(state.input_int8);
+
+    float ALPHA1 = R_MULT / (l.input_quant_multipler * l.weights_quant_multipler);
+
+    // cuDNN: y = alpha1 * conv(x)
+    for (i = 0; i < l.outputs; ++i) {
+        l.output[i] = output_q[i] * ALPHA1;    // cuDNN: alpha1
+    }
+
+    //for (fil = 0; fil < l.n; ++fil) {
+    //    for (j = 0; j < out_size; ++j) {
+    //        l.output[fil*out_size + j] = l.output[fil*out_size + j] * ALPHA1;
+    //    }
+    //}
+
+    // cuDNN: y = alpha1 * conv(x) + bias
+    for (fil = 0; fil < l.n; ++fil) {
+        for (j = 0; j < out_size; ++j) {
+            l.output[fil*out_size + j] += l.biases[fil];
+        }
+    }
+
+    //draw_distribution(l.output, l.outputs, "output");
+
+
+    // cuDNN: y = act ( alpha1 * conv(x) + bias )
+    // bias is always FLOAT
+    if (l.activation == LEAKY) {
+        for (i = 0; i < l.n*out_size; ++i) {
+            l.output[i] = (l.output[i]>0) ? l.output[i] : l.output[i] / 10; //leaky_activate(l.output[i]);
+        }
+    }
+
+
+    free(output_q);
+}
 
 void forward_convolutional_layer(convolutional_layer l, network_state state)
 {

@@ -201,6 +201,7 @@ struct layer {
     ACTIVATION activation;
     COST_TYPE cost_type;
     void(*forward)   (struct layer, struct network_state);
+    void(*forward_quant) (struct layer, struct network_state);
     void(*backward)  (struct layer, struct network_state);
     void(*update)    (struct layer, int, float, float, float);
     void(*forward_gpu)   (struct layer, struct network_state);
@@ -690,6 +691,7 @@ typedef struct network_state {
     float *delta;
     float *workspace;
     float *workspace_cpu;
+    int8_t *input_int8;
     int train;
     int index;
     network net;

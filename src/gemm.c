@@ -24,6 +24,37 @@
 #define PUT_IN_REGISTER register
 #endif
 
+#define W_MAX_VAL (256/2 - 1)    // 7-bit (1-bit sign)
+#define I_MAX_VAL (256/2 - 1)    // 7-bit (1-bit sign)
+#define R_MAX_VAL (256*256/2 - 1)    // 31-bit (1-bit sign)
+
+
+#define R_MULT (32)    // 4 - 32
+
+void gemm_nn_int8_int16(int M, int N, int K, int8_t ALPHA,
+    int8_t *A, int lda,
+    int8_t *B, int ldb,
+    int16_t *C, int ldc)
+{
+    int32_t *c_tmp = calloc(N, sizeof(int32_t));
+    int i, j, k;
+    for (i = 0; i < M; ++i) {
+        for (k = 0; k < K; ++k) {
+            register int16_t A_PART = ALPHA*A[i*lda + k];
+            //#pragma simd parallel for
+            for (j = 0; j < N; ++j) {
+                c_tmp[j] += A_PART*B[k*ldb + j];
+                //C[i*ldc + j] += max_abs(A_PART*B[k*ldb + j] / (R_MULT), (256 * 128 - 1));
+            }
+        }
+        for (j = 0; j < N; ++j) {
+            C[i*ldc + j] += max_abs(c_tmp[j] / (R_MULT), (256 * 128 - 1));
+            c_tmp[j] = 0;
+        }
+    }
+    free(c_tmp);
+}
+
 void gemm_bin(int M, int N, int K, float ALPHA,
         char  *A, int lda,
         float *B, int ldb,
