@@ -136,7 +136,7 @@ extern "C" void forward_maxpool_layer_gpu(maxpool_layer layer, network_state sta
         size_t n = h*w*c*layer.batch;
 
         forward_maxpool_depth_layer_kernel << <cuda_gridsize(n), BLOCK, 0, get_cuda_stream() >> >(
-            n, layer.w, layer.h, layer.c, layer.out_c, layer.batch, state.input, layer.output_gpu, layer.indexes_gpu);
+            n, layer.w, layer.h, layer.c, layer.out_c, layer.batch, state.input, layer.output, layer.indexes_gpu);
         CHECK_CUDA(cudaPeekAtLastError());
 
         return;
