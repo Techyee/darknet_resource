@@ -333,14 +333,14 @@ struct layer {
 
     float *biases;
     float *bias_updates;
-    int *biases_quant;
+    float *biases_quant;
 
     float *scales;
     float *scale_updates;
 
     float *weights;
     float *weight_updates;
-    int * weights_int8;
+    int8_t * weights_int8;
 
     // Quantization
     float weights_quant_multipler;
@@ -368,7 +368,7 @@ struct layer {
     float *col_image;
     float * delta;
     float * output;
-    int * output_int8;
+    int8_t * output_int8;
     float * output_sigmoid;
     int delta_pinned;
     int output_pinned;

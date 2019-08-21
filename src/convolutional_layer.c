@@ -479,7 +479,7 @@ convolutional_layer make_convolutional_layer(int batch, int steps, int h, int w,
     else {
         l.weights = (float*)calloc(l.nweights, sizeof(float));
         l.weight_updates = (float*)calloc(l.nweights, sizeof(float));
-        l.weights_int8 = (int*)calloc(l.nweights, sizeof(int8_t));
+        l.weights_int8 = (int8_t*)calloc(l.nweights, sizeof(int8_t));
 
         l.biases = (float*)calloc(n, sizeof(float));
         l.bias_updates = (float*)calloc(n, sizeof(float));
@@ -499,7 +499,7 @@ convolutional_layer make_convolutional_layer(int batch, int steps, int h, int w,
     l.activation = activation;
 
     l.output = (float*)calloc(total_batch*l.outputs, sizeof(float));
-    l.output_int8 = (int*)calloc(total_batch*l.outputs, sizeof(int8_t));
+    l.output_int8 = (int8_t*)calloc(total_batch*l.outputs, sizeof(int8_t));
     
     l.delta  = (float*)calloc(total_batch*l.outputs, sizeof(float));
 
