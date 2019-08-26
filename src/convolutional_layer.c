@@ -968,6 +968,7 @@ void forward_convolutional_layer_quant(layer l, network_state state)
 
     float ALPHA1 = R_MULT / (l.input_quant_multipler * l.weights_quant_multipler);
 
+    // dequantized
     // cuDNN: y = alpha1 * conv(x)
     for (i = 0; i < l.outputs; ++i) {
         l.output[i] = output_q[i] * ALPHA1;    // cuDNN: alpha1
@@ -979,6 +980,7 @@ void forward_convolutional_layer_quant(layer l, network_state state)
     //    }
     //}
 
+    //adding biases 
     // cuDNN: y = alpha1 * conv(x) + bias
     for (fil = 0; fil < l.n; ++fil) {
         for (j = 0; j < out_size; ++j) {
@@ -986,8 +988,12 @@ void forward_convolutional_layer_quant(layer l, network_state state)
         }
     }
 
+    //batch normalization 
     //draw_distribution(l.output, l.outputs, "output");
-
+    if(l.batch_normalize){
+        forward_batchnorm_layer(l, state);
+    }
+    
 
     // cuDNN: y = act ( alpha1 * conv(x) + bias )
     // bias is always FLOAT
