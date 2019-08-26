@@ -118,6 +118,7 @@ void quantinization_and_get_multipliers(network net)
         layer *l = &net.layers[j];
 
         if (l->type == CONVOLUTIONAL) {
+            printf("Quantize %dth %s layer\n", j, get_layer_string(l->type));
             size_t const weights_size = l->size*l->size*l->c*l->n;
             size_t const filter_size = l->size*l->size*l->c;
 
@@ -136,7 +137,7 @@ void quantinization_and_get_multipliers(network net)
             float weights_multiplier_single = old_weight_mult;
 
             //float old_weight_mult = get_multiplier(l->weights, weights_size, 7) / 4;
-            printf(" old_weight_mult = %f, weights_multiplier_single = %f \n\n", old_weight_mult, weights_multiplier_single);
+            //printf(" old_weight_mult = %f, weights_multiplier_single = %f \n\n", old_weight_mult, weights_multiplier_single);
             //weights_multiplier_single = old_weight_mult;
 
 
@@ -185,11 +186,11 @@ void quantinization_and_get_multipliers(network net)
                 l->biases_quant[fil] = l->biases[fil] * biases_multipler;
             }
 
-            printf(" Multiplers: weights %g, input %g, output %g \n",
-                l->weights_quant_multipler, l->input_quant_multipler, l->output_multipler);
+            //printf(" Multiplers: weights %g, input %g, output %g \n",
+            //    l->weights_quant_multipler, l->input_quant_multipler, l->output_multipler);
         }
         else {
-            printf(" Skip layer: %d \n", get_layer_string(l->type));
+            printf(" Skip layer: %s \n", get_layer_string(l->type));
         }
     }
 
@@ -198,7 +199,7 @@ void quantinization_and_get_multipliers(network net)
     // init weights and cuDNN for quantized IINT8x4
     //init_gpu_int8x4(net);
 #endif //GPU
-
+    printf("Quantization finished!\n");
 }
 
 
