@@ -199,7 +199,7 @@ void quantinization_and_get_multipliers(network net)
     // init weights and cuDNN for quantized IINT8x4
     //init_gpu_int8x4(net);
 #endif //GPU
-    printf("Quantization finished!\n");
+    printf("\nQuantization finished!\n\n");
 }
 
 
