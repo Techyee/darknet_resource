@@ -82,7 +82,7 @@ void forward_network_gpu(network net, network_state state)
             l.forward_gpu(l, state);
             CHECK_CUDA(cudaDeviceSynchronize());
         }
-        printf("layer: %3d type: %15s - Predicted in %8.5f milli-seconds.\n", i, get_layer_string(l.type), ((double)get_time_point() -time) / 1000);
+       // printf("layer: %3d type: %15s - Predicted in %8.5f milli-seconds.\n", i, get_layer_string(l.type), ((double)get_time_point() -time) / 1000);
 #endif
 
 #ifdef EXE_TIME
@@ -101,20 +101,20 @@ void forward_network_gpu(network net, network_state state)
                 state.input = l.output;    
             }
             else{//next is running on GPU
-                printf("[network_kernels.cu line 78] push_cuda_overhead :");
+                //printf("[network_kernels.cu line 78] push_cuda_overhead :");
                 _time = get_time_point();
                 cuda_push_array(l.output_gpu, l.output, l.batch*l.outputs);
                 state.input = l.output_gpu;
-                printf(" %8.5f milli-seconds,sizeof output :%d \n",((double)get_time_point() - _time)/1000,l.batch*l.outputs);
+                //printf(" %8.5f milli-seconds,sizeof output :%d \n",((double)get_time_point() - _time)/1000,l.batch*l.outputs);
             }
         }
         else{//currently running on GPU
             if(res_arr[i+1] == 0){//next is running on CPU
-                printf("[network_kernels.cu line 86] pull_cuda_overhead :");
+                //printf("[network_kernels.cu line 86] pull_cuda_overhead :");
                 _time = get_time_point();
                 cuda_pull_array(l.output_gpu, l.output, l.batch*l.outputs);
                 state.input = l.output;
-                printf(" %8.5f milli-seconds, sizeof output:%d \n",((double)get_time_point() - _time)/1000,l.batch*l.outputs);
+                //printf(" %8.5f milli-seconds, sizeof output:%d \n",((double)get_time_point() - _time)/1000,l.batch*l.outputs);
             }
             else{//next is running on GPU
                 state.input = l.output_gpu;
@@ -512,7 +512,7 @@ float *get_network_output_layer_gpu(network net, int i)
         }
     }
 
-    printf("end of get_net_output, time is %8.5f millisec\n",((double)get_time_point() - _time)/1000);
+    //printf("end of get_net_output, time is %8.5f millisec\n",((double)get_time_point() - _time)/1000);
     return l.output;
 }
 
@@ -520,7 +520,7 @@ float *get_network_output_gpu(network net)
 {
     int i;
     for(i = net.n-1; i > 0; --i) if(net.layers[i].type != COST) break;
-    printf("target layer i is %d.\n",i);
+    //printf("target layer i is %d.\n",i);
     return get_network_output_layer_gpu(net, i);
 }
 
@@ -559,7 +559,7 @@ float *network_predict_gpu(network net, float *input)
     state.truth = 0;
     state.train = 0;
     state.delta = 0;
-    printf("end of net_pred_gpu, time is %8.5f millisec\n",((double)get_time_point()-_time)/1000);
+    //printf("end of net_pred_gpu, time is %8.5f millisec\n",((double)get_time_point()-_time)/1000);
     forward_network_gpu(net, state);
     float *out = get_network_output_gpu(net);
     //cuda_free(state.input);   // will be freed in the free_network()

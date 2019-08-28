@@ -704,6 +704,8 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
 
     list *plist = get_paths(valid_images);
     char **paths = (char **)list_to_array(plist);
+    
+    printf("path: %s\n", paths[0]);
 
     char **paths_dif = NULL;
     if (difficult_valid_images) {

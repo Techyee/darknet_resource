@@ -916,7 +916,9 @@ void forward_convolutional_layer_quant(layer l, network_state state)
 
     //draw_distribution(l.weights, weights_size, "weights");
     //draw_distribution(state.input, l.inputs, "input");
-    printf(" l.index = %d - INT8 \n", l.index);
+    
+    //printf(" l.index = %d - INT8 \n", l.index);
+    
     //typedef int32_t conv_t;    // l.output
     typedef int16_t conv_t;    // l.output
     conv_t *output_q = calloc(l.outputs, sizeof(conv_t));
@@ -1039,7 +1041,7 @@ void forward_convolutional_layer(convolutional_layer l, network_state state)
             float *a = l.weights +j*l.nweights / l.groups;
             float *b = state.workspace_cpu;
             float *c = l.output +(i*l.groups + j)*n*m;
-            printf("this is workspace_cpu:%f\n",b[0]);
+            //printf("this is workspace_cpu:%f\n",b[0]);
 
             //gemm(0,0,m,n,k,1,a,k,b,n,1,c,n);
             //gemm_nn_custom(m, n, k, 1, a, k, b, n, c, n);
@@ -1162,7 +1164,7 @@ void forward_convolutional_layer(convolutional_layer l, network_state state)
 
             }
             else {
-                printf(" l.index = %d - FP32 \n", l.index);
+                //printf(" l.index = %d - FP32 \n", l.index);
                 float *im = state.input + (i*l.groups + j)*(l.c / l.groups)*l.h*l.w;
                 if (l.size == 1) {
                     b = im;
