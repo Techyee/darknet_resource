@@ -277,7 +277,7 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
             //network net_combined = combine_train_valid_networks(net, net_map);
 
             iter_map = i;
-            mean_average_precision = validate_detector_map(datacfg, cfgfile, weightfile, 0.25, 0.5, 0, net.letter_box, &net_map);// &net_combined);
+            mean_average_precision = validate_detector_map(datacfg, cfgfile, weightfile, 0.25, 0.5, 0, net.letter_box, &net_map, 0);// &net_combined);
             printf("\n mean_average_precision (mAP@0.5) = %f \n", mean_average_precision);
             if (mean_average_precision > best_map) {
                 best_map = mean_average_precision;
@@ -662,7 +662,7 @@ int detections_comparator(const void *pa, const void *pb)
     return 0;
 }
 
-float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, float thresh_calc_avg_iou, const float iou_thresh, const int map_points, int letter_box, network *existing_net)
+float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, float thresh_calc_avg_iou, const float iou_thresh, const int map_points, int letter_box, network *existing_net, int quantized)
 {
     int j;
     list *options = read_data_cfg(datacfg);
@@ -700,6 +700,12 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
         getchar();
     }
     srand(time(0));
+
+    if(quantized){
+        printf("\n\n Quantinization! \n\n");
+        quantinization_and_get_multipliers(net);
+    }
+
     printf("\n calculation mAP (mean average precision)...\n");
 
     list *plist = get_paths(valid_images);
@@ -722,7 +728,10 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
     int t;
 
     const float thresh = .005;
-    const float nms = .45;
+    float nms = .45;
+    if(quantized){
+        nms = 0.2;
+    }
     //const float iou_thresh = 0.5;
 
     int nthreads = 4;
@@ -782,7 +791,7 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
             char *id = basecfg(path);
             float *X = val_resized[t].data;
             network_predict(net, X);
-
+            
             int nboxes = 0;
             float hier_thresh = 0;
             detection *dets;
@@ -1315,7 +1324,10 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         fwrite(tmp, sizeof(char), strlen(tmp), json_file);
     }
     int j;
-    float nms = .45;    // 0.4F
+    float nms = .45;
+    if(quantized){
+        nms = 0.2;
+    }
     while (1) {
         
         if (filename) {
@@ -1505,7 +1517,7 @@ void run_detector(int argc, char **argv)
     else if (0 == strcmp(argv[2], "train")) train_detector(datacfg, cfg, weights, gpus, ngpus, clear, dont_show, calc_map, mjpeg_port, show_imgs);
     else if (0 == strcmp(argv[2], "valid")) validate_detector(datacfg, cfg, weights, outfile);
     else if (0 == strcmp(argv[2], "recall")) validate_detector_recall(datacfg, cfg, weights);
-    else if (0 == strcmp(argv[2], "map")) validate_detector_map(datacfg, cfg, weights, thresh, iou_thresh, map_points, letter_box, NULL);
+    else if (0 == strcmp(argv[2], "map")) validate_detector_map(datacfg, cfg, weights, thresh, iou_thresh, map_points, letter_box, NULL, quantized);
     else if (0 == strcmp(argv[2], "calc_anchors")) calc_anchors(datacfg, num_of_clusters, width, height, show);
     else if (0 == strcmp(argv[2], "demo")) {
         list *options = read_data_cfg(datacfg);
