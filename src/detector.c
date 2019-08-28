@@ -696,7 +696,7 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
             load_weights(&net, weightfile);
         }
         //set_batch_network(&net, 1);
-        fuse_conv_batchnorm(net);
+        //fuse_conv_batchnorm(net);
         calculate_binary_weights(net);
     }
     if (net.layers[net.n - 1].classes != names_size) {
