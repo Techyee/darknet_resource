@@ -1311,7 +1311,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
     }
 
     ////////
-    printf(" Initalized & load_weights: %10.3f\n\n", ((double)get_time_point() - time) / 1000);
+    printf(" Initalized & load_weights: %8.5f\n\n", ((double)get_time_point() - time) / 1000);
     ///////
 
   // Our approach should not use layer fusion  
@@ -1327,7 +1327,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         time = get_time_point();
         printf("\n\n Quantinization! \n\n");
         quantinization_and_get_multipliers(net);
-        printf(" Quantization: %10.f\n\n", ((double)get_time_point() - time)/ 1000);
+        printf(" Quantization: %8.5f\n\n", ((double)get_time_point() - time)/ 1000);
     }
 
     char buff[256];
@@ -1379,7 +1379,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         float *X = sized.data;
         
         ///////
-        printf(" Load images & resize: %10.f\n\n", ((double)get_time_point() - time)/ 1000);
+        printf(" Load images & resize: %8.5f\n\n", ((double)get_time_point() - time)/ 1000);
         ///////
 
         //time= what_time_is_it_now();
