@@ -932,7 +932,7 @@ void forward_convolutional_layer_quant(layer l, network_state state)
         int16_t src = state.input[z] * l.input_quant_multipler;
         state.input_int8[z] = max_abs(src, I_MAX_VAL);
     }
-    printf(" Layer %d, Input quantization: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    //printf(" Layer %d, Input quantization: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
 
     ////////////////////////////////////
     // cudnnConvolutionBiasActivationForward()
@@ -970,7 +970,7 @@ void forward_convolutional_layer_quant(layer l, network_state state)
 
     free(state.input_int8);
     
-    printf(" Layer %d, Convolution: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    //printf(" Layer %d, Convolution: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
 
     time = get_time_point();
 
@@ -989,7 +989,7 @@ void forward_convolutional_layer_quant(layer l, network_state state)
     //}
 
     ///
-    printf(" Layer %d, Dequantization: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    //printf(" Layer %d, Dequantization: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
     ///
 
     time = get_time_point();
@@ -999,7 +999,7 @@ void forward_convolutional_layer_quant(layer l, network_state state)
         forward_batchnorm_layer(l, state);
     }
 
-    printf(" Layer %d, Batchnorm: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    //printf(" Layer %d, Batchnorm: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
 
     time = get_time_point();
     //adding biases 
@@ -1009,7 +1009,7 @@ void forward_convolutional_layer_quant(layer l, network_state state)
             l.output[fil*out_size + j] += l.biases[fil];
         }
     }
-    printf(" Layer %d, Adding biases: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    //printf(" Layer %d, Adding biases: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
 
     time = get_time_point();
     // cuDNN: y = act ( alpha1 * conv(x) + bias )
@@ -1020,7 +1020,7 @@ void forward_convolutional_layer_quant(layer l, network_state state)
         }
     }
 
-    printf(" Layer %d, Activation: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    //printf(" Layer %d, Activation: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
 
     free(output_q);
 }
@@ -1029,7 +1029,7 @@ void forward_convolutional_layer(convolutional_layer l, network_state state)
 {
 
     double time = get_time_point();
-    printf(" Layer %d, Input quantization: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    //printf(" Layer %d, Input quantization: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
 
     time = get_time_point();
     int out_h = convolutional_out_height(l);
@@ -1211,20 +1211,20 @@ void forward_convolutional_layer(convolutional_layer l, network_state state)
             //state.input += l.c*l.h*l.w;
         }
     }
-    printf(" Layer %d, Convolution: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    //printf(" Layer %d, Convolution: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
     time = get_time_point();
     if(l.batch_normalize){
         forward_batchnorm_layer(l, state);
     }
-    printf(" Layer %d, Batchnorm: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    //printf(" Layer %d, Batchnorm: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
     time = get_time_point();
     add_bias(l.output, l.biases, l.batch, l.n, out_h*out_w);
-    printf(" Layer %d, Adding biases: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    //printf(" Layer %d, Adding biases: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
     //activate_array(l.output, m*n*l.batch, l.activation);
     time = get_time_point();
     if (l.activation == SWISH) activate_array_swish(l.output, l.outputs*l.batch, l.output_sigmoid, l.output);
     else activate_array_cpu_custom(l.output, l.outputs*l.batch, l.activation);
-    printf(" Layer %d, Activation: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    //printf(" Layer %d, Activation: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
     if(l.binary || l.xnor) swap_binary(&l);
 }
 
