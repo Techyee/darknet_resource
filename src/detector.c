@@ -686,7 +686,12 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
         free_network_recurrent_state(*existing_net);
     }
     else {
-        net = parse_network_cfg_custom(cfgfile, 1, 1);    // set batch=1
+        if(quantized){
+            net = parse_network_cfg_custom(cfgfile, 11, 1);
+        }
+        else{
+            net = parse_network_cfg_custom(cfgfile, 11, 1);
+        }
         if (weightfile) {
             load_weights(&net, weightfile);
         }
