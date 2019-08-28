@@ -932,7 +932,7 @@ void forward_convolutional_layer_quant(layer l, network_state state)
         int16_t src = state.input[z] * l.input_quant_multipler;
         state.input_int8[z] = max_abs(src, I_MAX_VAL);
     }
-    //printf(" Layer %d, Input quantization: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    printf(" Layer %d, Input quantization: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
 
     ////////////////////////////////////
     // cudnnConvolutionBiasActivationForward()
