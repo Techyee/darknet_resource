@@ -690,7 +690,7 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
             net = parse_network_cfg_custom(cfgfile, 11, 1);
         }
         else{
-            net = parse_network_cfg_custom(cfgfile, 11, 1);
+            net = parse_network_cfg_custom(cfgfile, 1, 1);
         }
         if (weightfile) {
             load_weights(&net, weightfile);

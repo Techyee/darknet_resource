@@ -82,7 +82,7 @@ void forward_network_gpu(network net, network_state state)
             l.forward_gpu(l, state);
             CHECK_CUDA(cudaDeviceSynchronize());
         }
-        printf("layer: %3d type: %15s - Predicted in %8.5f milli-seconds.\n", i, get_layer_string(l.type), ((double)get_time_point() -time) / 1000);
+        //printf("layer: %3d type: %15s - Predicted in %8.5f milli-seconds.\n", i, get_layer_string(l.type), ((double)get_time_point() -time) / 1000);
 #endif
 
 #ifdef EXE_TIME
