@@ -1290,6 +1290,11 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
 {
 
     int iter;
+    
+    /////////
+    double time =  get_time_point();
+    /////////
+
     list *options = read_data_cfg(datacfg);
     char *name_list = option_find_str(options, "names", "data/names.list");
     int names_size = 0;
@@ -1304,6 +1309,11 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
     if (weightfile) {
         load_weights(&net, weightfile);
     }
+
+    ////////
+    printf(" Initalized & load_weights: %10.3f\n\n", ((double)get_time_point() - time) / 1000);
+    ///////
+
   // Our approach should not use layer fusion  
   // fuse_conv_batchnorm(net);
     calculate_binary_weights(net);
@@ -1314,8 +1324,10 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
     }
     srand(2222222);
     if (quantized) {
+        time = get_time_point();
         printf("\n\n Quantinization! \n\n");
         quantinization_and_get_multipliers(net);
+        printf(" Quantization: %10.f\n\n", ((double)get_time_point() - time)/ 1000);
     }
 
     char buff[256];
@@ -1349,6 +1361,11 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         }
         //image im;
         //image sized = load_image_resize(input, net.w, net.h, net.c, &im);
+        
+        //////
+        time = get_time_point();
+        //////
+
         image im = load_image(input, 0, 0, net.c);
         image sized;
         if(letter_box) sized = letterbox_image(im, net.w, net.h);
@@ -1360,6 +1377,10 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         //for(j = 0; j < l.w*l.h*l.n; ++j) probs[j] = (float*)calloc(l.classes, sizeof(float));
 
         float *X = sized.data;
+        
+        ///////
+        printf(" Load images & resize: %10.f\n\n", ((double)get_time_point() - time)/ 1000);
+        ///////
 
         //time= what_time_is_it_now();
         double time = get_time_point();

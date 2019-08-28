@@ -926,11 +926,13 @@ void forward_convolutional_layer_quant(layer l, network_state state)
 
     state.input_int8 = (int *)calloc(l.inputs, sizeof(int));
     int z;
+    double time = get_time_point();
     for (z = 0; z < l.inputs; ++z) {
         //int16_t src = lround(state.input[k] * net.layers[0].input_quant_multipler);
         int16_t src = state.input[z] * l.input_quant_multipler;
         state.input_int8[z] = max_abs(src, I_MAX_VAL);
     }
+    printf(" Layer %d, Input quantization: %10.f\n\n", l.index,((double)get_time_point() - time)/ 1000);
 
     ////////////////////////////////////
     // cudnnConvolutionBiasActivationForward()
@@ -940,7 +942,7 @@ void forward_convolutional_layer_quant(layer l, network_state state)
     // https://docs.nvidia.com/deeplearning/sdk/cudnn-developer-guide/index.html#cudnnConvolutionBiasActivationForward
     ///////////////////////////////////
 
-
+    time = get_time_point();
     // 1. Convolution !!!
     int fil;
 
@@ -967,6 +969,10 @@ void forward_convolutional_layer_quant(layer l, network_state state)
     //}
 
     free(state.input_int8);
+    
+    printf(" Layer %d, Convolution: %10.f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+
+    time = get_time_point();
 
     float ALPHA1 = R_MULT / (l.input_quant_multipler * l.weights_quant_multipler);
 
@@ -982,6 +988,11 @@ void forward_convolutional_layer_quant(layer l, network_state state)
     //    }
     //}
 
+    ///
+    printf(" Layer %d, Dequantization: %10.f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    ///
+
+    time = get_time_point();
     //adding biases 
     // cuDNN: y = alpha1 * conv(x) + bias
     for (fil = 0; fil < l.n; ++fil) {
@@ -989,14 +1000,18 @@ void forward_convolutional_layer_quant(layer l, network_state state)
             l.output[fil*out_size + j] += l.biases[fil];
         }
     }
+    printf(" Layer %d, Adding biases: %10.f\n\n", l.index,((double)get_time_point() - time)/ 1000);
 
+    time = get_time_point();
     //batch normalization 
     //draw_distribution(l.output, l.outputs, "output");
     if(l.batch_normalize){
         forward_batchnorm_layer(l, state);
     }
     
+    printf(" Layer %d, Batchnorm: %10.f\n\n", l.index,((double)get_time_point() - time)/ 1000);
 
+    time = get_time_point();
     // cuDNN: y = act ( alpha1 * conv(x) + bias )
     // bias is always FLOAT
     if (l.activation == LEAKY) {
@@ -1005,6 +1020,7 @@ void forward_convolutional_layer_quant(layer l, network_state state)
         }
     }
 
+    printf(" Layer %d, Activation: %10.f\n\n", l.index,((double)get_time_point() - time)/ 1000);
 
     free(output_q);
 }

@@ -62,7 +62,7 @@ void forward_network_gpu(network net, network_state state)
         res_arr = test_extern_arr2;
     }
     for(i = 0; i < net.n; ++i){
-//        printf("external integer test : %d\n",test_extern_arr[i]);
+//      printf("external integer test : %d\n",test_extern_arr[i]);
         state.index = i;
         layer l = net.layers[i];
         if(l.delta_gpu && state.train){
@@ -82,7 +82,7 @@ void forward_network_gpu(network net, network_state state)
             l.forward_gpu(l, state);
             CHECK_CUDA(cudaDeviceSynchronize());
         }
-       // printf("layer: %3d type: %15s - Predicted in %8.5f milli-seconds.\n", i, get_layer_string(l.type), ((double)get_time_point() -time) / 1000);
+        printf("layer: %3d type: %15s - Predicted in %8.5f milli-seconds.\n", i, get_layer_string(l.type), ((double)get_time_point() -time) / 1000);
 #endif
 
 #ifdef EXE_TIME
