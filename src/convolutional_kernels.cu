@@ -12,6 +12,30 @@
 #include "dark_cuda.h"
 
 
+__global__ void quantize_input(float *input, int8_t *output,float quant_multipler)
+{
+    int i = (blockIdx.x + blockIdx.y*gridDim.x) * blockDim.x + threadIdx.x
+    int16_t src = input[i] * quant_multipler;
+    int max_val = 256/2 - 1;
+    output[i] = (abs(src) > abs(max_val)) ? ((src)>0 ? max_val : -max_val): src
+}
+
+void quantize_on_gpu(float *input,int8_t *output, int input_size ,float quant_multipler)
+{
+    float *input_gpu;
+    float *output_gpu;
+    size_t size = sizeof(int8_t)*input_size;
+
+    //copy input from host to device 
+    input_gpu = cuda_make_array(input, input_size);
+    output_gpu = cuda_make_array_int8(0, input_size);
+    quantize_input<<<cuda_gridsize(input_size), BLOCK, 0, get_cuda_stream()>>>(input_gpu,output_gpu,quant_multipler);
+
+    // copy result from device to host
+    cudaError_t status = cudaMemcpyAsync(output, output_gpu, size, cudaMemcpyDeviceToHost, get_cuda_stream());
+    CHECK_CUDA(status);
+}
+
 __global__ void binarize_kernel(float *x, int n, float *binary)
 {
     int i = (blockIdx.x + blockIdx.y*gridDim.x) * blockDim.x + threadIdx.x;

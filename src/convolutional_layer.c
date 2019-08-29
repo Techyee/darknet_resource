@@ -922,17 +922,23 @@ void forward_convolutional_layer_quant(layer l, network_state state)
     //typedef int32_t conv_t;    // l.output
     typedef int16_t conv_t;    // l.output
     conv_t *output_q = calloc(l.outputs, sizeof(conv_t));
-
-
     state.input_int8 = (int *)calloc(l.inputs, sizeof(int));
     int z;
     double time = get_time_point();
+    
+    
+    // gpu version might not that good 
+    quantize_on_gpu(state.input,state.input_int8,l.inputs,l.input_quant_multipler);
+    printf(" Layer %d, Input quantization: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    
+    /*  *****************************************************************************
     for (z = 0; z < l.inputs; ++z) {
         //int16_t src = lround(state.input[k] * net.layers[0].input_quant_multipler);
         int16_t src = state.input[z] * l.input_quant_multipler;
         state.input_int8[z] = max_abs(src, I_MAX_VAL);
     }
     //printf(" Layer %d, Input quantization: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    */ 
 
     ////////////////////////////////////
     // cudnnConvolutionBiasActivationForward()
