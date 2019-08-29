@@ -27,8 +27,8 @@ void dequantize_on_gpu(int16_t * input, float *output, int input_size,float ALPH
     output_gpu = cuda_make_array(0, input_size);
     dequantize_output<<<cuda_gridsize(input_size), BLOCK, 0, get_cuda_stream()>>>(input,output,ALPHA1);
 
-    cudaError_t status = cudaMemcpyAsync(output, output_gpu, size,cudaMemcpyDeviceToHost, get_cuda_stream())
-    CHECK_CUDA(status)
+    cudaError_t status = cudaMemcpyAsync(output, output_gpu, size,cudaMemcpyDeviceToHost, get_cuda_stream());
+    CHECK_CUDA(status);
 }
 
 
