@@ -14,16 +14,16 @@
 
 __global__ void quantize_input(float *input, int8_t *output,float quant_multipler)
 {
-    int i = (blockIdx.x + blockIdx.y*gridDim.x) * blockDim.x + threadIdx.x
+    int i = (blockIdx.x + blockIdx.y*gridDim.x) * blockDim.x + threadIdx.x;
     int16_t src = input[i] * quant_multipler;
     int max_val = 256/2 - 1;
-    output[i] = (abs(src) > abs(max_val)) ? ((src)>0 ? max_val : -max_val): src
+    output[i] = (fabsf(src) > fabsf(max_val)) ? ((src > 0) ? max_val : -max_val): src;
 }
 
 void quantize_on_gpu(float *input,int8_t *output, int input_size ,float quant_multipler)
 {
     float *input_gpu;
-    float *output_gpu;
+    int8_t *output_gpu;
     size_t size = sizeof(int8_t)*input_size;
 
     //copy input from host to device 

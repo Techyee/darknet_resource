@@ -13,7 +13,7 @@ typedef layer convolutional_layer;
 extern "C" {
 #endif
 #ifdef GPU
-
+void quantize_on_gpu(float *input,int8_t *output, int input_size ,float quant_multipler);
 void forward_convolutional_layer_gpu(convolutional_layer layer, network_state state);
 void backward_convolutional_layer_gpu(convolutional_layer layer, network_state state);
 void update_convolutional_layer_gpu(convolutional_layer layer, int batch, float learning_rate, float momentum, float decay);
