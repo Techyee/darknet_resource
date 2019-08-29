@@ -7,6 +7,11 @@
 extern "C" {
 #endif
 
+void gemm_nn_int8_int16(int M, int N, int K, int8_t ALPHA,
+    int8_t *A, int lda,
+    int8_t *B, int ldb,
+    int16_t *C, int ldc);
+
 void convolution_2d(int w, int h, int ksize, int n, int c, int pad, int stride,
     float *weights, float *input, float *output, float *mean);
 

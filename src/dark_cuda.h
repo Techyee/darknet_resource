@@ -59,6 +59,7 @@ extern "C" {
     cublasHandle_t blas_handle();
     float *cuda_make_array(float *x, size_t n);
     int8_t *cuda_make_array_int8(int8_t *x, size_t n);
+    int16_t *cuda_make_array_int16(float *x, size_t n)
     int *cuda_make_int_array(size_t n);
 	int *cuda_make_int_array_new_api(int *x, size_t n);
     void cuda_push_array(float *x_gpu, float *x, size_t n);

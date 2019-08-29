@@ -21,6 +21,12 @@ void im2col_cpu_ext(const float* data_im, const int channels,
     const int dilation_h, const int dilation_w,
     float* data_col);
 
+int8_t im2col_get_pixel_int8(int8_t *im, int height, int width, int channels,
+    int row, int col, int channel, int pad);
+
+void im2col_cpu_int8(int8_t* data_im,
+    int channels, int height, int width,
+    int ksize, int stride, int pad, int8_t* data_col);
 #ifdef GPU
 
 void im2col_ongpu(float *im,

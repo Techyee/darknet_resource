@@ -980,13 +980,18 @@ void forward_convolutional_layer_quant(layer l, network_state state)
 
     time = get_time_point();
 
+
     float ALPHA1 = R_MULT / (l.input_quant_multipler * l.weights_quant_multipler);
 
+    //dequantized gpu version
+
+    dequantize_on_gpu(output_q,l.output,l.outputs,ALPHA1);
+    
     // dequantized
     // cuDNN: y = alpha1 * conv(x)
-    for (i = 0; i < l.outputs; ++i) {
-        l.output[i] = output_q[i] * ALPHA1;    // cuDNN: alpha1
-    }
+    //for (i = 0; i < l.outputs; ++i) {
+    //    l.output[i] = output_q[i] * ALPHA1;    // cuDNN: alpha1
+    //}
 
     //for (fil = 0; fil < l.n; ++fil) {
     //    for (j = 0; j < out_size; ++j) {
