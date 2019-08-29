@@ -735,7 +735,7 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
     const float thresh = .005;
     float nms = .45;
     if(quantized){
-        nms = 0.2;
+      //  nms = 0.2;
     }
     //const float iou_thresh = 0.5;
 
@@ -1343,7 +1343,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
     int j;
     float nms = .45;
     if(quantized){
-        nms = 0.2;
+       // nms = 0.2;
     }
     while (1) {
         
