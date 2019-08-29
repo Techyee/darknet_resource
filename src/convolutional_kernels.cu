@@ -11,6 +11,12 @@
 #include "utils.h"
 #include "dark_cuda.h"
 
+__global__ void dequantize_output(int16_t *input, float *output, float ALPHA1)
+{
+    int i = (blockIdx.x + blockIdx.y*gridDim.x) * blockDim.x + threadIdx.x;
+    output[i] = input[i] * ALPHA1;
+}
+
 void dequantize_on_gpu(int16_t * input, float *output, int input_size,float ALPHA1)
 {   
     int16_t *input_gpu; 
@@ -18,18 +24,14 @@ void dequantize_on_gpu(int16_t * input, float *output, int input_size,float ALPH
     size_t size = sizeof(float)*input_size;
 
     intput_gpu = cuda_make_array_int16(input, input_size);
-    output_gpu = cuda_make_array(0, input_size);\
-    dequantize_output<<<cuda_gridsize(input_size), BLOCK, 0, get_cuda_stream()>>>(input,output,ALPHA1)
+    output_gpu = cuda_make_array(0, input_size);
+    dequantize_output<<<cuda_gridsize(input_size), BLOCK, 0, get_cuda_stream()>>>(input,output,ALPHA1);
 
     cudaError_t status = cudaMemcpyAsync(output, output_gpu, size,cudaMemcpyDeviceToHost, get_cuda_stream())
     CHECK_CUDA(status)
 }
 
-__global__ void dequantize_output(int16_t *input, float *output, float ALPHA1)
-{
-    int i = (blockIdx.x + blockIdx.y*gridDim.x) * blockDim.x + threadIdx.x;
-    output[i] = input[i] * ALPHA1;
-}
+
 
 __global__ void quantize_input(float *input, int8_t *output,float quant_multipler)
 {
