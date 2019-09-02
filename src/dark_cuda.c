@@ -258,7 +258,7 @@ int8_t *cuda_make_array_int8(int8_t *x, size_t n)
     return x_gpu;
 }
 
-int16_t *cuda_make_array_int16(float *x, size_t n)
+int16_t *cuda_make_array_int16(int16_t *x, size_t n)
 {
     int16_t *x_gpu;
     size_t size = sizeof(int16_t)*n;

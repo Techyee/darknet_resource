@@ -928,17 +928,16 @@ void forward_convolutional_layer_quant(layer l, network_state state)
     
     
     // gpu version might not that good 
-    quantize_on_gpu(state.input,state.input_int8,l.inputs,l.input_quant_multipler);
-    printf(" Layer %d, Input quantization: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    //quantize_on_gpu(state.input,state.input_int8,l.inputs,l.input_quant_multipler);
+    //printf(" Layer %d, Input quantization: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
     
-    /*  *****************************************************************************
     for (z = 0; z < l.inputs; ++z) {
         //int16_t src = lround(state.input[k] * net.layers[0].input_quant_multipler);
         int16_t src = state.input[z] * l.input_quant_multipler;
         state.input_int8[z] = max_abs(src, I_MAX_VAL);
     }
     //printf(" Layer %d, Input quantization: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
-    */ 
+     
 
     ////////////////////////////////////
     // cudnnConvolutionBiasActivationForward()
@@ -964,9 +963,9 @@ void forward_convolutional_layer_quant(layer l, network_state state)
     //for (i = 0; i < l.batch; ++i) {
     im2col_cpu_int8(state.input_int8, l.c, l.h, l.w, l.size, l.stride, l.pad, b);    // here
     //gemm_nn_int8_int16(m, n, k, 1, a, k, b, n, c, n);    // single-thread gemm
-    printf(" Layer %d, im2col: %8.5f\n\n", l.index,((double)get_time_point() - time)/1000);
+    //printf(" Layer %d, im2col: %8.5f\n\n", l.index,((double)get_time_point() - time)/1000);
 
-    time = get_time_point();
+    //time = get_time_point();
     int t;    // multi-thread gemm
     #pragma omp parallel for
     for (t = 0; t < m; ++t) {
@@ -978,7 +977,7 @@ void forward_convolutional_layer_quant(layer l, network_state state)
 
     free(state.input_int8);
     
-    printf(" Layer %d, GEMM: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    //printf(" Layer %d, Convolution: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
 
     time = get_time_point();
 
@@ -987,13 +986,13 @@ void forward_convolutional_layer_quant(layer l, network_state state)
 
     //dequantized gpu version
 
-    dequantize_on_gpu(output_q,l.output,l.outputs,ALPHA1);
+    //dequantize_on_gpu(output_q,l.output,l.outputs,ALPHA1);
     
     // dequantized
     // cuDNN: y = alpha1 * conv(x)
-    //for (i = 0; i < l.outputs; ++i) {
-    //    l.output[i] = output_q[i] * ALPHA1;    // cuDNN: alpha1
-    //}
+    for (i = 0; i < l.outputs; ++i) {
+        l.output[i] = output_q[i] * ALPHA1;    // cuDNN: alpha1
+    }
 
     //for (fil = 0; fil < l.n; ++fil) {
     //    for (j = 0; j < out_size; ++j) {
@@ -1002,7 +1001,7 @@ void forward_convolutional_layer_quant(layer l, network_state state)
     //}
 
     ///
-    printf(" Layer %d, Dequantization: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    //printf(" Layer %d, Dequantization: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
     ///
 
     time = get_time_point();
@@ -1012,7 +1011,7 @@ void forward_convolutional_layer_quant(layer l, network_state state)
         forward_batchnorm_layer(l, state);
     }
 
-    printf(" Layer %d, Batchnorm: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    //printf(" Layer %d, Batchnorm: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
 
     time = get_time_point();
     //adding biases 
@@ -1022,7 +1021,7 @@ void forward_convolutional_layer_quant(layer l, network_state state)
             l.output[fil*out_size + j] += l.biases[fil];
         }
     }
-    printf(" Layer %d, Adding biases: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    //printf(" Layer %d, Adding biases: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
 
     time = get_time_point();
     // cuDNN: y = act ( alpha1 * conv(x) + bias )
@@ -1033,7 +1032,7 @@ void forward_convolutional_layer_quant(layer l, network_state state)
         }
     }
 
-    printf(" Layer %d, Activation: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    //printf(" Layer %d, Activation: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
 
     free(output_q);
 }
@@ -1042,7 +1041,7 @@ void forward_convolutional_layer(convolutional_layer l, network_state state)
 {
 
     double time = get_time_point();
-    printf(" Layer %d, Input quantization: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    //printf(" Layer %d, Input quantization: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
 
     time = get_time_point();
     int out_h = convolutional_out_height(l);
@@ -1216,8 +1215,8 @@ void forward_convolutional_layer(convolutional_layer l, network_state state)
                         b);                 // output
 
                 }
-                printf(" Layer %d, im2col: %8.5f\n\n", l.index,((double)get_time_point() -time)/ 1000);
-                time = get_time_point();
+//                printf(" Layer %d, im2col: %8.5f\n\n", l.index,((double)get_time_point() -time)/ 1000);
+//                time = get_time_point();
 
                 gemm(0, 0, m, n, k, 1, a, k, b, n, 1, c, n);
                 // bit-count to float
@@ -1226,22 +1225,22 @@ void forward_convolutional_layer(convolutional_layer l, network_state state)
             //state.input += l.c*l.h*l.w;
         }
     }
-    printf(" Layer %d, GEMM: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    //printf(" Layer %d, Convolution: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
     time = get_time_point();
-    printf(" Layer %d, Dequantization: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    //printf(" Layer %d, Dequantization: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
     time = get_time_point();
     if(l.batch_normalize){
         forward_batchnorm_layer(l, state);
     }
-    printf(" Layer %d, Batchnorm: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    //printf(" Layer %d, Batchnorm: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
     time = get_time_point();
     add_bias(l.output, l.biases, l.batch, l.n, out_h*out_w);
-    printf(" Layer %d, Adding biases: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    //printf(" Layer %d, Adding biases: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
     //activate_array(l.output, m*n*l.batch, l.activation);
     time = get_time_point();
     if (l.activation == SWISH) activate_array_swish(l.output, l.outputs*l.batch, l.output_sigmoid, l.output);
     else activate_array_cpu_custom(l.output, l.outputs*l.batch, l.activation);
-    printf(" Layer %d, Activation: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
+    //printf(" Layer %d, Activation: %8.5f\n\n", l.index,((double)get_time_point() - time)/ 1000);
     if(l.binary || l.xnor) swap_binary(&l);
 }
 
