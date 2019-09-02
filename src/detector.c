@@ -1286,7 +1286,7 @@ void calc_anchors(char *datacfg, int num_of_clusters, int width, int height, int
 
 
 void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filename, float thresh,
-    float hier_thresh, int dont_show, int ext_output, int save_labels, char *outfile, int letter_box, int quantized)
+    float hier_thresh, int dont_show, int ext_output, int save_labels, char *outfile, int letter_box, char *mode_cfg,int quantized)
 {
 
     int iter;
@@ -1330,6 +1330,29 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         printf(" Quantization: %8.5f\n\n", ((double)get_time_point() - time)/ 1000);
     }
 
+
+    test_extern_arr = (int *)calloc(1 ,sizeof(int)* net.n);
+
+    int temp_idx;
+    char str_temp[1024];
+    char *p;
+    int alloc_idx[25];
+    int i;
+
+    if(mode_cfg){
+        FILE *pFile = fopen(mode_cfg,"r");
+
+        fgets(str_temp,1024,pFile);
+        p = strtok(str_temp, ",");
+        for(i = 0; i < net.n; i++){
+            test_extern_arr[i] = atoi(p);
+            p = strtok(NULL,",");
+        }
+
+        fclose(pFile);
+    }
+    
+    
     char buff[256];
     char *input = buff;
     char *json_buf = NULL;
@@ -1477,6 +1500,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
 
 void run_detector(int argc, char **argv)
 {
+
     int dont_show = find_arg(argc, argv, "-dont_show");
     int show = find_arg(argc, argv, "-show");
     int letter_box = find_arg(argc, argv, "-letter_box");
@@ -1486,6 +1510,7 @@ void run_detector(int argc, char **argv)
     int show_imgs = find_arg(argc, argv, "-show_imgs");
     int mjpeg_port = find_int_arg(argc, argv, "-mjpeg_port", -1);
     int json_port = find_int_arg(argc, argv, "-json_port", -1);
+    char *mode_cfg = find_char_ag(argc, argv, "-mode_cfg", 0);
     char *out_filename = find_char_arg(argc, argv, "-out_filename", 0);
     char *outfile = find_char_arg(argc, argv, "-out", 0);
     char *prefix = find_char_arg(argc, argv, "-prefix", 0);
@@ -1539,7 +1564,7 @@ void run_detector(int argc, char **argv)
         if (strlen(weights) > 0)
             if (weights[strlen(weights) - 1] == 0x0d) weights[strlen(weights) - 1] = 0;
     char *filename = (argc > 6) ? argv[6] : 0;
-    if (0 == strcmp(argv[2], "test")) test_detector(datacfg, cfg, weights, filename, thresh, hier_thresh, dont_show, ext_output, save_labels, outfile, letter_box, quantized);
+    if (0 == strcmp(argv[2], "test")) test_detector(datacfg, cfg, weights, filename, thresh, hier_thresh, dont_show, ext_output, save_labels, outfile, letter_box, mode_cfg,quantized);
     else if (0 == strcmp(argv[2], "train")) train_detector(datacfg, cfg, weights, gpus, ngpus, clear, dont_show, calc_map, mjpeg_port, show_imgs);
     else if (0 == strcmp(argv[2], "valid")) validate_detector(datacfg, cfg, weights, outfile);
     else if (0 == strcmp(argv[2], "recall")) validate_detector_recall(datacfg, cfg, weights);
