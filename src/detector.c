@@ -530,7 +530,9 @@ void validate_detector(char *datacfg, char *cfgfile, char *weightfile, char *out
             char *path = paths[i + t - nthreads];
             char *id = basecfg(path);
             float *X = val_resized[t].data;
+            double timer = get_time_point();
             network_predict(net, X);
+            printf("Execution time per image: %8.5f", ((double)get_time_point() - timer )/1000);
             int w = val[t].w;
             int h = val[t].h;
             int nboxes = 0;
