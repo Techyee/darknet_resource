@@ -447,7 +447,6 @@ int main(int argc, char **argv)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
     _g_detector_params = (DetectorParams*)malloc(sizeof(DetectorParams));
-    /*
     test_extern_arr = (int*)malloc(sizeof(int)*25);
     test_extern_arr2 = (int*)malloc(sizeof(int)*25);
     int j;
@@ -481,6 +480,7 @@ int main(int argc, char **argv)
     }
 
     //DEPRICATED CODE::initialize meta_params for per-layer source alloc.
+    /*
     //cpu = 0, gpu = 1. default test: all gpu.
     for(i=0;i<24;i++){
         test_extern_arr[i] = 1;
@@ -504,7 +504,7 @@ int main(int argc, char **argv)
     test_extern_arr[18] = 1;
     test_extern_arr[21] = 1;
     test_extern_arr[22] = 1;
-
+    */
     for (i=0;i<24;i++){
         test_extern_arr2[i]=0;
     }
@@ -512,8 +512,6 @@ int main(int argc, char **argv)
     test_extern_arr[24] = 0;
     test_extern_arr[24] = 0;
     //src customization. last layer must return data to cpu.
-    */
-   int i;
     for (i = 0; i < argc; ++i) {
 		if (!argv[i]) continue;
 		strip_args(argv[i]);
@@ -556,7 +554,7 @@ int main(int argc, char **argv)
         float thresh = find_float_arg(argc, argv, "-thresh", .24);
 		int ext_output = find_arg(argc, argv, "-ext_output");
         char *filename = (argc > 4) ? argv[4]: 0;
-        test_detector("cfg/coco.data", argv[2], argv[3], filename, thresh, 0.5, 0, ext_output, 0, NULL, 0,0,0);
+        test_detector("cfg/coco.data", argv[2], argv[3], filename, thresh, 0.5, 0, ext_output, 0, NULL, 0, 0);
     } else if (0 == strcmp(argv[1], "cifar")){
         run_cifar(argc, argv);
     } else if (0 == strcmp(argv[1], "go")){
