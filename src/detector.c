@@ -1347,8 +1347,17 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
     if(quantized){
        // nms = 0.2;
     }
-    while (1) {
+
+    list *plist = get_path(filename);
+    char **paths = (char **)list_to_array(plist);
+
+    printf("path: %s\n", paths[0]);
+
+    int m = plist->size;
+    int i;
+    for (i =0; i< m; i++){
         
+        /*
         if (filename) {
             strncpy(input, filename, 256);
             if (strlen(input) > 0)
@@ -1361,13 +1370,15 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
             if (!input) break;
             strtok(input, "\n");
         }
+        */
+
         //image im;
         //image sized = load_image_resize(input, net.w, net.h, net.c, &im);
         
         //////
         time = get_time_point();
         //////
-
+        input = paths[i];
         image im = load_image(input, 0, 0, net.c);
         image sized;
         if(letter_box) sized = letterbox_image(im, net.w, net.h);
@@ -1504,6 +1515,8 @@ void run_detector(int argc, char **argv)
     int ext_output = find_arg(argc, argv, "-ext_output");
     int save_labels = find_arg(argc, argv, "-save_labels");
     int quantized = find_int_arg(argc, argv, "-quantized", 0);
+    char *filename = find_char_arg(argc, argv, "-filename", 0);
+    
     if (argc < 4) {
         fprintf(stderr, "usage: %s %s [train/test/valid/demo/map] [data] [cfg] [weights (optional)]\n", argv[0], argv[1]);
         return;
@@ -1540,7 +1553,7 @@ void run_detector(int argc, char **argv)
     if (weights)
         if (strlen(weights) > 0)
             if (weights[strlen(weights) - 1] == 0x0d) weights[strlen(weights) - 1] = 0;
-    char *filename = (argc > 6) ? argv[6] : 0;
+    //char *filename = (argc > 6) ? argv[6] : 0;
     if (0 == strcmp(argv[2], "test")) test_detector(datacfg, cfg, weights, filename, thresh, hier_thresh, dont_show, ext_output, save_labels, outfile, letter_box, quantized);
     else if (0 == strcmp(argv[2], "train")) train_detector(datacfg, cfg, weights, gpus, ngpus, clear, dont_show, calc_map, mjpeg_port, show_imgs);
     else if (0 == strcmp(argv[2], "valid")) validate_detector(datacfg, cfg, weights, outfile);
