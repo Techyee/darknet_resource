@@ -1556,10 +1556,10 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
     period.tv_nsec = ms_period*1000000;
 
     printf("///////// Period : %f //////////\n", ms_period);
-
+    err = clock_gettime(CLOCK_MONOTONIC, &release_time);
+    assert(err ==0);
     for (k =0; k< m; k++){
-        err = clock_gettime(CLOCK_MONOTONIC, &release_time);
-        assert(err == 0);
+        time = get_time_point();
         /*
         if (filename) {
             strncpy(input, filename, 256);
@@ -1596,10 +1596,10 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
 
         float *X = sized.data;
          
-        time = get_time_point();
+        //time = get_time_point();
         network_predict(net, X);
         //network_predict_image(&net, im); letterbox = 1;
-        printf("%s: Predicted in %lf milli-seconds.\n", input, ((double)get_time_point() - time) / 1000);
+        //printf("%s: Predicted in %lf milli-seconds.\n", input, ((double)get_time_point() - time) / 1000);
         //printf("%s: Predicted in %f seconds.\n", input, (what_time_is_it_now()-time));
 
         int nboxes = 0;
@@ -1662,7 +1662,7 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
         //for(iter=0;iter<25;iter++){
         //    test_extern_arr[iter] = 0;
         //}
-
+        printf("%s: Predicted in %lf milli-seconds.\n", input, ((double)get_time_point() - time) / 1000);
         timespec_add(&release_time, &period);
         clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &release_time, NULL);
     }
