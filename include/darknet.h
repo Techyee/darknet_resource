@@ -875,7 +875,7 @@ LIB_API void train_detector(char *datacfg, char *cfgfile, char *weightfile, int 
 LIB_API void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filename, float thresh,
     float hier_thresh, int dont_show, int ext_output, int save_labels, char *outfile, int letter_box,int quantized);
 LIB_API void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *filename, float thresh,
-    float hier_thresh, int dont_show, int ext_output, int save_labels, char *outfile, int letter_box, int quantized);
+    float hier_thresh, int dont_show, int ext_output, int save_labels, char *outfile, int letter_box, int quantized, float ms_period);
 LIB_API int network_width(network *net);
 LIB_API int network_height(network *net);
 LIB_API void optimize_picture(network *net, image orig, int max_layer, float scale, float rate, float thresh, int norm);

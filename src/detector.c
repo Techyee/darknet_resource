@@ -1487,7 +1487,7 @@ void timespec_add(struct timespec *release_time, struct timespec *period)
 }
 
 void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *filename, float thresh,
-    float hier_thresh, int dont_show, int ext_output, int save_labels, char *outfile, int letter_box, int quantized)
+    float hier_thresh, int dont_show, int ext_output, int save_labels, char *outfile, int letter_box, int quantized, float ms_period)
 {
 
     int iter;
@@ -1551,14 +1551,15 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
     struct timespec period, release_time;
     int err;
     
+    
     period.tv_sec = 0;
-    period.tv_nsec = 3000000000;
+    period.tv_nsec = ms_period*1000000;
 
-    err = clock_gettime(CLOCK_MONOTONIC, &release_time);
-    assert(err == 0);
+    printf("///////// Period : %f //////////\n", ms_period);
 
     for (k =0; k< m; k++){
-        
+        err = clock_gettime(CLOCK_MONOTONIC, &release_time);
+        assert(err == 0);
         /*
         if (filename) {
             strncpy(input, filename, 256);
@@ -1663,9 +1664,7 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
         //}
 
         timespec_add(&release_time, &period);
-        do{
-            err = clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &release_time, NULL);
-        }while( err != 0);
+        clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &release_time, NULL);
     }
 
 
@@ -1711,6 +1710,7 @@ void run_detector(int argc, char **argv)
     float thresh = find_float_arg(argc, argv, "-thresh", .25);    // 0.24
     float iou_thresh = find_float_arg(argc, argv, "-iou_thresh", .5);    // 0.5 for mAP
     float hier_thresh = find_float_arg(argc, argv, "-hier", .5);
+    float period = find_float_arg(argc, argv, "-period", 33);
     int cam_index = find_int_arg(argc, argv, "-c", 0);
     int frame_skip = find_int_arg(argc, argv, "-s", 0);
     int num_of_clusters = find_int_arg(argc, argv, "-num_of_clusters", 5);
@@ -1766,7 +1766,7 @@ void run_detector(int argc, char **argv)
     else if (0 == strcmp(argv[2], "recall")) validate_detector_recall(datacfg, cfg, weights);
     else if (0 == strcmp(argv[2], "map")) validate_detector_map(datacfg, cfg, weights, thresh, iou_thresh, map_points, letter_box, NULL, quantized);
     else if (0 == strcmp(argv[2], "calc_anchors")) calc_anchors(datacfg, num_of_clusters, width, height, show);
-    else if (0 == strcmp(argv[2], "periodic")) periodic_detector(datacfg, cfg, weights, filename, thresh, hier_thresh, dont_show, ext_output, save_labels, outfile, letter_box, quantized);
+    else if (0 == strcmp(argv[2], "periodic")) periodic_detector(datacfg, cfg, weights, filename, thresh, hier_thresh, dont_show, ext_output, save_labels, outfile, letter_box, quantized, period);
     else if (0 == strcmp(argv[2], "demo")) {
         list *options = read_data_cfg(datacfg);
         int classes = option_find_int(options, "classes", 20);
