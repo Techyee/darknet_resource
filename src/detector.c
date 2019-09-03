@@ -1292,11 +1292,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
 {
 
     int iter;
-    
-    /////////
-    double time =  get_time_point();
-    /////////
-
+    double time;
     list *options = read_data_cfg(datacfg);
     char *name_list = option_find_str(options, "names", "data/names.list");
     int names_size = 0;
@@ -1312,9 +1308,6 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         load_weights(&net, weightfile);
     }
 
-    ////////
-    printf(" Initalized & load_weights: %8.5f\n\n", ((double)get_time_point() - time) / 1000);
-    ///////
 
   // Our approach should not use layer fusion  
   // fuse_conv_batchnorm(net);
@@ -1347,15 +1340,15 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
     if(quantized){
        // nms = 0.2;
     }
-
-    list *plist = get_path(filename);
+    int k;
+    list *plist = get_paths(filename);
     char **paths = (char **)list_to_array(plist);
 
     printf("path: %s\n", paths[0]);
 
     int m = plist->size;
-    int i;
-    for (i =0; i< m; i++){
+    printf("m :%d\n", m);
+    for (k =0; k< m; k++){
         
         /*
         if (filename) {
@@ -1375,10 +1368,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         //image im;
         //image sized = load_image_resize(input, net.w, net.h, net.c, &im);
         
-        //////
-        time = get_time_point();
-        //////
-        input = paths[i];
+        input = paths[k];
         image im = load_image(input, 0, 0, net.c);
         image sized;
         if(letter_box) sized = letterbox_image(im, net.w, net.h);
@@ -1391,12 +1381,8 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
 
         float *X = sized.data;
         
-        ///////
-        printf(" Load images & resize: %8.5f\n\n", ((double)get_time_point() - time)/ 1000);
-        ///////
 
-        //time= what_time_is_it_now();
-        double time = get_time_point();
+        time = get_time_point();
         network_predict(net, X);
         //network_predict_image(&net, im); letterbox = 1;
         printf("%s: Predicted in %lf milli-seconds.\n", input, ((double)get_time_point() - time) / 1000);
@@ -1458,10 +1444,10 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
             destroy_all_windows_cv();
         }
 
-        if (filename) break;
-        for(iter=0;iter<25;iter++){
-            test_extern_arr[iter] = 0;
-        }
+        //if (filename) break;
+        //for(iter=0;iter<25;iter++){
+        //    test_extern_arr[iter] = 0;
+        //}
     }
 
     if (outfile) {
