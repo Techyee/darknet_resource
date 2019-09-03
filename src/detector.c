@@ -1558,8 +1558,9 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
     printf("///////// Period : %f //////////\n", ms_period);
     err = clock_gettime(CLOCK_MONOTONIC, &release_time);
     assert(err ==0);
+    time = get_time_point();
     for (k =0; k< m; k++){
-        time = get_time_point();
+        //time = get_time_point();
         /*
         if (filename) {
             strncpy(input, filename, 256);
@@ -1665,6 +1666,7 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
         printf("%s: Predicted in %lf milli-seconds.\n", input, ((double)get_time_point() - time) / 1000);
         timespec_add(&release_time, &period);
         clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &release_time, NULL);
+        time = get_time_point();
     }
 
 
