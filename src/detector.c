@@ -16,7 +16,7 @@ typedef int (*__compar_fn_t)(const void*, const void*);
 typedef __compar_fn_t comparison_fn_t;
 #endif
 #endif
-
+#define NSEC_PER_SEC 1000000000ULL
 #include "http_stream.h"
 
 int check_mistakes = 0;
@@ -1475,6 +1475,17 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
     free_network(net);
 }
 
+
+void timespec_add(struct timespec *release_time, struct timespec *period)
+{
+    release_time->tv_nsec += period->tv_nsec;
+    while (release_time->tv_nsec >= NSEC_PER_SEC){
+        release_time->tv_nsec -= NSEC_PER_SEC;
+        release_time->tv_sec++;
+    }
+    
+}
+
 void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *filename, float thresh,
     float hier_thresh, int dont_show, int ext_output, int save_labels, char *outfile, int letter_box, int quantized)
 {
@@ -1541,7 +1552,7 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
     int err;
     
     period.tv_sec = 0;
-    period.tv_nsec = 33000000;
+    period.tv_nsec = 3000000000;
 
     err = clock_gettime(CLOCK_MONOTONIC, &release_time);
     assert(err == 0);
@@ -1651,10 +1662,10 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
         //    test_extern_arr[iter] = 0;
         //}
 
-        timespecadd(&release_time, &period);
+        timespec_add(&release_time, &period);
         do{
             err = clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &release_time, NULL);
-        }while( err!= 0);
+        }while( err != 0);
     }
 
 
