@@ -15,6 +15,11 @@
 #include <stdint.h>
 #include <assert.h>
 #include <pthread.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/shm.h>
+#include <sys/wait.h>
+#include <fcntl.h>
 
 #ifndef LIB_API
 #ifdef LIB_EXPORTS

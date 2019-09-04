@@ -23,6 +23,9 @@ int check_mistakes = 0;
 static int coco_ids[] = { 1,2,3,4,5,6,7,8,9,10,11,13,14,15,16,17,18,19,20,21,22,23,24,25,27,28,31,32,33,34,35,36,37,38,39,40,41,42,43,44,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,67,70,72,73,74,75,76,77,78,79,80,81,82,84,85,86,87,88,89,90 };
 extern int *test_extern_arr;
 
+//global shm pointer.
+extern int _g_shm_id;
+
 void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, int ngpus, int clear, int dont_show, int calc_map, int mjpeg_port, int show_imgs)
 {
     list *options = read_data_cfg(datacfg);
@@ -1305,6 +1308,29 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
     }
     int j;
     float nms = .45;    // 0.4F
+    
+    //shared memory access & manipulation
+    int *shm_ptr;
+    shm_ptr = (int*)shmat(_g_shm_id,NULL,0);
+    printf("this is shared memory value: %d\n",shm_ptr[0]);
+    printf("this is shared memory value: %d\n",shm_ptr[1]);
+    /*
+    printf("model load finished. waiting...\n");
+    shm_ptr[1] = 1;
+    printf("changed shared memory value: %d\n",shm_ptr[1]);
+    int counter = 0;
+    while(shm_ptr[0] == 0){
+        }
+    
+    printf("escaped.\n");
+    */
+    //!shared memory access
+
+    double timeval[50];
+    double timepin[50];
+    double load_end_time;
+    load_end_time = get_time_point()/1000;
+    int timeval_idx = 0;
     while (1) {
         
         if (filename) {
@@ -1332,12 +1358,16 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         //for(j = 0; j < l.w*l.h*l.n; ++j) probs[j] = (float*)calloc(l.classes, sizeof(float));
 
         float *X = sized.data;
-
+        
         //time= what_time_is_it_now();
         double time = get_time_point();
         network_predict(net, X);
         //network_predict_image(&net, im); letterbox = 1;
-        printf("%s: Predicted in %lf milli-seconds.\n", input, ((double)get_time_point() - time) / 1000);
+        double time_end = get_time_point();
+        timepin[timeval_idx] = time_end / 1000;
+        timeval[timeval_idx] = (time_end - time) / 1000;
+        printf("%s: Predicted in %lf milli-seconds.\n", input, timeval[timeval_idx]);
+        timeval_idx++;
         //printf("%s: Predicted in %f seconds.\n", input, (what_time_is_it_now()-time));
 
         int nboxes = 0;
@@ -1386,7 +1416,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
             }
             fclose(fw);
         }
-
+       
         free_detections(dets, nboxes);
         free_image(im);
         free_image(sized);
@@ -1397,9 +1427,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         }
 
         if (filename) break;
-        for(iter=0;iter<25;iter++){
-            test_extern_arr[iter] = 0;
-        }
+        
     }
 
     if (outfile) {
@@ -1407,7 +1435,9 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         fwrite(tmp, sizeof(char), strlen(tmp), json_file);
         fclose(json_file);
     }
-
+    for (j=0; j<50; j++){
+        printf("%lf %lf\n",timeval[j],timepin[j]);
+    }
     // free memory
     free_ptrs((void**)names, net.layers[net.n - 1].classes);
     free_list_contents_kvp(options);
@@ -1424,6 +1454,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
     free(alphabet);
 
     free_network(net);
+
 }
 
 void run_detector(int argc, char **argv)
@@ -1489,6 +1520,8 @@ void run_detector(int argc, char **argv)
         if (strlen(weights) > 0)
             if (weights[strlen(weights) - 1] == 0x0d) weights[strlen(weights) - 1] = 0;
     char *filename = (argc > 6) ? argv[6] : 0;
+    printf("disabled filename selection. only giving with < is possible. check detector.c line 1493.\n");
+    filename = 0;
     if (0 == strcmp(argv[2], "test")) test_detector(datacfg, cfg, weights, filename, thresh, hier_thresh, dont_show, ext_output, save_labels, outfile, letter_box);
     else if (0 == strcmp(argv[2], "train")) train_detector(datacfg, cfg, weights, gpus, ngpus, clear, dont_show, calc_map, mjpeg_port, show_imgs);
     else if (0 == strcmp(argv[2], "valid")) validate_detector(datacfg, cfg, weights, outfile);

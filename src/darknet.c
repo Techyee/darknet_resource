@@ -41,6 +41,9 @@ extern int *test_extern_arr2 = NULL;
 DetectorParams *_g_detector_params;
 //!end of DetectorParameter structure init.
 
+//global shm id.
+extern int _g_shm_id = 0;
+
 void thread_test_function(int a, int b)
 {
     printf("this is a : %d\n, this is b : %d\n");
@@ -459,10 +462,13 @@ int main(int argc, char **argv)
     int cnt;
     int alloc_idx[25];
 
-    //open file and load cfg.
+    //shm_id trans.
+    _g_shm_id = atoi(argv[9]);
+    //open file and load migration config.
     FILE *pFile = NULL;
     cnt = 0;
-    pFile = fopen("test.csv", "r");
+    //filename is provided as argv
+    pFile = fopen(argv[8], "r");
     if(pFile !=NULL)
     {
         fgets(str_temp,1024,pFile);

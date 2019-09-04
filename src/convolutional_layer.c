@@ -891,8 +891,9 @@ void forward_convolutional_layer(convolutional_layer l, network_state state)
     int out_w = convolutional_out_width(l);
     int i, j;
 
+    //shared_memory_test
     fill_cpu(l.outputs*l.batch, 0, l.output, 1);
-
+    //fill_ongpu(l.outputs*l.batch, 0, l.output, 1);
     if (l.xnor && (!l.align_bit_weights || state.train)) {
         if (!l.align_bit_weights || state.train) {
             binarize_weights(l.weights, l.n, l.nweights, l.binary_weights);

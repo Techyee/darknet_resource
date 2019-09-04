@@ -53,7 +53,9 @@ layer make_yolo_layer(int batch, int w, int h, int n, int total, int *mask, int 
     l.backward_gpu = backward_yolo_layer_gpu;
     l.output_gpu = cuda_make_array(l.output, batch*l.outputs);
     l.delta_gpu = cuda_make_array(l.delta, batch*l.outputs);
-
+    printf("cudahostalloc for yolo is disabled for unified memory. check cuda_layer.c code line 56.\n");
+    //unified memory test. disable cudaHostAllocation.
+    
     free(l.output);
     if (cudaSuccess == cudaHostAlloc(&l.output, batch*l.outputs*sizeof(float), cudaHostRegisterMapped)) l.output_pinned = 1;
     else {
@@ -67,6 +69,7 @@ layer make_yolo_layer(int batch, int w, int h, int n, int total, int *mask, int 
         cudaGetLastError(); // reset CUDA-error
         l.delta = (float*)calloc(batch * l.outputs, sizeof(float));
     }
+    
 #endif
 
     fprintf(stderr, "yolo\n");
@@ -234,15 +237,16 @@ static box float_to_box_stride(float *f, int stride)
 
 void forward_yolo_layer(const layer l, network_state state)
 {
+    printf("fw_yolo_layer value : %f\n",l.output[0]);
     int i, j, b, t, n;
     memcpy(l.output, state.input, l.outputs*l.batch * sizeof(float));
-
 //#ifndef GPU
     for (b = 0; b < l.batch; ++b) {
         for (n = 0; n < l.n; ++n) {
             int index = entry_index(l, b, n*l.w*l.h, 0);
             activate_array(l.output + index, 2 * l.w*l.h, LOGISTIC);        // x,y,
             scal_add_cpu(2 * l.w*l.h, l.scale_x_y, -0.5*(l.scale_x_y - 1), l.output + index, 1);    // scale x,y
+            //scal_add_ongpu(2 * l.w*l.h, l.scale_x_y, -0.5*(l.scale_x_y - 1), l.output + index, 1); 
             index = entry_index(l, b, n*l.w*l.h, 4);
             activate_array(l.output + index, (1 + l.classes)*l.w*l.h, LOGISTIC);
         }
@@ -525,6 +529,7 @@ int get_yolo_detections(layer l, int w, int h, int netw, int neth, float thresh,
 void forward_yolo_layer_gpu(const layer l, network_state state)
 {
     //copy_ongpu(l.batch*l.inputs, state.input, 1, l.output_gpu, 1);
+    //printf("fw_yolo_layer_gpu value : %f\n",l.output_gpu[0]);
     simple_copy_ongpu(l.batch*l.inputs, state.input, l.output_gpu);
     int b, n;
     for (b = 0; b < l.batch; ++b){
@@ -541,6 +546,7 @@ void forward_yolo_layer_gpu(const layer l, network_state state)
         }
     }
     if(!state.train || l.onlyforward){
+        printf("this is not training.\n");
         //cuda_pull_array(l.output_gpu, l.output, l.batch*l.outputs);
         cuda_pull_array_async(l.output_gpu, l.output, l.batch*l.outputs);
         CHECK_CUDA(cudaPeekAtLastError());

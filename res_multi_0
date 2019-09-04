@@ -1,0 +1,3157 @@
+   layer   filters  size/strd(dil)      input                output
+   0 conv     16       3 x 3/ 1    416 x 416 x   3 ->  416 x 416 x  16 0.150 BF
+   1 max               2 x 2/ 2    416 x 416 x  16 ->  208 x 208 x  16 0.003 BF
+   2 conv     32       3 x 3/ 1    208 x 208 x  16 ->  208 x 208 x  32 0.399 BF
+   3 max               2 x 2/ 2    208 x 208 x  32 ->  104 x 104 x  32 0.001 BF
+   4 conv     64       3 x 3/ 1    104 x 104 x  32 ->  104 x 104 x  64 0.399 BF
+   5 max               2 x 2/ 2    104 x 104 x  64 ->   52 x  52 x  64 0.001 BF
+   6 conv    128       3 x 3/ 1     52 x  52 x  64 ->   52 x  52 x 128 0.399 BF
+   7 max               2 x 2/ 2     52 x  52 x 128 ->   26 x  26 x 128 0.000 BF
+   8 conv    256       3 x 3/ 1     26 x  26 x 128 ->   26 x  26 x 256 0.399 BF
+   9 max               2 x 2/ 2     26 x  26 x 256 ->   13 x  13 x 256 0.000 BF
+  10 conv    512       3 x 3/ 1     13 x  13 x 256 ->   13 x  13 x 512 0.399 BF
+  11 max               2 x 2/ 1     13 x  13 x 512 ->   13 x  13 x 512 0.000 BF
+  12 conv   1024       3 x 3/ 1     13 x  13 x 512 ->   13 x  13 x1024 1.595 BF
+  13 conv    256       1 x 1/ 1     13 x  13 x1024 ->   13 x  13 x 256 0.089 BF
+  14 conv    512       3 x 3/ 1     13 x  13 x 256 ->   13 x  13 x 512 0.399 BF
+  15 conv    255       1 x 1/ 1     13 x  13 x 512 ->   13 x  13 x 255 0.044 BF
+  16 yolo
+[yolo] params: iou loss: mse, iou_norm: 0.75, cls_norm: 1.00, scale_x_y: 1.00
+  17 route  13
+  18 conv    128       1 x 1/ 1     13 x  13 x 256 ->   13 x  13 x 128 0.011 BF
+  19 upsample                 2x    13 x  13 x 128 ->   26 x  26 x 128
+  20 route  19 8
+  21 conv    256       3 x 3/ 1     26 x  26 x 384 ->   26 x  26 x 256 1.196 BF
+  22 conv    255       1 x 1/ 1     26 x  26 x 256 ->   26 x  26 x 255 0.088 BF
+  23 yolo
+[yolo] params: iou loss: mse, iou_norm: 0.75, cls_norm: 1.00, scale_x_y: 1.00
+Total BFLOPS 5.571 
+ Allocate additional workspace_size = 52.43 MB 
+Loading weights from /home/nvidia/darknet_resource/yolov3-tiny.weights...csv reading test : 1
+csv reading test : 1
+csv reading test : 1
+csv reading test : 1
+csv reading test : 1
+csv reading test : 1
+csv reading test : 1
+csv reading test : 0
+csv reading test : 1
+csv reading test : 0
+csv reading test : 1
+csv reading test : 1
+csv reading test : 1
+csv reading test : 1
+csv reading test : 1
+csv reading test : 1
+csv reading test : 0
+csv reading test : 0
+csv reading test : 0
+csv reading test : 0
+csv reading test : 0
+csv reading test : 1
+csv reading test : 1
+csv reading test : 0
+disabled filename selection. only giving with < is possible. check detector.c line 1493.
+cudahostalloc for yolo is disabled for unified memory. check cuda_layer.c code line 56.
+cudahostalloc for yolo is disabled for unified memory. check cuda_layer.c code line 56.
+target layer i is 23.
+end of get_net_output, time is  0.00100 millisec
+Done!
+
+ seen 64 
+this is shared memory value: 0
+this is shared memory value: 0
+Enter Image Path: end of net_pred_gpu, time is  3.85700 millisec
+layer:   0 type:   convolutional - Predicted in 13.97500 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  3.73000 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  3.65100 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  1.71400 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  2.28600 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  2.25900 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  1.89600 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  6.74600 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  4.14900 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.20500 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.74900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  4.89600 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.97400 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.16700 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in 12.80300 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  0.59800 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  4.74800 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  0.77400 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  1.14400 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.44300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.75500 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.000000
+layer:  16 type:            yolo - Predicted in  2.96600 milli-seconds.
+layer:  17 type:           route - Predicted in  0.34100 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  6.01200 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  1.89100 milli-seconds.
+layer:  20 type:           route - Predicted in  2.78000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.27900 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.33600 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.56500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.29600 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.000000
+layer:  23 type:            yolo - Predicted in  8.78200 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource/data/dog.jpg: Predicted in 101.743000 milli-seconds.
+dog: 81%	(left_x:  124   top_y:  220   width:  258   height:  298)
+bicycle: 38%	(left_x:  229   top_y:  196   width:  330   height:  249)
+car: 71%	(left_x:  466   top_y:   83   width:  222   height:   89)
+truck: 41%
+Enter Image Path: end of net_pred_gpu, time is  0.47200 millisec
+layer:   0 type:   convolutional - Predicted in  7.67100 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  1.75200 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  5.08100 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  1.65400 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  2.71100 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  0.23600 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  1.09700 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.55800 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  2.63000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.17700 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.42800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.35300 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.81000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.11400 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.41500 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  0.18600 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  3.23700 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  0.66500 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  1.06300 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.39200 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.18700 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.609184
+layer:  16 type:            yolo - Predicted in  2.86500 milli-seconds.
+layer:  17 type:           route - Predicted in  0.11000 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.37700 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.38600 milli-seconds.
+layer:  20 type:           route - Predicted in  0.36600 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.28300 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.31700 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.57600 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.33200 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.560443
+layer:  23 type:            yolo - Predicted in  7.25200 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource/data/eagle.jpg: Predicted in 53.285000 milli-seconds.
+bird: 77%	(left_x:   96   top_y:  144   width:  482   height:  292)
+Enter Image Path: end of net_pred_gpu, time is  0.42000 millisec
+layer:   0 type:   convolutional - Predicted in  9.03800 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  0.56800 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  3.46900 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  1.84100 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  5.42200 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  2.85100 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  3.26500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.32900 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.72000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.18300 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  2.11900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.73300 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.87100 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.11800 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.57500 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  0.68400 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  6.58000 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  0.88400 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  3.43200 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  1.59500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.02600 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.765156
+layer:  16 type:            yolo - Predicted in  1.89600 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07300 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  6.52900 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.46500 milli-seconds.
+layer:  20 type:           route - Predicted in  0.42900 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.28500 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.21600 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.55900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.40500 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.633250
+layer:  23 type:            yolo - Predicted in  7.22300 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/horses.jpg: Predicted in 73.425000 milli-seconds.
+horse: 32%	(left_x:  -18   top_y:  192   width:  181   height:  105)
+horse: 70%	(left_x:    7   top_y:  191   width:  303   height:  210)
+horse: 31%	(left_x:  234   top_y:  164   width:  197   height:  206)
+horse: 67%	(left_x:  441   top_y:  207   width:  154   height:  153)
+cow: 39%
+Enter Image Path: end of net_pred_gpu, time is  0.38900 millisec
+layer:   0 type:   convolutional - Predicted in 13.89700 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  2.72200 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  4.94600 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  1.92200 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  6.01200 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  4.22500 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  2.90000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  3.33500 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.78200 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.14700 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  2.97700 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.11900 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.93000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.16400 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  2.22300 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  2.12700 milli-seconds.
+layer:  12 type:   convolutional - Predicted in 12.41100 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  2.26400 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  2.67100 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.92600 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.51400 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.616272
+layer:  16 type:            yolo - Predicted in  1.87100 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07500 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.73800 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.38800 milli-seconds.
+layer:  20 type:           route - Predicted in  0.35600 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.47900 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  3.32600 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.74000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.54100 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.550298
+layer:  23 type:            yolo - Predicted in  7.79100 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/person.jpg: Predicted in 93.515000 milli-seconds.
+dog: 89%	(left_x:   81   top_y:  265   width:  122   height:   86)
+person: 98%	(left_x:  180   top_y:   95   width:   99   height:  287)
+sheep: 84%	(left_x:  389   top_y:  125   width:  227   height:  216)
+Enter Image Path: end of net_pred_gpu, time is  0.49000 millisec
+layer:   0 type:   convolutional - Predicted in 13.03700 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  1.28100 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  8.28900 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  2.43700 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  6.16300 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  1.71500 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  2.56000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.97500 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.68900 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.20900 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  2.36600 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.79600 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.80700 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.10200 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  2.12700 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  0.72300 milli-seconds.
+layer:  12 type:   convolutional - Predicted in 10.94600 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  2.41600 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  3.41400 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  2.00200 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.71900 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.592270
+layer:  16 type:            yolo - Predicted in  1.97700 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07200 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.88700 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.39800 milli-seconds.
+layer:  20 type:           route - Predicted in  0.36000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.33800 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  4.70100 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.94200 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.51200 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.569372
+layer:  23 type:            yolo - Predicted in  7.65000 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/giraffe.jpg: Predicted in 88.770000 milli-seconds.
+giraffe: 53%	(left_x:  153   top_y:  -42   width:  286   height:  505)
+zebra: 53%	(left_x:  305   top_y:  205   width:  110   height:  243)
+Enter Image Path: end of net_pred_gpu, time is  0.41500 millisec
+layer:   0 type:   convolutional - Predicted in 12.32100 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  2.56300 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  3.69200 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  1.53500 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  3.07200 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  1.47800 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  3.35000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.93300 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.66800 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.23300 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  2.14800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.53700 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.93500 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.09800 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.48800 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  1.45300 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  7.04700 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  2.88200 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  4.12300 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  3.00700 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.37400 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.767652
+layer:  16 type:            yolo - Predicted in  2.59900 milli-seconds.
+layer:  17 type:           route - Predicted in  0.08100 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.42300 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.43400 milli-seconds.
+layer:  20 type:           route - Predicted in  0.36400 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.34200 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.81300 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  1.78300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.70500 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.512851
+layer:  23 type:            yolo - Predicted in  7.79700 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource/data/dog.jpg: Predicted in 83.330000 milli-seconds.
+dog: 81%	(left_x:  124   top_y:  220   width:  258   height:  298)
+bicycle: 38%	(left_x:  229   top_y:  196   width:  330   height:  249)
+car: 71%	(left_x:  466   top_y:   83   width:  222   height:   89)
+truck: 41%
+Enter Image Path: end of net_pred_gpu, time is  0.47600 millisec
+layer:   0 type:   convolutional - Predicted in 14.51700 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  2.22400 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  5.62100 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  2.19000 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  6.96200 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  2.76400 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  1.86100 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.31600 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.71700 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.23700 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  2.65800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.90300 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.83400 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.17600 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.31300 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  1.24100 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  6.81000 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  1.90600 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  1.77900 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.83400 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.61700 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.609184
+layer:  16 type:            yolo - Predicted in  1.99300 milli-seconds.
+layer:  17 type:           route - Predicted in  0.10700 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  5.48200 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.53500 milli-seconds.
+layer:  20 type:           route - Predicted in  0.36700 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.29000 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.39300 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.56700 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.35800 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.560443
+layer:  23 type:            yolo - Predicted in  7.39500 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00100 millisec
+/home/nvidia/darknet_resource/data/eagle.jpg: Predicted in 82.073000 milli-seconds.
+bird: 77%	(left_x:   96   top_y:  144   width:  482   height:  292)
+Enter Image Path: end of net_pred_gpu, time is  0.39400 millisec
+layer:   0 type:   convolutional - Predicted in 11.95500 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  1.11400 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  5.52400 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  1.66600 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  3.58700 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  0.43900 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  1.20600 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.45600 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.93200 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.24800 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.24300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.42500 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.91200 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.18500 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.43500 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  1.49900 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  7.30100 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  0.98300 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  1.23100 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.38000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.15900 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.765156
+layer:  16 type:            yolo - Predicted in  2.30600 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07400 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.24000 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.38200 milli-seconds.
+layer:  20 type:           route - Predicted in  0.37100 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.28200 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  5.33300 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  1.50800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.79900 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.633250
+layer:  23 type:            yolo - Predicted in  7.51800 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/horses.jpg: Predicted in 69.621000 milli-seconds.
+horse: 32%	(left_x:  -18   top_y:  192   width:  181   height:  105)
+horse: 70%	(left_x:    7   top_y:  191   width:  303   height:  210)
+horse: 31%	(left_x:  234   top_y:  164   width:  197   height:  206)
+horse: 67%	(left_x:  441   top_y:  207   width:  154   height:  153)
+cow: 39%
+Enter Image Path: end of net_pred_gpu, time is  0.39000 millisec
+layer:   0 type:   convolutional - Predicted in  5.31100 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  0.48100 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  4.96200 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  1.64000 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  3.90500 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  0.75300 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  3.59700 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.74800 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.59600 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.19300 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  3.05100 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.54400 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  1.86800 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.12000 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  2.01800 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  1.44600 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  7.41600 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  1.57700 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  2.66200 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  1.93300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.47600 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.616272
+layer:  16 type:            yolo - Predicted in  1.84100 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07600 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.29100 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.38700 milli-seconds.
+layer:  20 type:           route - Predicted in  0.37600 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.37400 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  4.24000 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  1.06200 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.45400 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.550298
+layer:  23 type:            yolo - Predicted in  8.65600 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/person.jpg: Predicted in 75.047000 milli-seconds.
+dog: 89%	(left_x:   81   top_y:  265   width:  122   height:   86)
+person: 98%	(left_x:  180   top_y:   95   width:   99   height:  287)
+sheep: 84%	(left_x:  389   top_y:  125   width:  227   height:  216)
+Enter Image Path: end of net_pred_gpu, time is  0.48100 millisec
+layer:   0 type:   convolutional - Predicted in  5.35800 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  0.57800 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  2.17800 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  0.27200 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  1.30800 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  0.18900 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  2.65000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.61000 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.71200 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.22600 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.89900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.55600 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.79900 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.11200 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  2.26500 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  1.14400 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  9.95400 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  3.22000 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  3.98400 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  2.94400 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  3.09100 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.592270
+layer:  16 type:            yolo - Predicted in  1.88600 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07500 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.47700 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.39800 milli-seconds.
+layer:  20 type:           route - Predicted in  0.48900 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.35700 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  6.25500 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  1.38100 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  3.97100 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.569372
+layer:  23 type:            yolo - Predicted in  7.50500 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00100 millisec
+/home/nvidia/darknet_resource//data/giraffe.jpg: Predicted in 73.986000 milli-seconds.
+giraffe: 53%	(left_x:  153   top_y:  -42   width:  286   height:  505)
+zebra: 53%	(left_x:  305   top_y:  205   width:  110   height:  243)
+Enter Image Path: end of net_pred_gpu, time is  0.38600 millisec
+layer:   0 type:   convolutional - Predicted in  5.41600 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  0.60100 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  2.18100 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  0.28400 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  1.26300 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  0.18500 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  0.93800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.51600 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  2.73300 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.17200 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  2.29300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.56500 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.79800 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.19100 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  2.20300 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  1.12900 milli-seconds.
+layer:  12 type:   convolutional - Predicted in 11.20400 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  4.47200 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  3.96400 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  3.04000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.89100 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.767652
+layer:  16 type:            yolo - Predicted in  1.91200 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07500 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.33300 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.43000 milli-seconds.
+layer:  20 type:           route - Predicted in  0.44000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.41400 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  5.88400 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  1.30200 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.94700 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.512851
+layer:  23 type:            yolo - Predicted in  7.56700 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource/data/dog.jpg: Predicted in 74.444000 milli-seconds.
+dog: 81%	(left_x:  124   top_y:  220   width:  258   height:  298)
+bicycle: 38%	(left_x:  229   top_y:  196   width:  330   height:  249)
+car: 71%	(left_x:  466   top_y:   83   width:  222   height:   89)
+truck: 41%
+Enter Image Path: end of net_pred_gpu, time is  0.47200 millisec
+layer:   0 type:   convolutional - Predicted in  5.40900 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  0.56700 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  2.12800 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  0.27700 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  1.26700 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  0.19100 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  1.02300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.52800 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  2.33500 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.19600 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.28700 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.33900 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.80700 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.13500 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.36700 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  0.10200 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  7.93100 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  4.40900 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  4.94000 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  3.82100 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  3.07200 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.609184
+layer:  16 type:            yolo - Predicted in  1.97200 milli-seconds.
+layer:  17 type:           route - Predicted in  0.09500 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.37800 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.50500 milli-seconds.
+layer:  20 type:           route - Predicted in  0.53000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.27100 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  5.67800 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  2.47500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.25000 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.560443
+layer:  23 type:            yolo - Predicted in  7.32000 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource/data/eagle.jpg: Predicted in 68.626000 milli-seconds.
+bird: 77%	(left_x:   96   top_y:  144   width:  482   height:  292)
+Enter Image Path: end of net_pred_gpu, time is  0.56000 millisec
+layer:   0 type:   convolutional - Predicted in  5.26500 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  0.52300 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  2.06100 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  0.27900 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  1.27400 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  0.17700 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  0.96900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.45400 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.96900 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.15900 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.32500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.31500 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.78400 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.13400 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.34500 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  0.14300 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  3.22400 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  0.86800 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  0.96900 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.42100 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.15800 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.765156
+layer:  16 type:            yolo - Predicted in  3.60100 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07600 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.29500 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.39700 milli-seconds.
+layer:  20 type:           route - Predicted in  0.35600 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.28300 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  6.32100 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  2.95800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.33000 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.633250
+layer:  23 type:            yolo - Predicted in  7.84000 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/horses.jpg: Predicted in 52.401000 milli-seconds.
+horse: 32%	(left_x:  -18   top_y:  192   width:  181   height:  105)
+horse: 70%	(left_x:    7   top_y:  191   width:  303   height:  210)
+horse: 31%	(left_x:  234   top_y:  164   width:  197   height:  206)
+horse: 67%	(left_x:  441   top_y:  207   width:  154   height:  153)
+cow: 39%
+Enter Image Path: end of net_pred_gpu, time is  0.38700 millisec
+layer:   0 type:   convolutional - Predicted in  5.32000 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  0.46700 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  1.96300 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  0.25700 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  1.20600 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  0.16700 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  1.04600 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.43900 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.60800 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.14000 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.28000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.32200 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.80100 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.08500 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.31400 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  0.14000 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  3.21000 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  0.64200 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  1.05400 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.41100 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.12200 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.616272
+layer:  16 type:            yolo - Predicted in  1.81800 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07300 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.53300 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.39000 milli-seconds.
+layer:  20 type:           route - Predicted in  0.35200 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.30900 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.28400 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.48500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.28500 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.550298
+layer:  23 type:            yolo - Predicted in  8.63700 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/person.jpg: Predicted in 42.108000 milli-seconds.
+dog: 89%	(left_x:   81   top_y:  265   width:  122   height:   86)
+person: 98%	(left_x:  180   top_y:   95   width:   99   height:  287)
+sheep: 84%	(left_x:  389   top_y:  125   width:  227   height:  216)
+Enter Image Path: end of net_pred_gpu, time is  0.44100 millisec
+layer:   0 type:   convolutional - Predicted in 16.37900 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  2.16400 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  4.74400 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  2.08100 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  5.21000 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  1.10600 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  3.12500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  3.81200 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.68400 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.13800 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.72100 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.83400 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.85400 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.13600 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.42900 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  0.16000 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  3.33200 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  0.78600 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  2.31100 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  1.39000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.71000 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.592270
+layer:  16 type:            yolo - Predicted in  1.90500 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07500 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.17500 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.38400 milli-seconds.
+layer:  20 type:           route - Predicted in  0.36500 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.32200 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.29000 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.58800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.34500 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.569372
+layer:  23 type:            yolo - Predicted in  7.27400 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/giraffe.jpg: Predicted in 72.768000 milli-seconds.
+giraffe: 53%	(left_x:  153   top_y:  -42   width:  286   height:  505)
+zebra: 53%	(left_x:  305   top_y:  205   width:  110   height:  243)
+Enter Image Path: end of net_pred_gpu, time is  0.39100 millisec
+layer:   0 type:   convolutional - Predicted in 16.35100 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  2.11000 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  6.00300 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  1.53900 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  5.32400 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  2.75400 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  3.87800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  4.18200 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.60300 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.14200 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.75200 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.51000 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.90300 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.10000 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.85100 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  2.29100 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  7.78900 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  1.15900 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  1.53000 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  1.96700 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.63800 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.767652
+layer:  16 type:            yolo - Predicted in  1.81800 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07300 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.21100 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.38200 milli-seconds.
+layer:  20 type:           route - Predicted in  0.35800 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.39100 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.84100 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.91300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.34200 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.512851
+layer:  23 type:            yolo - Predicted in  7.86500 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource/data/dog.jpg: Predicted in 88.422000 milli-seconds.
+dog: 81%	(left_x:  124   top_y:  220   width:  258   height:  298)
+bicycle: 38%	(left_x:  229   top_y:  196   width:  330   height:  249)
+car: 71%	(left_x:  466   top_y:   83   width:  222   height:   89)
+truck: 41%
+Enter Image Path: end of net_pred_gpu, time is  0.46100 millisec
+layer:   0 type:   convolutional - Predicted in 18.07300 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  2.40600 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  5.56000 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  1.90400 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  6.69600 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  2.75900 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  2.69700 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.38500 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.70900 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.14500 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.31500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  3.27800 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.79400 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.10400 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  2.75200 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  1.78900 milli-seconds.
+layer:  12 type:   convolutional - Predicted in 11.38600 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  1.51100 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  1.65700 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.89300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.84300 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.609184
+layer:  16 type:            yolo - Predicted in  1.86600 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07200 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.15900 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.38200 milli-seconds.
+layer:  20 type:           route - Predicted in  0.35800 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.32800 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.75500 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.61900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.31500 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.560443
+layer:  23 type:            yolo - Predicted in  7.73500 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource/data/eagle.jpg: Predicted in 90.224000 milli-seconds.
+bird: 77%	(left_x:   96   top_y:  144   width:  482   height:  292)
+Enter Image Path: end of net_pred_gpu, time is  0.39000 millisec
+layer:   0 type:   convolutional - Predicted in 20.92900 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  1.54400 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  6.84000 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  1.93800 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  5.31900 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  1.44900 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  3.44300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.99600 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.61700 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.15200 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.47800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.14400 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.95600 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.09100 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  3.05100 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  3.80000 milli-seconds.
+layer:  12 type:   convolutional - Predicted in 10.91900 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  1.60500 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  1.67800 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.85400 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.90800 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.765156
+layer:  16 type:            yolo - Predicted in  1.86000 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07400 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.18300 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.39500 milli-seconds.
+layer:  20 type:           route - Predicted in  0.40300 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.47300 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  3.58400 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.85100 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.34400 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.633250
+layer:  23 type:            yolo - Predicted in  7.25200 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00100 millisec
+/home/nvidia/darknet_resource//data/horses.jpg: Predicted in 94.987000 milli-seconds.
+horse: 32%	(left_x:  -18   top_y:  192   width:  181   height:  105)
+horse: 70%	(left_x:    7   top_y:  191   width:  303   height:  210)
+horse: 31%	(left_x:  234   top_y:  164   width:  197   height:  206)
+horse: 67%	(left_x:  441   top_y:  207   width:  154   height:  153)
+cow: 39%
+Enter Image Path: end of net_pred_gpu, time is  0.39800 millisec
+layer:   0 type:   convolutional - Predicted in 15.39400 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  4.17600 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  8.21100 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  2.54800 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  5.95000 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  2.11000 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  3.18000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.28500 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.77900 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.22600 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.29000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.09600 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.80900 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.08600 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.89700 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  3.80900 milli-seconds.
+layer:  12 type:   convolutional - Predicted in 11.89800 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  1.45100 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  2.59000 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  1.84000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.64900 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.616272
+layer:  16 type:            yolo - Predicted in  1.82800 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07600 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.18700 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.41800 milli-seconds.
+layer:  20 type:           route - Predicted in  0.35900 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.41100 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.34400 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.53500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.29900 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.550298
+layer:  23 type:            yolo - Predicted in  7.72800 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00100 millisec
+/home/nvidia/darknet_resource//data/person.jpg: Predicted in 92.361000 milli-seconds.
+dog: 89%	(left_x:   81   top_y:  265   width:  122   height:   86)
+person: 98%	(left_x:  180   top_y:   95   width:   99   height:  287)
+sheep: 84%	(left_x:  389   top_y:  125   width:  227   height:  216)
+Enter Image Path: end of net_pred_gpu, time is  0.40200 millisec
+layer:   0 type:   convolutional - Predicted in 12.17400 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  2.00200 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  7.75300 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  2.57000 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  7.86300 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  2.17600 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  4.14700 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.13300 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  2.55200 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.17100 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.28900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.83500 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.80800 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.13900 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  2.31100 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  1.48200 milli-seconds.
+layer:  12 type:   convolutional - Predicted in 10.47100 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  1.24400 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  2.95600 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  2.74100 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.95200 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.592270
+layer:  16 type:            yolo - Predicted in  1.93500 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07800 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.22600 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.41700 milli-seconds.
+layer:  20 type:           route - Predicted in  0.37000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.32500 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.19300 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.56200 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.44300 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.569372
+layer:  23 type:            yolo - Predicted in  7.78400 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/giraffe.jpg: Predicted in 89.018000 milli-seconds.
+giraffe: 53%	(left_x:  153   top_y:  -42   width:  286   height:  505)
+zebra: 53%	(left_x:  305   top_y:  205   width:  110   height:  243)
+Enter Image Path: end of net_pred_gpu, time is  0.41700 millisec
+layer:   0 type:   convolutional - Predicted in 12.66500 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  1.76800 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  6.07800 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  2.40800 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  4.97900 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  2.53900 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  2.62300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.07700 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.92000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.18400 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  2.24500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.75300 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.87900 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.09500 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.92400 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  0.45300 milli-seconds.
+layer:  12 type:   convolutional - Predicted in 10.65200 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  1.69700 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  2.29700 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.76400 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.47100 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.767652
+layer:  16 type:            yolo - Predicted in  1.98200 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07500 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  5.45400 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.48300 milli-seconds.
+layer:  20 type:           route - Predicted in  0.44300 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.31400 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.33800 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.57300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.40400 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.512851
+layer:  23 type:            yolo - Predicted in  7.20500 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00100 millisec
+/home/nvidia/darknet_resource/data/dog.jpg: Predicted in 79.820000 milli-seconds.
+dog: 81%	(left_x:  124   top_y:  220   width:  258   height:  298)
+bicycle: 38%	(left_x:  229   top_y:  196   width:  330   height:  249)
+car: 71%	(left_x:  466   top_y:   83   width:  222   height:   89)
+truck: 41%
+Enter Image Path: end of net_pred_gpu, time is  0.51200 millisec
+layer:   0 type:   convolutional - Predicted in 12.32100 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  2.00100 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  4.93500 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  0.76100 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  4.51700 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  2.96900 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  3.13100 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.06600 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.67500 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.24100 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.59400 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.08200 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.82000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.10400 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.48000 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  2.56800 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  8.22700 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  1.79800 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  1.29200 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  1.35000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.58300 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.609184
+layer:  16 type:            yolo - Predicted in  1.96000 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07500 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.36400 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.41500 milli-seconds.
+layer:  20 type:           route - Predicted in  0.43200 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.33900 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  4.07800 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.97400 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.61700 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.560443
+layer:  23 type:            yolo - Predicted in  7.30700 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00100 millisec
+/home/nvidia/darknet_resource/data/eagle.jpg: Predicted in 77.193000 milli-seconds.
+bird: 77%	(left_x:   96   top_y:  144   width:  482   height:  292)
+Enter Image Path: end of net_pred_gpu, time is  0.44400 millisec
+layer:   0 type:   convolutional - Predicted in 19.68200 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  3.19400 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  5.96600 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  1.19800 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  4.22000 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  2.89700 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  2.44000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.46200 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.69300 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.14400 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  2.04300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.91400 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.84000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.09600 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.86300 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  2.23600 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  6.81100 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  1.08300 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  1.27800 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.73600 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.46300 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.765156
+layer:  16 type:            yolo - Predicted in  2.09000 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07600 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.16500 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.38000 milli-seconds.
+layer:  20 type:           route - Predicted in  0.61900 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.36300 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.34000 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  1.03200 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.30200 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.633250
+layer:  23 type:            yolo - Predicted in  7.22500 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/horses.jpg: Predicted in 82.952000 milli-seconds.
+horse: 32%	(left_x:  -18   top_y:  192   width:  181   height:  105)
+horse: 70%	(left_x:    7   top_y:  191   width:  303   height:  210)
+horse: 31%	(left_x:  234   top_y:  164   width:  197   height:  206)
+horse: 67%	(left_x:  441   top_y:  207   width:  154   height:  153)
+cow: 39%
+Enter Image Path: end of net_pred_gpu, time is  0.40200 millisec
+layer:   0 type:   convolutional - Predicted in 16.24900 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  4.18500 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  7.13500 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  3.60400 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  5.42800 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  2.15700 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  2.47900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.10500 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.79500 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.23300 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  3.67900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.63900 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.81700 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.10300 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  3.06300 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  1.95500 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  7.57300 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  0.88100 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  1.34200 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.62800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.48500 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.616272
+layer:  16 type:            yolo - Predicted in  1.89600 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07500 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.20200 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  1.35700 milli-seconds.
+layer:  20 type:           route - Predicted in  0.35600 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.34800 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.31600 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.56300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.33600 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.550298
+layer:  23 type:            yolo - Predicted in  7.20500 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/person.jpg: Predicted in 88.119000 milli-seconds.
+dog: 89%	(left_x:   81   top_y:  265   width:  122   height:   86)
+person: 98%	(left_x:  180   top_y:   95   width:   99   height:  287)
+sheep: 84%	(left_x:  389   top_y:  125   width:  227   height:  216)
+Enter Image Path: end of net_pred_gpu, time is  0.41800 millisec
+layer:   0 type:   convolutional - Predicted in 17.12200 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  3.40100 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  6.95500 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  2.18700 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  6.33200 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  0.88400 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  4.32800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.28900 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.61300 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.20700 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  3.69000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.11600 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.89000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.10800 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  2.61900 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  2.31500 milli-seconds.
+layer:  12 type:   convolutional - Predicted in 13.16200 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  2.49300 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  1.85900 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  1.24000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.53500 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.592270
+layer:  16 type:            yolo - Predicted in  1.90000 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07700 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.78100 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.46300 milli-seconds.
+layer:  20 type:           route - Predicted in  0.36300 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.44000 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  3.93600 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  1.40700 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.82100 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.569372
+layer:  23 type:            yolo - Predicted in  8.05300 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00100 millisec
+/home/nvidia/darknet_resource//data/giraffe.jpg: Predicted in 99.582000 milli-seconds.
+giraffe: 53%	(left_x:  153   top_y:  -42   width:  286   height:  505)
+zebra: 53%	(left_x:  305   top_y:  205   width:  110   height:  243)
+Enter Image Path: end of net_pred_gpu, time is  0.42100 millisec
+layer:   0 type:   convolutional - Predicted in 19.92500 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  2.61400 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  7.89600 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  3.00300 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  5.33000 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  1.85800 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  3.44400 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.19900 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.66000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.17900 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  2.51700 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.61800 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.87000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.14300 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.63300 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  3.05000 milli-seconds.
+layer:  12 type:   convolutional - Predicted in 10.45600 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  1.85200 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  1.75600 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.90300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.66400 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.767652
+layer:  16 type:            yolo - Predicted in  1.89000 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07700 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.40200 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.46000 milli-seconds.
+layer:  20 type:           route - Predicted in  0.52800 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.61000 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.43900 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.54300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.32800 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.512851
+layer:  23 type:            yolo - Predicted in  7.64100 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource/data/dog.jpg: Predicted in 93.480000 milli-seconds.
+dog: 81%	(left_x:  124   top_y:  220   width:  258   height:  298)
+bicycle: 38%	(left_x:  229   top_y:  196   width:  330   height:  249)
+car: 71%	(left_x:  466   top_y:   83   width:  222   height:   89)
+truck: 41%
+Enter Image Path: end of net_pred_gpu, time is  0.41600 millisec
+layer:   0 type:   convolutional - Predicted in 14.20800 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  4.05600 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  5.53600 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  1.78000 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  4.07900 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  1.70900 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  3.36700 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.05700 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.68500 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.26000 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  2.14100 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.60400 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.93700 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.09600 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.47200 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  1.47800 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  7.29300 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  1.92300 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  1.78000 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.96000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.72100 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.609184
+layer:  16 type:            yolo - Predicted in  1.92400 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07600 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  5.05100 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.40100 milli-seconds.
+layer:  20 type:           route - Predicted in  0.41800 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.36300 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.34100 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.51900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.35400 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.560443
+layer:  23 type:            yolo - Predicted in  7.21700 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource/data/eagle.jpg: Predicted in 80.797000 milli-seconds.
+bird: 77%	(left_x:   96   top_y:  144   width:  482   height:  292)
+Enter Image Path: end of net_pred_gpu, time is  0.49000 millisec
+layer:   0 type:   convolutional - Predicted in 11.93600 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  1.69700 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  4.78300 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  1.64800 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  5.72500 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  2.84000 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  2.62200 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.55400 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.74200 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.18100 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.77300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.97500 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.93600 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.13300 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.75500 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  0.72500 milli-seconds.
+layer:  12 type:   convolutional - Predicted in 10.20600 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  1.09600 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  1.37900 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.57800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.13200 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.765156
+layer:  16 type:            yolo - Predicted in  2.82700 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07400 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.19100 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.38100 milli-seconds.
+layer:  20 type:           route - Predicted in  0.35400 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.35600 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.29500 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.59100 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.31900 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.633250
+layer:  23 type:            yolo - Predicted in  7.26500 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/horses.jpg: Predicted in 74.100000 milli-seconds.
+horse: 32%	(left_x:  -18   top_y:  192   width:  181   height:  105)
+horse: 70%	(left_x:    7   top_y:  191   width:  303   height:  210)
+horse: 31%	(left_x:  234   top_y:  164   width:  197   height:  206)
+horse: 67%	(left_x:  441   top_y:  207   width:  154   height:  153)
+cow: 39%
+Enter Image Path: end of net_pred_gpu, time is  0.38300 millisec
+layer:   0 type:   convolutional - Predicted in 13.91600 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  1.71000 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  4.55000 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  0.88700 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  4.25300 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  1.53200 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  2.43100 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.00200 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.83000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.17200 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.65500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.61700 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.81700 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.15100 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.30800 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  0.81500 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  6.01000 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  0.92500 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  1.41200 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.71200 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.61500 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.616272
+layer:  16 type:            yolo - Predicted in  1.81600 milli-seconds.
+layer:  17 type:           route - Predicted in  0.08200 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  5.35300 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.38300 milli-seconds.
+layer:  20 type:           route - Predicted in  0.35500 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.35400 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.43500 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.58400 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.31700 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.550298
+layer:  23 type:            yolo - Predicted in  7.44600 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00100 millisec
+/home/nvidia/darknet_resource//data/person.jpg: Predicted in 68.357000 milli-seconds.
+dog: 89%	(left_x:   81   top_y:  265   width:  122   height:   86)
+person: 98%	(left_x:  180   top_y:   95   width:   99   height:  287)
+sheep: 84%	(left_x:  389   top_y:  125   width:  227   height:  216)
+Enter Image Path: end of net_pred_gpu, time is  0.40100 millisec
+layer:   0 type:   convolutional - Predicted in  6.88900 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  1.72700 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  4.93900 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  1.33700 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  3.32500 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  1.25500 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  1.32600 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.75600 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.60100 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.16400 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.35300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.54700 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.86600 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.10500 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.30300 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  1.41900 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  7.76800 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  2.90700 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  2.71200 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  1.94600 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.71700 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.592270
+layer:  16 type:            yolo - Predicted in  1.82500 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07400 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.20400 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.37800 milli-seconds.
+layer:  20 type:           route - Predicted in  0.52600 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.32300 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  4.52900 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  1.08900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.52000 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.569372
+layer:  23 type:            yolo - Predicted in  8.05500 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/giraffe.jpg: Predicted in 70.422000 milli-seconds.
+giraffe: 53%	(left_x:  153   top_y:  -42   width:  286   height:  505)
+zebra: 53%	(left_x:  305   top_y:  205   width:  110   height:  243)
+Enter Image Path: end of net_pred_gpu, time is  0.44100 millisec
+layer:   0 type:   convolutional - Predicted in  9.50100 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  0.72600 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  3.06800 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  0.54400 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  5.12000 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  2.76700 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  3.60600 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.68100 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.65700 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.15700 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.53500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.39400 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.81400 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.09900 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  2.35100 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  2.00600 milli-seconds.
+layer:  12 type:   convolutional - Predicted in 12.64400 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  2.64200 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  4.39100 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  2.15400 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.24200 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.767652
+layer:  16 type:            yolo - Predicted in  1.81200 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07500 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.19900 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.43900 milli-seconds.
+layer:  20 type:           route - Predicted in  0.35300 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.36300 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  4.49100 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.90600 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.41600 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.512851
+layer:  23 type:            yolo - Predicted in  7.70000 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource/data/dog.jpg: Predicted in 86.097000 milli-seconds.
+dog: 81%	(left_x:  124   top_y:  220   width:  258   height:  298)
+bicycle: 38%	(left_x:  229   top_y:  196   width:  330   height:  249)
+car: 71%	(left_x:  466   top_y:   83   width:  222   height:   89)
+truck: 41%
+Enter Image Path: end of net_pred_gpu, time is  0.39000 millisec
+layer:   0 type:   convolutional - Predicted in 10.99900 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  2.80000 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  6.67100 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  1.88900 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  4.38300 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  1.84500 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  2.96900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.08200 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.61900 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.24600 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.63900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.97400 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.89500 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.11500 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  2.21500 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  1.64800 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  8.67900 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  1.09500 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  2.53600 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  1.90400 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.76600 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.609184
+layer:  16 type:            yolo - Predicted in  1.81000 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07500 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.19100 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.39300 milli-seconds.
+layer:  20 type:           route - Predicted in  0.35900 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.31900 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  5.12700 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  1.91000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.59000 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.560443
+layer:  23 type:            yolo - Predicted in  7.56400 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource/data/eagle.jpg: Predicted in 83.204000 milli-seconds.
+bird: 77%	(left_x:   96   top_y:  144   width:  482   height:  292)
+Enter Image Path: end of net_pred_gpu, time is  0.40700 millisec
+layer:   0 type:   convolutional - Predicted in 11.15400 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  0.86800 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  7.85400 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  3.35700 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  7.00400 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  2.07100 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  3.16800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  3.13800 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.58100 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.13900 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  3.46700 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.88800 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.80400 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.09100 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  2.68100 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  1.63000 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  8.97500 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  1.06500 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  3.60100 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  3.00000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.80000 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.765156
+layer:  16 type:            yolo - Predicted in  1.81500 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07400 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.19700 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.38100 milli-seconds.
+layer:  20 type:           route - Predicted in  0.45100 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.31700 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  3.52100 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.76200 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.54900 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.633250
+layer:  23 type:            yolo - Predicted in  7.33600 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/horses.jpg: Predicted in 91.617000 milli-seconds.
+horse: 32%	(left_x:  -18   top_y:  192   width:  181   height:  105)
+horse: 70%	(left_x:    7   top_y:  191   width:  303   height:  210)
+horse: 31%	(left_x:  234   top_y:  164   width:  197   height:  206)
+horse: 67%	(left_x:  441   top_y:  207   width:  154   height:  153)
+cow: 39%
+Enter Image Path: end of net_pred_gpu, time is  0.41600 millisec
+layer:   0 type:   convolutional - Predicted in 10.26000 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  3.06200 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  6.41400 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  2.89000 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  4.45500 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  2.96900 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  2.27900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.11300 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.59100 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.21600 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.62000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.65800 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.81400 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.15200 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  2.06400 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  0.60400 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  9.18700 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  3.06200 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  3.55300 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  1.98600 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.12400 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.616272
+layer:  16 type:            yolo - Predicted in  1.99800 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07400 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.63000 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.45200 milli-seconds.
+layer:  20 type:           route - Predicted in  0.36700 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.34200 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.29600 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  1.72100 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.56000 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.550298
+layer:  23 type:            yolo - Predicted in  7.30100 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/person.jpg: Predicted in 81.882000 milli-seconds.
+dog: 89%	(left_x:   81   top_y:  265   width:  122   height:   86)
+person: 98%	(left_x:  180   top_y:   95   width:   99   height:  287)
+sheep: 84%	(left_x:  389   top_y:  125   width:  227   height:  216)
+Enter Image Path: end of net_pred_gpu, time is  0.46600 millisec
+layer:   0 type:   convolutional - Predicted in 10.98200 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  1.53200 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  5.28000 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  1.90500 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  6.80900 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  2.80300 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  3.81200 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  3.30800 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.69800 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.15200 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.90400 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.47800 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.81300 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.09400 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  3.83800 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  2.90800 milli-seconds.
+layer:  12 type:   convolutional - Predicted in 12.06000 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  2.21600 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  2.57700 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  1.81900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.97200 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.592270
+layer:  16 type:            yolo - Predicted in  1.81700 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07300 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.20400 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.37700 milli-seconds.
+layer:  20 type:           route - Predicted in  0.41300 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.27100 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  7.79000 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  1.67900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.45000 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.569372
+layer:  23 type:            yolo - Predicted in  7.77800 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/giraffe.jpg: Predicted in 96.808000 milli-seconds.
+giraffe: 53%	(left_x:  153   top_y:  -42   width:  286   height:  505)
+zebra: 53%	(left_x:  305   top_y:  205   width:  110   height:  243)
+Enter Image Path: end of net_pred_gpu, time is  0.51500 millisec
+layer:   0 type:   convolutional - Predicted in 22.71300 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  1.78200 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  8.08600 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  1.31500 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  5.71600 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  2.47300 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  2.46100 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.76200 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  2.04800 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.16000 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  2.43200 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  3.10300 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.88300 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.10100 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  3.46300 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  1.03300 milli-seconds.
+layer:  12 type:   convolutional - Predicted in 13.14100 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  1.57800 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  2.50600 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  1.47300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.87500 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.767652
+layer:  16 type:            yolo - Predicted in  1.85500 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07200 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.18700 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.38300 milli-seconds.
+layer:  20 type:           route - Predicted in  0.35800 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.39100 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  4.79500 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.91800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.50200 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.512851
+layer:  23 type:            yolo - Predicted in  7.39200 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource/data/dog.jpg: Predicted in 102.113000 milli-seconds.
+dog: 81%	(left_x:  124   top_y:  220   width:  258   height:  298)
+bicycle: 38%	(left_x:  229   top_y:  196   width:  330   height:  249)
+car: 71%	(left_x:  466   top_y:   83   width:  222   height:   89)
+truck: 41%
+Enter Image Path: end of net_pred_gpu, time is  0.44100 millisec
+layer:   0 type:   convolutional - Predicted in 16.68900 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  3.92300 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  6.84400 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  4.25000 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  5.50500 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  2.50500 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  3.31300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.34000 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.59600 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.24500 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.19600 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.99400 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  1.27400 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.11400 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  2.44100 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  4.11100 milli-seconds.
+layer:  12 type:   convolutional - Predicted in 11.40300 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  1.20800 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  1.22300 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.48600 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.15300 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.609184
+layer:  16 type:            yolo - Predicted in  1.87800 milli-seconds.
+layer:  17 type:           route - Predicted in  0.13500 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.19800 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.37900 milli-seconds.
+layer:  20 type:           route - Predicted in  0.36300 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.35900 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  4.10100 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.98600 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.48500 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.560443
+layer:  23 type:            yolo - Predicted in  7.28600 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource/data/eagle.jpg: Predicted in 93.070000 milli-seconds.
+bird: 77%	(left_x:   96   top_y:  144   width:  482   height:  292)
+Enter Image Path: end of net_pred_gpu, time is  0.42200 millisec
+layer:   0 type:   convolutional - Predicted in 14.46500 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  3.74100 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  7.18300 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  1.38100 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  9.20700 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  3.20600 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  3.04100 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.99900 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.70300 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.16000 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  2.94800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.07100 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.78400 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.11800 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.54500 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  1.68000 milli-seconds.
+layer:  12 type:   convolutional - Predicted in 12.93000 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  2.50600 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  2.70400 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  1.10200 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.82700 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.765156
+layer:  16 type:            yolo - Predicted in  1.84700 milli-seconds.
+layer:  17 type:           route - Predicted in  0.08700 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.28000 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.38900 milli-seconds.
+layer:  20 type:           route - Predicted in  0.41100 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.32700 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.35200 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  1.72500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.35300 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.633250
+layer:  23 type:            yolo - Predicted in  7.29500 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/horses.jpg: Predicted in 95.297000 milli-seconds.
+horse: 32%	(left_x:  -18   top_y:  192   width:  181   height:  105)
+horse: 70%	(left_x:    7   top_y:  191   width:  303   height:  210)
+horse: 31%	(left_x:  234   top_y:  164   width:  197   height:  206)
+horse: 67%	(left_x:  441   top_y:  207   width:  154   height:  153)
+cow: 39%
+Enter Image Path: end of net_pred_gpu, time is  0.39700 millisec
+layer:   0 type:   convolutional - Predicted in 20.49400 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  3.27000 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  7.42800 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  2.23700 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  5.55400 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  2.79200 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  2.48700 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.06900 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.60100 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.15500 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  2.92900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  3.74100 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.82600 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.11300 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  2.79600 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  2.97400 milli-seconds.
+layer:  12 type:   convolutional - Predicted in 12.91100 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  1.47600 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  2.05300 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  1.98300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.22400 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.616272
+layer:  16 type:            yolo - Predicted in  1.85900 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07400 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.19500 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.38100 milli-seconds.
+layer:  20 type:           route - Predicted in  0.37900 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.29500 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  4.35000 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  1.40900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.79000 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.550298
+layer:  23 type:            yolo - Predicted in  7.26400 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/person.jpg: Predicted in 103.030000 milli-seconds.
+dog: 89%	(left_x:   81   top_y:  265   width:  122   height:   86)
+person: 98%	(left_x:  180   top_y:   95   width:   99   height:  287)
+sheep: 84%	(left_x:  389   top_y:  125   width:  227   height:  216)
+Enter Image Path: end of net_pred_gpu, time is  0.50400 millisec
+layer:   0 type:   convolutional - Predicted in 19.74200 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  4.13700 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  7.22900 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  4.02300 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  5.34000 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  2.91700 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  1.81200 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.73700 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.62900 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.20900 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.54600 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.42500 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.83000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.11900 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.58500 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  3.61900 milli-seconds.
+layer:  12 type:   convolutional - Predicted in 15.40800 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  1.52400 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  2.54200 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  2.68400 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.24100 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.592270
+layer:  16 type:            yolo - Predicted in  1.82300 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07500 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.21600 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.38900 milli-seconds.
+layer:  20 type:           route - Predicted in  0.44300 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.43000 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  5.00800 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  1.73500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.03700 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.569372
+layer:  23 type:            yolo - Predicted in  8.03900 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/giraffe.jpg: Predicted in 107.510000 milli-seconds.
+giraffe: 53%	(left_x:  153   top_y:  -42   width:  286   height:  505)
+zebra: 53%	(left_x:  305   top_y:  205   width:  110   height:  243)
+Enter Image Path: end of net_pred_gpu, time is  0.39600 millisec
+layer:   0 type:   convolutional - Predicted in 17.92800 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  2.99400 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  7.28800 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  2.28900 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  5.74300 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  1.11000 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  3.94200 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.39000 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.58800 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.14700 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.84100 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  3.06000 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.82700 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.09900 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  2.90300 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  3.07100 milli-seconds.
+layer:  12 type:   convolutional - Predicted in 12.48700 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  1.36400 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  1.42700 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.79300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.57700 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.767652
+layer:  16 type:            yolo - Predicted in  1.80300 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07300 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.63700 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.40700 milli-seconds.
+layer:  20 type:           route - Predicted in  0.35900 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.40000 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.26600 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.56400 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.24200 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.512851
+layer:  23 type:            yolo - Predicted in  7.62500 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00100 millisec
+/home/nvidia/darknet_resource/data/dog.jpg: Predicted in 92.184000 milli-seconds.
+dog: 81%	(left_x:  124   top_y:  220   width:  258   height:  298)
+bicycle: 38%	(left_x:  229   top_y:  196   width:  330   height:  249)
+car: 71%	(left_x:  466   top_y:   83   width:  222   height:   89)
+truck: 41%
+Enter Image Path: end of net_pred_gpu, time is  0.51900 millisec
+layer:   0 type:   convolutional - Predicted in 15.87100 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  2.85600 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  5.42100 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  1.94300 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  3.48500 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  1.50400 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  1.25700 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.33700 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.58700 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.19200 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  2.74300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.89800 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.81500 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.08500 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  2.58200 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  1.91200 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  9.82300 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  1.09400 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  1.44100 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.69200 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.48200 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.609184
+layer:  16 type:            yolo - Predicted in  1.86700 milli-seconds.
+layer:  17 type:           route - Predicted in  0.10900 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.43200 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.60700 milli-seconds.
+layer:  20 type:           route - Predicted in  0.37600 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.28700 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  3.07400 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.74400 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.36900 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.560443
+layer:  23 type:            yolo - Predicted in  8.43700 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00100 millisec
+/home/nvidia/darknet_resource/data/eagle.jpg: Predicted in 81.623000 milli-seconds.
+bird: 77%	(left_x:   96   top_y:  144   width:  482   height:  292)
+Enter Image Path: end of net_pred_gpu, time is  0.46400 millisec
+layer:   0 type:   convolutional - Predicted in 10.79400 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  3.06600 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  6.54500 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  1.86600 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  7.37400 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  2.84800 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  2.81400 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  3.03200 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.74800 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.28800 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.57900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.59700 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.81900 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.15000 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.77000 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  2.53400 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  9.54900 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  2.84700 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  2.55900 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  2.76700 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.91200 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.765156
+layer:  16 type:            yolo - Predicted in  1.83100 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07600 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.28600 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.40400 milli-seconds.
+layer:  20 type:           route - Predicted in  0.44000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.28300 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  3.47300 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.74800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.54700 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.633250
+layer:  23 type:            yolo - Predicted in  7.30500 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/horses.jpg: Predicted in 88.961000 milli-seconds.
+horse: 32%	(left_x:  -18   top_y:  192   width:  181   height:  105)
+horse: 70%	(left_x:    7   top_y:  191   width:  303   height:  210)
+horse: 31%	(left_x:  234   top_y:  164   width:  197   height:  206)
+horse: 67%	(left_x:  441   top_y:  207   width:  154   height:  153)
+cow: 39%
+Enter Image Path: end of net_pred_gpu, time is  0.39600 millisec
+layer:   0 type:   convolutional - Predicted in 10.51800 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  0.89900 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  5.35200 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  3.17200 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  7.18000 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  2.37200 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  4.69200 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  3.05900 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.61400 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.14200 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  3.69100 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.25000 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.92800 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.16400 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  2.56800 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  0.83400 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  8.64000 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  2.07300 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  3.36600 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  1.85500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.86400 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.616272
+layer:  16 type:            yolo - Predicted in  1.82900 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07600 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.42000 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.72500 milli-seconds.
+layer:  20 type:           route - Predicted in  0.39300 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.28000 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  3.02600 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.72200 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.61600 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.550298
+layer:  23 type:            yolo - Predicted in  8.35100 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/person.jpg: Predicted in 88.636000 milli-seconds.
+dog: 89%	(left_x:   81   top_y:  265   width:  122   height:   86)
+person: 98%	(left_x:  180   top_y:   95   width:   99   height:  287)
+sheep: 84%	(left_x:  389   top_y:  125   width:  227   height:  216)
+Enter Image Path: end of net_pred_gpu, time is  0.37700 millisec
+layer:   0 type:   convolutional - Predicted in 15.53400 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  2.86300 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  5.64300 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  1.95900 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  4.10700 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  1.93000 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  2.14200 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.15300 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  2.46000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.21300 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.61900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.60800 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.83600 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.15200 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  2.19800 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  1.20900 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  8.85800 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  1.98800 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  2.51100 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  1.07300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.11400 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.592270
+layer:  16 type:            yolo - Predicted in  2.47500 milli-seconds.
+layer:  17 type:           route - Predicted in  0.22400 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  5.38000 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.38500 milli-seconds.
+layer:  20 type:           route - Predicted in  0.35400 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.64400 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  5.72900 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  1.94000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.16800 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.569372
+layer:  23 type:            yolo - Predicted in  7.36500 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/giraffe.jpg: Predicted in 88.818000 milli-seconds.
+giraffe: 53%	(left_x:  153   top_y:  -42   width:  286   height:  505)
+zebra: 53%	(left_x:  305   top_y:  205   width:  110   height:  243)
+Enter Image Path: end of net_pred_gpu, time is  0.40500 millisec
+layer:   0 type:   convolutional - Predicted in 20.87800 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  3.18700 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  5.65500 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  2.76800 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  4.47000 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  1.67200 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  2.80600 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  4.05500 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.59500 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.14500 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.27900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.18500 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.89400 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.09200 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  3.54500 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  2.12900 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  7.54100 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  0.93500 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  1.31700 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  1.89600 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.43400 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.767652
+layer:  16 type:            yolo - Predicted in  2.23000 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07500 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.35000 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.38300 milli-seconds.
+layer:  20 type:           route - Predicted in  0.37100 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.27900 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.34700 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.57300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.32800 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.512851
+layer:  23 type:            yolo - Predicted in  7.20200 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource/data/dog.jpg: Predicted in 89.546000 milli-seconds.
+dog: 81%	(left_x:  124   top_y:  220   width:  258   height:  298)
+bicycle: 38%	(left_x:  229   top_y:  196   width:  330   height:  249)
+car: 71%	(left_x:  466   top_y:   83   width:  222   height:   89)
+truck: 41%
+Enter Image Path: end of net_pred_gpu, time is  0.40600 millisec
+layer:   0 type:   convolutional - Predicted in  8.51800 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  0.71700 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  5.01100 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  1.62300 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  2.40900 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  1.37600 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  1.39800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.71900 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.67400 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.16200 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.52800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.43800 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.93600 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.15900 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  7.83300 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  2.83800 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  7.57900 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  5.31800 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  1.53800 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.48800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.20900 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.609184
+layer:  16 type:            yolo - Predicted in  2.77800 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07500 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.32700 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.39500 milli-seconds.
+layer:  20 type:           route - Predicted in  0.37000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.38100 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in 13.34900 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.96500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.34100 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.560443
+layer:  23 type:            yolo - Predicted in  7.67600 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource/data/eagle.jpg: Predicted in 84.298000 milli-seconds.
+bird: 77%	(left_x:   96   top_y:  144   width:  482   height:  292)
+Enter Image Path: end of net_pred_gpu, time is  0.38000 millisec
+layer:   0 type:   convolutional - Predicted in  5.32700 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  0.46600 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  1.99400 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  0.27200 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  1.22200 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  0.16800 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  0.93400 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.41900 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.59700 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.16000 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.39500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.33800 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.79700 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.19300 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.40300 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  0.17700 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  3.20700 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  0.62700 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  0.96500 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.37400 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.16000 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.765156
+layer:  16 type:            yolo - Predicted in  1.79800 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07500 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.22000 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.45300 milli-seconds.
+layer:  20 type:           route - Predicted in  0.42500 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.33900 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.33600 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.94300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.31200 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.633250
+layer:  23 type:            yolo - Predicted in  7.90800 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00100 millisec
+/home/nvidia/darknet_resource//data/horses.jpg: Predicted in 41.995000 milli-seconds.
+horse: 32%	(left_x:  -18   top_y:  192   width:  181   height:  105)
+horse: 70%	(left_x:    7   top_y:  191   width:  303   height:  210)
+horse: 31%	(left_x:  234   top_y:  164   width:  197   height:  206)
+horse: 67%	(left_x:  441   top_y:  207   width:  154   height:  153)
+cow: 39%
+Enter Image Path: end of net_pred_gpu, time is  0.43800 millisec
+layer:   0 type:   convolutional - Predicted in  5.27000 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  0.43400 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  2.00600 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  0.25200 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  1.21200 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  0.20200 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  0.93500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.47700 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.69800 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.16100 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.33800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.34300 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.78500 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.10900 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.31400 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  0.14300 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  3.19800 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  0.59200 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  0.98200 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.37900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.11200 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.616272
+layer:  16 type:            yolo - Predicted in  1.86000 milli-seconds.
+layer:  17 type:           route - Predicted in  0.08000 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.15400 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.39400 milli-seconds.
+layer:  20 type:           route - Predicted in  0.35000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.27700 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.25600 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.58800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.34400 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.550298
+layer:  23 type:            yolo - Predicted in  7.63800 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/person.jpg: Predicted in 40.760000 milli-seconds.
+dog: 89%	(left_x:   81   top_y:  265   width:  122   height:   86)
+person: 98%	(left_x:  180   top_y:   95   width:   99   height:  287)
+sheep: 84%	(left_x:  389   top_y:  125   width:  227   height:  216)
+Enter Image Path: end of net_pred_gpu, time is  0.37400 millisec
+layer:   0 type:   convolutional - Predicted in  5.28200 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  0.44900 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  1.90700 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  0.24600 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  1.21600 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  0.17100 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  0.91000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.49500 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.64300 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.16300 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.32600 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.30400 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.87900 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.09200 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.35900 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  0.15100 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  3.19600 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  0.63300 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  0.95300 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.39500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.11500 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.592270
+layer:  16 type:            yolo - Predicted in  1.86400 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07300 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.58500 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.39100 milli-seconds.
+layer:  20 type:           route - Predicted in  0.35300 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.25300 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.31900 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.54000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.33500 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.569372
+layer:  23 type:            yolo - Predicted in  7.40100 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/giraffe.jpg: Predicted in 40.870000 milli-seconds.
+giraffe: 53%	(left_x:  153   top_y:  -42   width:  286   height:  505)
+zebra: 53%	(left_x:  305   top_y:  205   width:  110   height:  243)
+Enter Image Path: Cannot load image 
+
+end of net_pred_gpu, time is  0.39600 millisec
+layer:   0 type:   convolutional - Predicted in  8.73600 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  0.42500 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  1.95000 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  0.28200 milli-seconds.
+layer:   4 type:   convolutional - Predicted in  1.19300 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  0.15900 milli-seconds.
+layer:   6 type:   convolutional - Predicted in  0.93100 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.51400 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.97000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.14300 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.54800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.33200 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.81900 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.13600 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.24000 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  0.14500 milli-seconds.
+layer:  12 type:   convolutional - Predicted in  3.17900 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  0.62800 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  0.97900 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.38300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.11200 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.767652
+layer:  16 type:            yolo - Predicted in  1.80800 milli-seconds.
+layer:  17 type:           route - Predicted in  0.11000 milli-seconds.
+memset complete!
+this is workspace_cpu:-532759616
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.23200 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.38100 milli-seconds.
+layer:  20 type:           route - Predicted in  0.35200 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.35800 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.30600 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.56000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.30400 milli-seconds, sizeof output:172380 
+fw_yolo_layer value : 0.512851
+layer:  23 type:            yolo - Predicted in  7.26500 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00100 millisec
+/ÝÀa0‘áAidia/darknet_resource//data/giraffe.jpg: Predicted in 45.310000 milli-seconds.
+Enter Image Path: 101.743000 45.310000
+53.285000 2357814403.716000
+73.425000 2357814563.523000
+93.515000 2357814732.757000
+88.770000 2357814892.670000
+83.330000 2357815063.991000
+82.073000 2357815237.785000
+69.621000 2357815390.124000
+75.047000 2357815540.966000
+73.986000 2357815687.782000
+74.444000 2357815846.037000
+68.626000 2357816001.195000
+52.401000 2357816135.091000
+42.108000 2357816248.074000
+72.768000 2357816388.503000
+88.422000 2357816559.417000
+90.224000 2357816733.853000
+94.987000 2357816907.200000
+92.361000 2357817071.102000
+89.018000 2357817232.174000
+79.820000 2357817403.377000
+77.193000 2357817569.932000
+82.952000 2357817732.577000
+88.119000 2357817897.114000
+99.582000 2357818066.238000
+93.480000 2357818240.130000
+80.797000 2357818407.021000
+74.100000 2357818561.699000
+68.357000 2357818704.499000
+70.422000 2357818847.953000
+86.097000 2357819015.647000
+83.204000 2357819184.264000
+91.617000 2357819356.743000
+81.882000 2357819528.231000
+96.808000 2357819695.438000
+102.113000 2357819878.055000
+93.070000 2357820054.398000
+95.297000 2357820229.231000
+103.030000 2357820405.634000
+107.510000 2357820583.504000
+92.184000 2357820755.094000
+81.623000 2357820923.942000
+88.961000 2357821091.870000
+88.636000 2357821251.611000
+88.818000 2357821413.788000
+89.546000 2357821588.587000
+84.298000 2357821757.346000
+41.995000 2357821912.757000
+40.760000 2357822024.598000
+40.870000 2357822133.513000
+e:         maxpool - Predicted in  0.80200 milli-seconds.
+memset complete!
+this is workspace_cpu:-447185264
+ l.index = 10 - FP32 
+layer:  10 type:   convolutional - Predicted in 145.04400 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  1.63100 milli-seconds.
+memset complete!
+this is workspace_cpu:1348362256
+ l.index = 12 - FP32 
+layer:  12 type:   convolutional - Predicted in 576.50900 milli-seconds.
+memset complete!
+this is workspace_cpu:-432549376
+ l.index = 13 - FP32 
+layer:  13 type:   convolutional - Predicted in 33.07500 milli-seconds.
+memset complete!
+this is workspace_cpu:-429736192
+ l.index = 14 - FP32 
+layer:  14 type:   convolutional - Predicted in 145.14800 milli-seconds.
+memset complete!
+this is workspace_cpu:-418878432
+ l.index = 15 - FP32 
+layer:  15 type:   convolutional - Predicted in 15.66400 milli-seconds.
+fw_yolo_layer value : 0.765135
+layer:  16 type:            yolo - Predicted in  1.92200 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07600 milli-seconds.
+memset complete!
+this is workspace_cpu:-417481728
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.21000 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.38100 milli-seconds.
+layer:  20 type:           route - Predicted in  0.44700 milli-seconds.
+memset complete!
+this is workspace_cpu:-413716368
+ l.index = 21 - FP32 
+layer:  21 type:   convolutional - Predicted in 298.65000 milli-seconds.
+memset complete!
+this is workspace_cpu:-403859408
+ l.index = 22 - FP32 
+layer:  22 type:   convolutional - Predicted in 20.79300 milli-seconds.
+fw_yolo_layer value : 0.626963
+layer:  23 type:            yolo - Predicted in  7.21800 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/horses.jpg: Predicted in 1815.727000 milli-seconds.
+horse: 32%	(left_x:  -18   top_y:  192   width:  181   height:  105)
+horse: 70%	(left_x:    7   top_y:  191   width:  303   height:  210)
+horse: 55%	(left_x:   42   top_y:  199   width:   64   height:   54)
+horse: 31%	(left_x:  234   top_y:  164   width:  197   height:  206)
+horse: 67%	(left_x:  441   top_y:  207   width:  154   height:  153)
+cow: 39%
+horse: 69%	(left_x:  483   top_y:  237   width:   77   height:   93)
+cow: 50%
+Enter Image Path: end of net_pred_gpu, time is  0.36200 millisec
+memset complete!
+this is workspace_cpu:-1162408432
+ l.index = 0 - FP32 
+layer:   0 type:   convolutional - Predicted in 56.47600 milli-seconds.
+layer:   1 type:         maxpool - Predicted in 12.27400 milli-seconds.
+memset complete!
+this is workspace_cpu:-511561536
+ l.index = 2 - FP32 
+layer:   2 type:   convolutional - Predicted in 117.71500 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  6.10600 milli-seconds.
+memset complete!
+this is workspace_cpu:-511496304
+ l.index = 4 - FP32 
+layer:   4 type:   convolutional - Predicted in 163.78200 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  3.16200 milli-seconds.
+memset complete!
+this is workspace_cpu:-511320320
+ l.index = 6 - FP32 
+layer:   6 type:   convolutional - Predicted in 96.75500 milli-seconds.
+layer:   7 type:         maxpool - Predicted in  1.67400 milli-seconds.
+memset complete!
+this is workspace_cpu:-452832768
+ l.index = 8 - FP32 
+layer:   8 type:   convolutional - Predicted in 100.05900 milli-seconds.
+layer:   9 type:         maxpool - Predicted in  0.81900 milli-seconds.
+memset complete!
+this is workspace_cpu:-447185264
+ l.index = 10 - FP32 
+layer:  10 type:   convolutional - Predicted in 146.62300 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  1.68000 milli-seconds.
+memset complete!
+this is workspace_cpu:1348362256
+ l.index = 12 - FP32 
+layer:  12 type:   convolutional - Predicted in 585.42100 milli-seconds.
+memset complete!
+this is workspace_cpu:-432549376
+ l.index = 13 - FP32 
+layer:  13 type:   convolutional - Predicted in 31.94800 milli-seconds.
+memset complete!
+this is workspace_cpu:-429736192
+ l.index = 14 - FP32 
+layer:  14 type:   convolutional - Predicted in 144.46400 milli-seconds.
+memset complete!
+this is workspace_cpu:-418878432
+ l.index = 15 - FP32 
+layer:  15 type:   convolutional - Predicted in 15.85900 milli-seconds.
+fw_yolo_layer value : 0.616173
+layer:  16 type:            yolo - Predicted in  1.84600 milli-seconds.
+layer:  17 type:           route - Predicted in  0.08600 milli-seconds.
+memset complete!
+this is workspace_cpu:-417481728
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.23300 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.38400 milli-seconds.
+layer:  20 type:           route - Predicted in  0.35800 milli-seconds.
+memset complete!
+this is workspace_cpu:-413716368
+ l.index = 21 - FP32 
+layer:  21 type:   convolutional - Predicted in 299.00800 milli-seconds.
+memset complete!
+this is workspace_cpu:-403859408
+ l.index = 22 - FP32 
+layer:  22 type:   convolutional - Predicted in 20.73100 milli-seconds.
+fw_yolo_layer value : 0.604482
+layer:  23 type:            yolo - Predicted in  7.23100 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00100 millisec
+/home/nvidia/darknet_resource//data/person.jpg: Predicted in 1820.056000 milli-seconds.
+dog: 89%	(left_x:   81   top_y:  265   width:  122   height:   86)
+dog: 82%	(left_x:  109   top_y:  275   width:   62   height:   61)
+person: 98%	(left_x:  180   top_y:   95   width:   99   height:  287)
+sheep: 83%	(left_x:  388   top_y:  125   width:  227   height:  216)
+Enter Image Path: end of net_pred_gpu, time is  0.36400 millisec
+memset complete!
+this is workspace_cpu:-1162408432
+ l.index = 0 - FP32 
+layer:   0 type:   convolutional - Predicted in 56.43400 milli-seconds.
+layer:   1 type:         maxpool - Predicted in 12.19200 milli-seconds.
+memset complete!
+this is workspace_cpu:-511561536
+ l.index = 2 - FP32 
+layer:   2 type:   convolutional - Predicted in 116.23000 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  7.70600 milli-seconds.
+memset complete!
+this is workspace_cpu:-511496304
+ l.index = 4 - FP32 
+layer:   4 type:   convolutional - Predicted in 164.19200 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  3.14800 milli-seconds.
+memset complete!
+this is workspace_cpu:-511320320
+ l.index = 6 - FP32 
+layer:   6 type:   convolutional - Predicted in 96.30000 milli-seconds.
+layer:   7 type:         maxpool - Predicted in  1.67100 milli-seconds.
+memset complete!
+this is workspace_cpu:-452832768
+ l.index = 8 - FP32 
+layer:   8 type:   convolutional - Predicted in 95.52300 milli-seconds.
+layer:   9 type:         maxpool - Predicted in  0.82100 milli-seconds.
+memset complete!
+this is workspace_cpu:-447185264
+ l.index = 10 - FP32 
+layer:  10 type:   convolutional - Predicted in 147.93000 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  1.62800 milli-seconds.
+memset complete!
+this is workspace_cpu:1348362256
+ l.index = 12 - FP32 
+layer:  12 type:   convolutional - Predicted in 581.11400 milli-seconds.
+memset complete!
+this is workspace_cpu:-432549376
+ l.index = 13 - FP32 
+layer:  13 type:   convolutional - Predicted in 32.06700 milli-seconds.
+memset complete!
+this is workspace_cpu:-429736192
+ l.index = 14 - FP32 
+layer:  14 type:   convolutional - Predicted in 145.13600 milli-seconds.
+memset complete!
+this is workspace_cpu:-418878432
+ l.index = 15 - FP32 
+layer:  15 type:   convolutional - Predicted in 15.65400 milli-seconds.
+fw_yolo_layer value : 0.592281
+layer:  16 type:            yolo - Predicted in  1.82700 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07700 milli-seconds.
+memset complete!
+this is workspace_cpu:-417481728
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.18500 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.39600 milli-seconds.
+layer:  20 type:           route - Predicted in  0.35800 milli-seconds.
+memset complete!
+this is workspace_cpu:-413716368
+ l.index = 21 - FP32 
+layer:  21 type:   convolutional - Predicted in 294.42100 milli-seconds.
+memset complete!
+this is workspace_cpu:-403859408
+ l.index = 22 - FP32 
+layer:  22 type:   convolutional - Predicted in 20.79300 milli-seconds.
+fw_yolo_layer value : 0.621500
+layer:  23 type:            yolo - Predicted in  7.23400 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00100 millisec
+/home/nvidia/darknet_resource//data/giraffe.jpg: Predicted in 1808.345000 milli-seconds.
+giraffe: 53%	(left_x:  153   top_y:  -42   width:  286   height:  505)
+zebra: 53%	(left_x:  305   top_y:  205   width:  110   height:  243)
+Enter Image Path: Cannot load image 
+
+end of net_pred_gpu, time is  0.35200 millisec
+memset complete!
+this is workspace_cpu:-1162408432
+ l.index = 0 - FP32 
+layer:   0 type:   convolutional - Predicted in 56.53800 milli-seconds.
+layer:   1 type:         maxpool - Predicted in 12.45800 milli-seconds.
+memset complete!
+this is workspace_cpu:-511561536
+ l.index = 2 - FP32 
+layer:   2 type:   convolutional - Predicted in 116.92600 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  6.15100 milli-seconds.
+memset complete!
+this is workspace_cpu:-511496304
+ l.index = 4 - FP32 
+layer:   4 type:   convolutional - Predicted in 162.32500 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  3.15200 milli-seconds.
+memset complete!
+this is workspace_cpu:-511320320
+ l.index = 6 - FP32 
+layer:   6 type:   convolutional - Predicted in 97.18000 milli-seconds.
+layer:   7 type:         maxpool - Predicted in  1.68100 milli-seconds.
+memset complete!
+this is workspace_cpu:-452832768
+ l.index = 8 - FP32 
+layer:   8 type:   convolutional - Predicted in 95.98700 milli-seconds.
+layer:   9 type:         maxpool - Predicted in  0.81800 milli-seconds.
+memset complete!
+this is workspace_cpu:-447185264
+ l.index = 10 - FP32 
+layer:  10 type:   convolutional - Predicted in 141.74700 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  1.61000 milli-seconds.
+memset complete!
+this is workspace_cpu:1348362256
+ l.index = 12 - FP32 
+layer:  12 type:   convolutional - Predicted in 569.01100 milli-seconds.
+memset complete!
+this is workspace_cpu:-432549376
+ l.index = 13 - FP32 
+layer:  13 type:   convolutional - Predicted in 31.59100 milli-seconds.
+memset complete!
+this is workspace_cpu:-429736192
+ l.index = 14 - FP32 
+layer:  14 type:   convolutional - Predicted in 141.67200 milli-seconds.
+memset complete!
+this is workspace_cpu:-418878432
+ l.index = 15 - FP32 
+layer:  15 type:   convolutional - Predicted in 15.62200 milli-seconds.
+fw_yolo_layer value : 0.767672
+layer:  16 type:            yolo - Predicted in  1.84000 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07500 milli-seconds.
+memset complete!
+this is workspace_cpu:-417481728
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.18100 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.38200 milli-seconds.
+layer:  20 type:           route - Predicted in  0.36800 milli-seconds.
+memset complete!
+this is workspace_cpu:-413716368
+ l.index = 21 - FP32 
+layer:  21 type:   convolutional - Predicted in 297.42800 milli-seconds.
+memset complete!
+this is workspace_cpu:-403859408
+ l.index = 22 - FP32 
+layer:  22 type:   convolutional - Predicted in 20.73400 milli-seconds.
+fw_yolo_layer value : 0.529222
+layer:  23 type:            yolo - Predicted in  7.22200 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
++‹va†áAidia/darknet_resource//data/giraffe.jpg: Predicted in 1787.987000 milli-seconds.
+Enter Image Path: 1959.875000 1787.987000
+1929.690000 2352063559.817000
+1926.491000 2352065569.371000
+1877.447000 2352067521.608000
+1800.800000 2352069391.061000
+1798.048000 2352071271.510000
+1791.971000 2352073146.254000
+1798.804000 2352075023.148000
+1809.052000 2352076903.419000
+1810.740000 2352078785.478000
+1789.195000 2352080655.910000
+1790.626000 2352082529.069000
+1801.139000 2352084407.718000
+1796.671000 2352086274.926000
+1790.995000 2352088134.236000
+1791.458000 2352090003.988000
+1806.360000 2352091892.312000
+1796.254000 2352093765.165000
+1804.645000 2352095643.345000
+1793.838000 2352097505.482000
+1790.170000 2352099374.797000
+1794.302000 2352101251.340000
+1802.366000 2352103130.426000
+1797.300000 2352104998.226000
+1786.807000 2352106853.346000
+1788.362000 2352108722.166000
+1803.008000 2352110607.587000
+1792.634000 2352112479.939000
+1802.304000 2352114352.686000
+1792.730000 2352116213.361000
+1788.543000 2352118080.542000
+1793.367000 2352119955.705000
+1799.355000 2352121832.178000
+1790.648000 2352123693.437000
+1787.888000 2352125548.303000
+1801.696000 2352127429.309000
+1795.865000 2352129310.321000
+1791.667000 2352131177.611000
+1790.034000 2352133039.161000
+1794.834000 2352134901.016000
+1803.554000 2352136782.829000
+1815.288000 2352138681.367000
+1807.269000 2352140564.275000
+1808.252000 2352142442.875000
+1794.499000 2352144304.560000
+1796.380000 2352146180.772000
+1815.191000 2352148078.249000
+1815.727000 2352149970.456000
+1820.056000 2352151865.561000
+1808.345000 2352153742.578000
+lli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.19500 milli-seconds, sizeof output:172380 
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource/data/eagle.jpg: Predicted in 83.866000 milli-seconds.
+bird: 77%	(left_x:   96   top_y:  144   width:  482   height:  292)
+Enter Image Path: end of net_pred_gpu, time is  0.37400 millisec
+layer:   0 type:   convolutional - Predicted in  5.26800 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  0.45700 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  1.90600 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.39000 milli-seconds, sizeof output:1384448 
+layer:   3 type:         maxpool - Predicted in  6.11200 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.44400 milli-seconds,sizeof output :346112 
+layer:   4 type:   convolutional - Predicted in  1.65500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.77400 milli-seconds, sizeof output:692224 
+layer:   5 type:         maxpool - Predicted in  3.69100 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.26900 milli-seconds,sizeof output :173056 
+layer:   6 type:   convolutional - Predicted in  1.63500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.48800 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.62400 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.13600 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  2.45800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.32800 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.80200 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.08800 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.37400 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.25000 milli-seconds, sizeof output:86528 
+layer:  11 type:         maxpool - Predicted in  3.15500 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.16800 milli-seconds,sizeof output :86528 
+layer:  12 type:   convolutional - Predicted in  3.62200 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  2.22000 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  1.07000 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.43700 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.15100 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.765156
+layer:  16 type:            yolo - Predicted in  3.43500 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07600 milli-seconds.
+memset complete!
+this is workspace_cpu:-1111772704
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.50800 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.39700 milli-seconds.
+layer:  20 type:           route - Predicted in  0.36300 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.40100 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  6.31100 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  4.25000 milli-seconds.
+this is not training.
+layer:  23 type:            yolo - Predicted in  6.34800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.16600 milli-seconds, sizeof output:172380 
+target layer i is 23.
+end of get_net_output, time is  0.00100 millisec
+/home/nvidia/darknet_resource//data/horses.jpg: Predicted in 71.570000 milli-seconds.
+horse: 32%	(left_x:  -18   top_y:  192   width:  181   height:  105)
+horse: 70%	(left_x:    7   top_y:  191   width:  303   height:  210)
+horse: 31%	(left_x:  234   top_y:  164   width:  197   height:  206)
+horse: 67%	(left_x:  441   top_y:  207   width:  154   height:  153)
+cow: 39%
+Enter Image Path: end of net_pred_gpu, time is  0.53100 millisec
+layer:   0 type:   convolutional - Predicted in 15.94700 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  1.07000 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  2.62000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.70300 milli-seconds, sizeof output:1384448 
+layer:   3 type:         maxpool - Predicted in  7.15600 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.41800 milli-seconds,sizeof output :346112 
+layer:   4 type:   convolutional - Predicted in  1.59900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.71300 milli-seconds, sizeof output:692224 
+layer:   5 type:         maxpool - Predicted in  3.18700 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.24100 milli-seconds,sizeof output :173056 
+layer:   6 type:   convolutional - Predicted in  1.45000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.42400 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.87200 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.16500 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.34800 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.33600 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.79500 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.07800 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.38900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.16700 milli-seconds, sizeof output:86528 
+layer:  11 type:         maxpool - Predicted in  2.72100 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.14800 milli-seconds,sizeof output :86528 
+layer:  12 type:   convolutional - Predicted in  3.56300 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  0.67500 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  0.98800 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.37900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.14500 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.616272
+layer:  16 type:            yolo - Predicted in  1.96600 milli-seconds.
+layer:  17 type:           route - Predicted in  0.11300 milli-seconds.
+memset complete!
+this is workspace_cpu:-1111772704
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.61700 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.43400 milli-seconds.
+layer:  20 type:           route - Predicted in  0.34800 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.38000 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.26400 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.53400 milli-seconds.
+this is not training.
+layer:  23 type:            yolo - Predicted in  0.44300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.13300 milli-seconds, sizeof output:172380 
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/person.jpg: Predicted in 63.760000 milli-seconds.
+dog: 89%	(left_x:   81   top_y:  265   width:  122   height:   86)
+person: 98%	(left_x:  180   top_y:   95   width:   99   height:  287)
+sheep: 84%	(left_x:  389   top_y:  125   width:  227   height:  216)
+Enter Image Path: end of net_pred_gpu, time is  0.40200 millisec
+layer:   0 type:   convolutional - Predicted in 13.60300 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  3.31900 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  8.16500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  3.73100 milli-seconds, sizeof output:1384448 
+layer:   3 type:         maxpool - Predicted in  7.16700 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.50800 milli-seconds,sizeof output :346112 
+layer:   4 type:   convolutional - Predicted in  1.64200 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.92400 milli-seconds, sizeof output:692224 
+layer:   5 type:         maxpool - Predicted in  3.07100 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.32200 milli-seconds,sizeof output :173056 
+layer:   6 type:   convolutional - Predicted in  2.08200 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  3.83600 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.57700 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.13800 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.98000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.02500 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.80900 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.12800 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.33000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.31000 milli-seconds, sizeof output:86528 
+layer:  11 type:         maxpool - Predicted in  3.14900 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.16100 milli-seconds,sizeof output :86528 
+layer:  12 type:   convolutional - Predicted in  3.64800 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  0.71300 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  0.98600 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.35400 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.14300 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.592270
+layer:  16 type:            yolo - Predicted in  1.97400 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07700 milli-seconds.
+memset complete!
+this is workspace_cpu:-1111772704
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.29200 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.39000 milli-seconds.
+layer:  20 type:           route - Predicted in  0.35600 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.27600 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  2.32600 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  0.53900 milli-seconds.
+this is not training.
+layer:  23 type:            yolo - Predicted in  0.35700 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.08800 milli-seconds, sizeof output:172380 
+target layer i is 23.
+end of get_net_output, time is  0.00100 millisec
+/home/nvidia/darknet_resource//data/giraffe.jpg: Predicted in 76.641000 milli-seconds.
+giraffe: 53%	(left_x:  153   top_y:  -42   width:  286   height:  505)
+zebra: 53%	(left_x:  305   top_y:  205   width:  110   height:  243)
+Enter Image Path: Cannot load image 
+
+end of net_pred_gpu, time is  0.54900 millisec
+layer:   0 type:   convolutional - Predicted in 17.11000 milli-seconds.
+layer:   1 type:         maxpool - Predicted in  1.58300 milli-seconds.
+layer:   2 type:   convolutional - Predicted in  2.39100 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.54200 milli-seconds, sizeof output:1384448 
+layer:   3 type:         maxpool - Predicted in  7.34100 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.69900 milli-seconds,sizeof output :346112 
+layer:   4 type:   convolutional - Predicted in  3.25900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.50000 milli-seconds, sizeof output:692224 
+layer:   5 type:         maxpool - Predicted in  3.63700 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.26000 milli-seconds,sizeof output :173056 
+layer:   6 type:   convolutional - Predicted in  1.47600 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.40300 milli-seconds, sizeof output:346112 
+layer:   7 type:         maxpool - Predicted in  1.84800 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.20700 milli-seconds,sizeof output :86528 
+layer:   8 type:   convolutional - Predicted in  1.26400 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  2.44200 milli-seconds, sizeof output:173056 
+layer:   9 type:         maxpool - Predicted in  0.82100 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.11600 milli-seconds,sizeof output :43264 
+layer:  10 type:   convolutional - Predicted in  1.59300 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  3.89700 milli-seconds, sizeof output:86528 
+layer:  11 type:         maxpool - Predicted in  1.73000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.13600 milli-seconds,sizeof output :86528 
+layer:  12 type:   convolutional - Predicted in 10.58900 milli-seconds.
+layer:  13 type:   convolutional - Predicted in  2.61300 milli-seconds.
+layer:  14 type:   convolutional - Predicted in  1.83700 milli-seconds.
+layer:  15 type:   convolutional - Predicted in  0.72900 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.18500 milli-seconds, sizeof output:43095 
+fw_yolo_layer value : 0.767652
+layer:  16 type:            yolo - Predicted in  2.97700 milli-seconds.
+layer:  17 type:           route - Predicted in  0.07500 milli-seconds.
+memset complete!
+this is workspace_cpu:-1111772704
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.33200 milli-seconds.
+memset complete!
+layer:  19 type:        upsample - Predicted in  0.41100 milli-seconds.
+layer:  20 type:           route - Predicted in  0.37200 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.28900 milli-seconds,sizeof output :259584 
+layer:  21 type:   convolutional - Predicted in  6.83000 milli-seconds.
+layer:  22 type:   convolutional - Predicted in  1.45700 milli-seconds.
+this is not training.
+layer:  23 type:            yolo - Predicted in  1.48500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.55700 milli-seconds, sizeof output:172380 
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+j| ¾aáAidia/darknet_resource//data/giraffe.jpg: Predicted in 93.451000 milli-seconds.
+Enter Image Path: 117.368000 93.451000
+71.226000 2332939334.903000
+60.110000 2332939465.740000
+88.692000 2332939631.991000
+86.351000 2332939777.032000
+82.563000 2332939938.902000
+79.380000 2332940091.595000
+92.217000 2332940250.742000
+93.111000 2332940404.087000
+97.981000 2332940557.531000
+98.703000 2332940721.036000
+100.260000 2332940890.996000
+99.082000 2332941054.304000
+100.371000 2332941213.244000
+99.232000 2332941366.955000
+93.171000 2332941523.817000
+98.689000 2332941692.991000
+112.978000 2332941869.313000
+104.590000 2332942037.795000
+93.585000 2332942189.265000
+89.425000 2332942343.959000
+88.046000 2332942501.468000
+82.345000 2332942648.602000
+72.853000 2332942784.439000
+67.624000 2332942914.353000
+63.385000 2332943045.417000
+62.774000 2332943182.341000
+62.777000 2332943310.859000
+80.074000 2332943458.313000
+91.835000 2332943605.826000
+77.466000 2332943763.778000
+81.156000 2332943917.962000
+85.704000 2332944067.271000
+79.628000 2332944206.702000
+77.266000 2332944339.988000
+84.701000 2332944492.063000
+98.914000 2332944657.627000
+98.797000 2332944821.645000
+87.703000 2332944972.226000
+82.052000 2332945110.691000
+85.709000 2332945260.529000
+87.121000 2332945415.604000
+88.711000 2332945568.518000
+90.711000 2332945720.078000
+77.943000 2332945854.251000
+74.447000 2332945994.139000
+83.866000 2332946149.527000
+71.570000 2332946286.591000
+63.760000 2332946415.632000
+76.641000 2332946553.157000
+ :21632 
+layer:  19 type:        upsample - Predicted in  0.54900 milli-seconds.
+layer:  20 type:           route - Predicted in  0.35000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.52000 milli-seconds, sizeof output:259584 
+memset complete!
+this is workspace_cpu:-1356788784
+ l.index = 21 - FP32 
+layer:  21 type:   convolutional - Predicted in 297.00000 milli-seconds.
+memset complete!
+this is workspace_cpu:-1346931824
+ l.index = 22 - FP32 
+layer:  22 type:   convolutional - Predicted in 20.36000 milli-seconds.
+fw_yolo_layer value : 0.550637
+layer:  23 type:            yolo - Predicted in  7.40400 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/person.jpg: Predicted in 1800.923000 milli-seconds.
+dog: 89%	(left_x:   81   top_y:  265   width:  122   height:   86)
+person: 98%	(left_x:  180   top_y:   95   width:   99   height:  287)
+sheep: 83%	(left_x:  388   top_y:  125   width:  227   height:  216)
+Enter Image Path: end of net_pred_gpu, time is  0.42300 millisec
+memset complete!
+this is workspace_cpu:-2120172016
+ l.index = 0 - FP32 
+layer:   0 type:   convolutional - Predicted in 59.79000 milli-seconds.
+layer:   1 type:         maxpool - Predicted in 12.84200 milli-seconds.
+memset complete!
+this is workspace_cpu:-1457555856
+ l.index = 2 - FP32 
+layer:   2 type:   convolutional - Predicted in 117.19500 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  6.40000 milli-seconds.
+memset complete!
+this is workspace_cpu:-1457490656
+ l.index = 4 - FP32 
+layer:   4 type:   convolutional - Predicted in 164.87000 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  3.23700 milli-seconds.
+memset complete!
+this is workspace_cpu:-1456622432
+ l.index = 6 - FP32 
+layer:   6 type:   convolutional - Predicted in 97.00100 milli-seconds.
+layer:   7 type:         maxpool - Predicted in  1.66500 milli-seconds.
+memset complete!
+this is workspace_cpu:-1395839072
+ l.index = 8 - FP32 
+layer:   8 type:   convolutional - Predicted in 94.26800 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.29900 milli-seconds,sizeof output :173056 
+layer:   9 type:         maxpool - Predicted in  0.46000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  1.49000 milli-seconds, sizeof output:43264 
+memset complete!
+this is workspace_cpu:-1390191568
+ l.index = 10 - FP32 
+layer:  10 type:   convolutional - Predicted in 142.82200 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  1.72400 milli-seconds.
+memset complete!
+this is workspace_cpu:1308172304
+ l.index = 12 - FP32 
+layer:  12 type:   convolutional - Predicted in 585.20200 milli-seconds.
+memset complete!
+this is workspace_cpu:-1375562496
+ l.index = 13 - FP32 
+layer:  13 type:   convolutional - Predicted in 33.29200 milli-seconds.
+memset complete!
+this is workspace_cpu:-1372773024
+ l.index = 14 - FP32 
+layer:  14 type:   convolutional - Predicted in 146.04400 milli-seconds.
+memset complete!
+this is workspace_cpu:-1361950784
+ l.index = 15 - FP32 
+layer:  15 type:   convolutional - Predicted in 15.80700 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.18400 milli-seconds,sizeof output :43095 
+this is not training.
+layer:  16 type:            yolo - Predicted in  2.44400 milli-seconds.
+layer:  17 type:           route - Predicted in  0.70000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.47000 milli-seconds, sizeof output:43264 
+memset complete!
+this is workspace_cpu:-1360554144
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.44400 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.14000 milli-seconds,sizeof output :21632 
+layer:  19 type:        upsample - Predicted in  0.48400 milli-seconds.
+layer:  20 type:           route - Predicted in  0.20500 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.39900 milli-seconds, sizeof output:259584 
+memset complete!
+this is workspace_cpu:-1356788784
+ l.index = 21 - FP32 
+layer:  21 type:   convolutional - Predicted in 296.55700 milli-seconds.
+memset complete!
+this is workspace_cpu:-1346931824
+ l.index = 22 - FP32 
+layer:  22 type:   convolutional - Predicted in 20.23200 milli-seconds.
+fw_yolo_layer value : 0.569466
+layer:  23 type:            yolo - Predicted in  7.37100 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+/home/nvidia/darknet_resource//data/giraffe.jpg: Predicted in 1819.508000 milli-seconds.
+giraffe: 53%	(left_x:  153   top_y:  -42   width:  286   height:  505)
+zebra: 53%	(left_x:  305   top_y:  205   width:  110   height:  243)
+Enter Image Path: Cannot load image 
+
+end of net_pred_gpu, time is  0.42300 millisec
+memset complete!
+this is workspace_cpu:-2120172016
+ l.index = 0 - FP32 
+layer:   0 type:   convolutional - Predicted in 58.50100 milli-seconds.
+layer:   1 type:         maxpool - Predicted in 12.79200 milli-seconds.
+memset complete!
+this is workspace_cpu:-1457555856
+ l.index = 2 - FP32 
+layer:   2 type:   convolutional - Predicted in 118.32500 milli-seconds.
+layer:   3 type:         maxpool - Predicted in  6.45500 milli-seconds.
+memset complete!
+this is workspace_cpu:-1457490656
+ l.index = 4 - FP32 
+layer:   4 type:   convolutional - Predicted in 164.98500 milli-seconds.
+layer:   5 type:         maxpool - Predicted in  3.21000 milli-seconds.
+memset complete!
+this is workspace_cpu:-1456622432
+ l.index = 6 - FP32 
+layer:   6 type:   convolutional - Predicted in 96.74300 milli-seconds.
+layer:   7 type:         maxpool - Predicted in  1.66400 milli-seconds.
+memset complete!
+this is workspace_cpu:-1395839072
+ l.index = 8 - FP32 
+layer:   8 type:   convolutional - Predicted in 94.34000 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.29100 milli-seconds,sizeof output :173056 
+layer:   9 type:         maxpool - Predicted in  0.54700 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.23100 milli-seconds, sizeof output:43264 
+memset complete!
+this is workspace_cpu:-1390191568
+ l.index = 10 - FP32 
+layer:  10 type:   convolutional - Predicted in 142.29300 milli-seconds.
+layer:  11 type:         maxpool - Predicted in  1.67900 milli-seconds.
+memset complete!
+this is workspace_cpu:1308172304
+ l.index = 12 - FP32 
+layer:  12 type:   convolutional - Predicted in 571.80100 milli-seconds.
+memset complete!
+this is workspace_cpu:-1375562496
+ l.index = 13 - FP32 
+layer:  13 type:   convolutional - Predicted in 31.81300 milli-seconds.
+memset complete!
+this is workspace_cpu:-1372773024
+ l.index = 14 - FP32 
+layer:  14 type:   convolutional - Predicted in 141.52500 milli-seconds.
+memset complete!
+this is workspace_cpu:-1361950784
+ l.index = 15 - FP32 
+layer:  15 type:   convolutional - Predicted in 15.82800 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.18900 milli-seconds,sizeof output :43095 
+this is not training.
+layer:  16 type:            yolo - Predicted in  0.51900 milli-seconds.
+layer:  17 type:           route - Predicted in  0.04700 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.17500 milli-seconds, sizeof output:43264 
+memset complete!
+this is workspace_cpu:-1360554144
+ l.index = 18 - FP32 
+layer:  18 type:   convolutional - Predicted in  4.18400 milli-seconds.
+[network_kernels.cu line 78] push_cuda_overhead :  0.11100 milli-seconds,sizeof output :21632 
+layer:  19 type:        upsample - Predicted in  0.52100 milli-seconds.
+layer:  20 type:           route - Predicted in  0.32000 milli-seconds.
+[network_kernels.cu line 86] pull_cuda_overhead :  0.35100 milli-seconds, sizeof output:259584 
+memset complete!
+this is workspace_cpu:-1356788784
+ l.index = 21 - FP32 
+layer:  21 type:   convolutional - Predicted in 300.25900 milli-seconds.
+memset complete!
+this is workspace_cpu:-1346931824
+ l.index = 22 - FP32 
+layer:  22 type:   convolutional - Predicted in 21.21100 milli-seconds.
+fw_yolo_layer value : 0.512856
+layer:  23 type:            yolo - Predicted in  7.41500 milli-seconds.
+target layer i is 23.
+end of get_net_output, time is  0.00000 millisec
+}?éµÅ]áAidia/darknet_resource//data/giraffe.jpg: Predicted in 1799.860000 milli-seconds.
+Enter Image Path: 1829.394000 1799.860000
+1804.957000 2330773637.923000
+1792.292000 2330775508.733000
+1799.505000 2330777375.666000
+1787.456000 2330779227.995000
+1782.741000 2330781090.202000
+1796.795000 2330782966.814000
+1784.344000 2330784823.661000
+1787.552000 2330786677.741000
+1806.510000 2330788548.193000
+1790.063000 2330790412.887000
+1793.329000 2330792284.830000
+1792.232000 2330794149.831000
+1782.892000 2330795999.503000
+1799.479000 2330797863.079000
+1787.212000 2330799727.790000
+1786.079000 2330801592.677000
+1800.033000 2330803465.742000
+1786.086000 2330805318.813000
+1793.795000 2330807176.614000
+1795.529000 2330809046.487000
+1785.184000 2330810910.175000
+1802.151000 2330812784.797000
+1786.824000 2330814642.496000
+1785.294000 2330816491.896000
+1804.254000 2330818370.655000
+1787.002000 2330820240.580000
+1790.050000 2330822104.300000
+1805.461000 2330823976.644000
+1788.084000 2330825829.586000
+1805.981000 2330827710.906000
+1787.792000 2330829578.201000
+1786.975000 2330831438.588000
+1803.170000 2330833308.851000
+1786.814000 2330835160.522000
+1788.709000 2330837024.491000
+1806.555000 2330838910.262000
+1786.594000 2330840770.299000
+1802.258000 2330842640.248000
+1788.264000 2330844493.385000
+1787.761000 2330846356.810000
+1808.599000 2330848244.706000
+1785.018000 2330850103.625000
+1785.135000 2330851956.253000
+1804.109000 2330853825.337000
+1790.145000 2330855696.880000
+1824.483000 2330857600.964000
+1796.779000 2330859473.534000
+1800.923000 2330861344.139000
+1819.508000 2330863229.527000
