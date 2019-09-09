@@ -531,6 +531,16 @@ int main(int argc, char **argv)
         exit(-1);
     }
 
+    int multi_process = find_int_arg(argc, argv, "-process_num", 0);
+    int pid;
+    if(multi_process){
+        pid = fork();
+        for(int i = 0; i < multi_process/2 ; i++){
+            if(pid) {pid = fork();}
+        }
+    }
+    printf("my pid : %d\n", pid);
+
 #ifndef GPU
     gpu_index = -1;
 #else
