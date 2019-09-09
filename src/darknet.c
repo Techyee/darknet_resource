@@ -5,7 +5,7 @@
 #include <sys/types.h>
 #include <signal.h>
 #include <unistd.h>
-
+#include <sys/mman.h>
 #if defined(_MSC_VER) && defined(_DEBUG)
 #include <crtdbg.h>
 #include <pthread.h>
@@ -445,6 +445,20 @@ void visualize(char *cfgfile, char *weightfile)
 #endif
 }
 
+void* create_shared_memory(size_t size) {
+  // Our memory buffer will be readable and writable:
+  int protection = PROT_READ | PROT_WRITE;
+
+  // The buffer will be shared (meaning other processes can access it), but
+  // anonymous (meaning third-party processes cannot obtain an address for it),
+  // so only this process and its children will be able to use it:
+  int visibility = MAP_SHARED | MAP_ANONYMOUS;
+
+  // The remaining parameters to `mmap()` are not important for this use case,
+  // but the manpage for `mmap` explains their purpose.
+  return mmap(NULL, size, protection, visibility, -1, 0);
+}
+
 int main(int argc, char **argv)
 {
 #ifdef _DEBUG
@@ -535,13 +549,19 @@ int main(int argc, char **argv)
         exit(-1);
     }
 
-    int multi_process = find_int_arg(argc, argv, "-process_num", 0);
+    int process_num = find_int_arg(argc, argv, "-process_num", 0);
     int pid;
     int identifier = -1;
-    if(multi_process){
+    int *shmem = (int *)create_shared_memory(sizeof(int)*process_num);
+
+    // init shared memory
+    for(int i = 0; i < process_num; i++){
+        shmem[i] = 0;
+    }
+    if(process_num){
         pid = fork();
         if(!pid) { /*if child*/ identifier = 0; }
-        for(int i = 0; i < multi_process-1 ; i++){
+        for(int i = 0; i < process_num-1 ; i++){
             if(pid) { /* if mother */
                 pid = fork();
                 if(!pid) { identifier = i+1;}
@@ -549,21 +569,16 @@ int main(int argc, char **argv)
         }
         printf("my pid: %d, my_identifier: %d\n",getpid(),identifier);
     }
-    
 
+    if(identifier == -1){ /* mother process */ 
+        // make signals as # of children processes
+        
 
+        /* get ready sign from children */
+        
 
-    if(pid){ /* mother process */ 
+        /* send go sign to children */
 
-    /* get ready sign from children */
-
-
-    /* send go sign to children */
-
-
-    }else if (pid < 0){ /* error when forking */ 
-        printf("Hmm... I think something goes wrong while forking\n");
-        exit(-1);
     }else{ /* child process */
 #ifndef GPU
         gpu_index = -1;
