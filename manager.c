@@ -19,7 +19,7 @@ int *shm_ptr; //shared memory pointer.
 
 int main (int argc, char* argv[]){
 
-    int n = 4;                  //number of child process.
+    int n = 1;                  //number of child process.
     pid_t pid[n];               //process id array.
     int status;                 //checking child exit status.
     int i;                      //iteration.

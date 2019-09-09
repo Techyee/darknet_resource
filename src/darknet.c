@@ -463,7 +463,9 @@ int main(int argc, char **argv)
     int alloc_idx[25];
 
     //shm_id trans.
-    _g_shm_id = atoi(argv[9]);
+    if(argc > 9){
+        _g_shm_id = atoi(argv[9]);
+    }
     //open file and load migration config.
     FILE *pFile = NULL;
     cnt = 0;

@@ -1310,11 +1310,12 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
     float nms = .45;    // 0.4F
     
     //shared memory access & manipulation
+    /*
     int *shm_ptr;
     shm_ptr = (int*)shmat(_g_shm_id,NULL,0);
     printf("this is shared memory value: %d\n",shm_ptr[0]);
     printf("this is shared memory value: %d\n",shm_ptr[1]);
-    /*
+    
     printf("model load finished. waiting...\n");
     shm_ptr[1] = 1;
     printf("changed shared memory value: %d\n",shm_ptr[1]);
