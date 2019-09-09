@@ -41,6 +41,10 @@ extern int test_extern = 1972;
 extern int *test_extern_arr = NULL;
 extern int *test_extern_arr2 = NULL;
 
+// processes identifier & shared memory
+extern int identifier = -1;
+extern int *shmem_ready = NULL;
+extern int *shmem_go = NULL;
 //DetectorParameter structure for multi-threading.
 DetectorParams *_g_detector_params;
 //!end of DetectorParameter structure init.
@@ -551,12 +555,12 @@ int main(int argc, char **argv)
 
     int process_num = find_int_arg(argc, argv, "-process_num", 0);
     int pid;
-    int identifier = -1;
-    int *shmem = (int *)create_shared_memory(sizeof(int)*process_num);
-
+    shmem_ready = (int *)create_shared_memory(sizeof(int)*process_num);
+    shmem_go = (int *)create_shared_memory(sizeof(int));
     // init shared memory
     for(int i = 0; i < process_num; i++){
-        shmem[i] = 0;
+        shmem_ready[i] = 0;
+        shmem_go[0] = 0;
     }
     if(process_num){
         pid = fork();
@@ -571,14 +575,19 @@ int main(int argc, char **argv)
     }
 
     if(identifier == -1){ /* mother process */ 
-        // make signals as # of children processes
-        
-
         /* get ready sign from children */
-        
-
+        int ready_sig = 1;
+        for(int i = 0; i < process_num; i++){
+            ready_sig *= shmem_ready[i];
+        }
+        while(!ready_sig){
+            sleep(1);
+            for(int i = 0; i < process_num; i++){
+                ready_sig *= shmem_ready[i];
+            }
+        }
         /* send go sign to children */
-
+        shmem_go[0] = 1;
     }else{ /* child process */
 #ifndef GPU
         gpu_index = -1;
