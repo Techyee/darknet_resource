@@ -576,12 +576,10 @@ int main(int argc, char **argv)
 
     if(identifier == -1){ /* mother process */ 
         /* get ready sign from children */
-        int ready_sig = 1;
-        for(int i = 0; i < process_num; i++){
-            ready_sig *= shmem_ready[i];
-        }
+        int ready_sig = 0;
         while(!ready_sig){
             sleep(1);
+            ready_sig = shmem_ready[0];
             for(int i = 0; i < process_num; i++){
                 ready_sig *= shmem_ready[i];
             }
