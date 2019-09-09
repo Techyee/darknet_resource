@@ -535,7 +535,7 @@ int main(int argc, char **argv)
     int pid;
     if(multi_process){
         pid = fork();
-        for(int i = 0; i < multi_process/2 ; i++){
+        for(int i = 0; i < multi_process-1 ; i++){
             if(pid) {pid = fork();}
         }
     }
