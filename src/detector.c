@@ -1555,6 +1555,13 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
     period.tv_sec = 0;
     period.tv_nsec = ms_period*1000000;
 
+    /* send ready sign to mommy */
+
+
+    /* get go sign from mommy */
+
+
+
     printf("///////// Period : %f //////////\n", ms_period);
     err = clock_gettime(CLOCK_MONOTONIC, &release_time);
     assert(err ==0);
