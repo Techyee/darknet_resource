@@ -536,26 +536,29 @@ int main(int argc, char **argv)
     }
 
     int multi_process = find_int_arg(argc, argv, "-process_num", 0);
-    int pid;
-    if(multi_process){
-        int pid_list = (int *)calloc(0, (multi_process+1)*sizeof(int));
-        pid = fork();
-        if(pid) { pid_list[0] = getpid(); }
-        for(int i = 0; i < multi_process-1 ; i++){
-            if(pid) {
-                pid = fork();
-                if(!pid) pid_list[i+1] = getpid();
-            }
+    int currentPid, i;
+    int childrenPids[multi_process];
+
+    for(i=0; i < multi_process; i++){
+        switch(currentPid = fork()){
+            case 0:
+                break;
+            case -1:
+                printf("Error when forking\n");
+                break;
+            default:
+                // in the father
+                childrenPids[i] = currentPid; // store current child pid
+                break;
         }
-        for(int i = 0; i < multi_process; i++){
-            printf("my pid: %d, pid_list %dth: %d\n",getpid(),i,pid_list[i]);
-        }
+
     }
-    
 
+    for(int i = 0; i < multi_process+1; i++){
+        printf("my pid: %d, pid_list %dth: %d\n",getpid(),i,childrenPids[i]);
+    }
 
-
-    if(pid){ /* mother process */ 
+    if(currentPid){ /* mother process */ 
 
     /* get ready sign from children */
 
@@ -563,7 +566,7 @@ int main(int argc, char **argv)
     /* send go sign to children */
 
 
-    }else if (pid < 0){ /* error when forking */ 
+    }else if (currentPid < 0){ /* error when forking */ 
         printf("Hmm... I think something goes wrong while forking\n");
         exit(-1);
     }else{ /* child process */
