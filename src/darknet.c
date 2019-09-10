@@ -560,7 +560,7 @@ int main(int argc, char **argv)
     // init shared memory
     for(int i = 0; i < process_num; i++){
         shmem_ready[i] = 0;
-        shmem_go[0] = 0;
+        shmem_go[0] = 1;
     }
     if(process_num){
         pid = fork();
@@ -579,13 +579,17 @@ int main(int argc, char **argv)
         int ready_sig = 0;
         while(!ready_sig){
             sleep(1);
+            printf("waiting for ready_sign\n");
             ready_sig = shmem_ready[0];
-            for(int i = 0; i < process_num; i++){
+            for(int i = 1; i < process_num; i++){
                 ready_sig *= shmem_ready[i];
             }
         }
+        printf("Ready_sign has been set\n");
         /* send go sign to children */
-        shmem_go[0] = 1;
+        shmem_go[0] = 0;
+        puts("Set go sign");
+        wait();
     }else{ /* child process */
 #ifndef GPU
         gpu_index = -1;

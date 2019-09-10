@@ -1562,9 +1562,11 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
     /* send ready sign to mommy */
     shmem_ready[identifier] = 1;
     /* get go sign from mommy */
-    while(!shmem_go[0]){
+    while(shmem_go[0]){
+        printf("\n");
     }
-    printf("Pid: %d, Starting at %8.5f\n", get_time_point());
+
+    printf("\nidentifier: %d, Starting at %8.5f\n", identifier ,get_time_point()/1000);
     printf("///////// Period : %f //////////\n", ms_period);
     err = clock_gettime(CLOCK_MONOTONIC, &release_time);
     assert(err ==0);
