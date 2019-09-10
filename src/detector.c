@@ -8,7 +8,7 @@
 #include "demo.h"
 #include "option_list.h"
 #include <time.h>
-
+#include <unistd.h>
 #ifndef __COMPAR_FN_T
 #define __COMPAR_FN_T
 typedef int (*__compar_fn_t)(const void*, const void*);
@@ -1570,15 +1570,17 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
     if(identifier == 0){
         struct timespec snooze;
         snooze.tv_sec = 0;
-        snooze.tv_nsec = 100*1000000;
-        err = clock_gettime(CLOCK_MONOTONIC, &shmem_timer);
+        snooze.tv_nsec = 1000*1000000;
+        err = clock_gettime(CLOCK_MONOTONIC, shmem_timer);
 
-        timespec_add(&shmem_timer,&snooze);
+        timespec_add(shmem_timer,&snooze);
         assert(err ==0);
+        printf("Timer has been set\n");
     }
     
-    clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &shmem_timer, NULL);
-
+    sleep(0.1);
+    printf("identifier: %d Wait for timer\n", identifier);
+    clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, shmem_timer, NULL);
     printf("\nidentifier: %d, Starting at %8.5f\n", identifier ,get_time_point()/1000);
     printf("///////// Period : %f //////////\n", ms_period);
     err = clock_gettime(CLOCK_MONOTONIC, &release_time);
