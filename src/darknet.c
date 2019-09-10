@@ -469,16 +469,18 @@ void* create_shared_memory(size_t size) {
 // store resource configuration
 // resource configuration shape 
 // # of layers, 0 or 1, 0 or 1, ..... (0: cpu, 1: gpu)
-int ** store_res_cfg(int res_cfg_num, char ** rlist){
+int ** store_res_cfg(int res_cfg_num, char ** rpaths){
 
     char *buffer;
     char *tmp;
     int size;
     int layer_num;
     FILE *fp = NULL;
-    int ** cfg_list = (int **)malloc(sizeof(int *)*res_cfg_num);
+    int ** cfg_list = (int *)malloc(sizeof(int *)*res_cfg_num);
+    int * cfg;
     for(int i =0; i < res_cfg_num; i ++){
-        fp = fopen(rlist[i], "r");
+        printf("%s\n",rpaths[i]);
+        fp = fopen(rpaths[i], "r");
 
         //read size of file
         fseek(fp, 0, SEEK_END);
@@ -488,18 +490,20 @@ int ** store_res_cfg(int res_cfg_num, char ** rlist){
 
         fseek(fp, 0, SEEK_SET);
         fread(buffer, size, 1, fp);
-
+        fclose(fp);
+       
         tmp = strtok(buffer, ",");
         layer_num = atoi(tmp);
-        
-        cfg_list[i] = (int *)malloc(sizeof(int)*layer_num);
-        
+        printf("%d\n",layer_num); 
+        cfg  = (int *)malloc(sizeof(int)*layer_num);
+        printf("Done\n");
+        cfg_list[i] = cfg;
+        printf("HERE?\n");
         for(int j= 0; j < layer_num; j++){
             cfg_list[i][j]=atoi(strtok(NULL,","));
         }
         // set last layer on CPU 
         cfg_list[i][layer_num-1] = 0;
-        fclose(fp);
         free(buffer);
     }
     return cfg_list;
@@ -617,7 +621,7 @@ int main(int argc, char **argv)
 
     // make shared pointer for resource configuration 
     shmem_rescfg = (int **)create_shared_memory(sizeof(int **));
-    shmem_rescfg = store_res_cfg(res_cfg_num,rlist);
+    shmem_rescfg = store_res_cfg(res_cfg_num,rpaths);
 
     // shared memory
     shmem_ready = (int *)create_shared_memory(sizeof(int)*process_num);
