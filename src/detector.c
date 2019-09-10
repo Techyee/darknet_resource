@@ -26,7 +26,7 @@ extern int *test_extern_arr;
 extern int identifier;
 extern int *shmem_ready;
 extern int *shmem_go;
-
+extern struct timespec *shmem_timer;
 
 void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, int ngpus, int clear, int dont_show, int calc_map, int mjpeg_port, int show_imgs)
 {
@@ -1562,9 +1562,22 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
     /* send ready sign to mommy */
     shmem_ready[identifier] = 1;
     /* get go sign from mommy */
-    while(shmem_go[0]){
+    while(!shmem_go[0]){
         printf("\n");
     }
+
+    // set timer 
+    if(identifier == 0){
+        struct timespec snooze;
+        snooze.tv_sec = 0;
+        snooze.tv_nsec = 100*1000000;
+        err = clock_gettime(CLOCK_MONOTONIC, &shmem_timer);
+
+        timespec_add(&shmem_timer,&snooze);
+        assert(err ==0);
+    }
+    
+    clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &shmem_timer, NULL);
 
     printf("\nidentifier: %d, Starting at %8.5f\n", identifier ,get_time_point()/1000);
     printf("///////// Period : %f //////////\n", ms_period);

@@ -45,6 +45,8 @@ extern int *test_extern_arr2 = NULL;
 extern int identifier = -1;
 extern int *shmem_ready = NULL;
 extern int *shmem_go = NULL;
+extern struct timespec *shmem_timer = NULL;
+
 //DetectorParameter structure for multi-threading.
 DetectorParams *_g_detector_params;
 //!end of DetectorParameter structure init.
@@ -555,13 +557,17 @@ int main(int argc, char **argv)
 
     int process_num = find_int_arg(argc, argv, "-process_num", 0);
     int pid;
+
+    // shared memory
     shmem_ready = (int *)create_shared_memory(sizeof(int)*process_num);
     shmem_go = (int *)create_shared_memory(sizeof(int));
+    shmem_timer = (struct timespec *)create_shared_memory(sizeof(struct timespec));
     // init shared memory
     for(int i = 0; i < process_num; i++){
         shmem_ready[i] = 0;
-        shmem_go[0] = 1;
+        shmem_go[0] = 0;
     }
+
     if(process_num){
         pid = fork();
         if(!pid) { /*if child*/ identifier = 0; }
@@ -587,7 +593,7 @@ int main(int argc, char **argv)
         }
         printf("Ready_sign has been set\n");
         /* send go sign to children */
-        shmem_go[0] = 0;
+        shmem_go[0] = 1;
         puts("Set go sign");
         wait();
     }else{ /* child process */
