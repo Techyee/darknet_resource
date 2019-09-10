@@ -45,6 +45,7 @@ extern int *test_extern_arr2 = NULL;
 extern int identifier = -1;
 extern int *shmem_ready = NULL;
 extern int *shmem_go = NULL;
+extern int **shmem_rescfg = NULL;
 extern struct timespec *shmem_timer = NULL;
 
 //DetectorParameter structure for multi-threading.
@@ -465,6 +466,46 @@ void* create_shared_memory(size_t size) {
   return mmap(NULL, size, protection, visibility, -1, 0);
 }
 
+// store resource configuration
+// resource configuration shape 
+// # of layers, 0 or 1, 0 or 1, ..... (0: cpu, 1: gpu)
+int ** store_res_cfg(int res_cfg_num, char ** rlist){
+
+    char *buffer;
+    char *tmp;
+    int size;
+    int layer_num;
+    FILE *fp = NULL;
+    int ** cfg_list = (int **)malloc(sizeof(int *)*res_cfg_num);
+    for(int i =0; i < res_cfg_num; i ++){
+        fp = fopen(rlist[i], "r");
+
+        //read size of file
+        fseek(fp, 0, SEEK_END);
+        size = ftell(fp);
+
+        buffer = (char *)calloc(0,size + 1);
+
+        fseek(fp, 0, SEEK_SET);
+        fread(buffer, size, 1, fp);
+
+        tmp = strtok(buffer, ",");
+        layer_num = atoi(tmp);
+        
+        cfg_list[i] = (int *)malloc(sizeof(int)*layer_num);
+        
+        for(int j= 0; j < layer_num; j++){
+            cfg_list[i][j]=atoi(strtok(NULL,","));
+        }
+        // set last layer on CPU 
+        cfg_list[i][layer_num-1] = 0;
+        fclose(fp);
+        free(buffer);
+    }
+    return cfg_list;
+}
+
+
 int main(int argc, char **argv)
 {
 #ifdef _DEBUG
@@ -477,65 +518,65 @@ int main(int argc, char **argv)
     int i;
     int k;
     //load device alloc config from csv file.
-    int temp_idx;
-    char str_temp[1024];
-    char *p;
-    int cnt;
-    int alloc_idx[25];
+    // int temp_idx;
+    // char str_temp[1024];
+    // char *p;
+    // int cnt;
+    // int alloc_idx[25];
 
-    //open file and load cfg.
-    FILE *pFile = NULL;
-    cnt = 0;
-    pFile = fopen("test.csv", "r");
-    if(pFile !=NULL)
-    {
-        fgets(str_temp,1024,pFile);
-        p = strtok(str_temp, ",");
-        while (p != NULL){
-            alloc_idx[cnt]=atoi(p);
-            cnt++;
-            p=strtok(NULL,",");
-        }
-    }
-    fclose(pFile);
-    test_extern_arr = alloc_idx;
-    for(cnt=0;cnt<24;cnt++){
-        printf("csv reading test : %d\n",test_extern_arr[cnt]);
-    }
+    // //open file and load cfg.
+    // FILE *pFile = NULL;
+    // cnt = 0;
+    // pFile = fopen("test.csv", "r");
+    // if(pFile !=NULL)
+    // {
+    //     fgets(str_temp,1024,pFile);
+    //     p = strtok(str_temp, ",");
+    //     while (p != NULL){
+    //         alloc_idx[cnt]=atoi(p);
+    //         cnt++;
+    //         p=strtok(NULL,",");
+    //     }
+    // }
+    // fclose(pFile);
+    // test_extern_arr = alloc_idx;
+    // for(cnt=0;cnt<24;cnt++){
+    //     printf("csv reading test : %d\n",test_extern_arr[cnt]);
+    // }
 
-    //DEPRICATED CODE::initialize meta_params for per-layer source alloc.
-    /*
-    //cpu = 0, gpu = 1. default test: all gpu.
-    for(i=0;i<24;i++){
-        test_extern_arr[i] = 1;
-        test_extern_arr2[i] = 0;
-    }
-    for(k=0;k<20;k++){
-        test_extern_arr[k] = 0;
-    }
-    //CONV on GPU.
+    // //DEPRICATED CODE::initialize meta_params for per-layer source alloc.
+    // /*
+    // //cpu = 0, gpu = 1. default test: all gpu.
+    // for(i=0;i<24;i++){
+    //     test_extern_arr[i] = 1;
+    //     test_extern_arr2[i] = 0;
+    // }
+    // for(k=0;k<20;k++){
+    //     test_extern_arr[k] = 0;
+    // }
+    // //CONV on GPU.
     
-    test_extern_arr[0] = 1;
-    test_extern_arr[2] = 1;
-    test_extern_arr[4] = 1;
-    test_extern_arr[6] = 1;
-    test_extern_arr[8] = 1;
-    test_extern_arr[10] = 1; 
-    test_extern_arr[12] = 1; 
-    test_extern_arr[13] = 1;
-    test_extern_arr[14] = 1;
-    test_extern_arr[15] = 1;
-    test_extern_arr[18] = 1;
-    test_extern_arr[21] = 1;
-    test_extern_arr[22] = 1;
-    */
-    for (i=0;i<24;i++){
-        test_extern_arr2[i]=0;
-    }
+    // test_extern_arr[0] = 1;
+    // test_extern_arr[2] = 1;
+    // test_extern_arr[4] = 1;
+    // test_extern_arr[6] = 1;
+    // test_extern_arr[8] = 1;
+    // test_extern_arr[10] = 1; 
+    // test_extern_arr[12] = 1; 
+    // test_extern_arr[13] = 1;
+    // test_extern_arr[14] = 1;
+    // test_extern_arr[15] = 1;
+    // test_extern_arr[18] = 1;
+    // test_extern_arr[21] = 1;
+    // test_extern_arr[22] = 1;
+    // */
+    // for (i=0;i<24;i++){
+    //     test_extern_arr2[i]=0;
+    // }
 
-    test_extern_arr[24] = 0;
-    test_extern_arr[24] = 0;
-    //src customization. last layer must return data to cpu.
+    // test_extern_arr[24] = 0;
+    // test_extern_arr[24] = 0;
+    // //src customization. last layer must return data to cpu.
     for (i = 0; i < argc; ++i) {
 		if (!argv[i]) continue;
 		strip_args(argv[i]);
@@ -555,8 +596,28 @@ int main(int argc, char **argv)
         exit(-1);
     }
 
+    // get process num
     int process_num = find_int_arg(argc, argv, "-process_num", 0);
     int pid;
+
+    // get resource configurations
+    char * res_cfg = find_char_arg(argc,argv,"-res_cfg",0);
+    if(res_cfg == 0){
+        printf("No information about resource configuration\n");
+        exit(-1);
+    }
+    list *rlist = get_paths(res_cfg);
+    char **rpaths = (char **)list_to_array(rlist);
+    int res_cfg_num = rlist->size;
+
+    if(process_num != res_cfg_num){
+        printf("Resource configuration number and process number doesn't mach!\n");
+        exit(-1);
+    }
+
+    // make shared pointer for resource configuration 
+    shmem_rescfg = (int **)create_shared_memory(sizeof(int **));
+    shmem_rescfg = store_res_cfg(res_cfg_num,rlist);
 
     // shared memory
     shmem_ready = (int *)create_shared_memory(sizeof(int)*process_num);
@@ -605,6 +666,7 @@ int main(int argc, char **argv)
             CHECK_CUDA(cudaSetDeviceFlags(cudaDeviceScheduleBlockingSync));
         }
 #endif
+        test_extern_arr = shmem_rescfg[identifier];
         if (0 == strcmp(argv[1], "average")){
             average(argc, argv);
         } else if (0 == strcmp(argv[1], "yolo")){
