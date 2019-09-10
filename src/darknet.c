@@ -476,7 +476,7 @@ int ** store_res_cfg(int res_cfg_num, char ** rpaths){
     int size;
     int layer_num;
     FILE *fp = NULL;
-    int ** cfg_list = (int *)malloc(sizeof(int *)*res_cfg_num);
+    int * cfg_list[res_cfg_num];
     int * cfg;
     for(int i =0; i < res_cfg_num; i ++){
         printf("%s\n",rpaths[i]);
@@ -495,7 +495,7 @@ int ** store_res_cfg(int res_cfg_num, char ** rpaths){
         tmp = strtok(buffer, ",");
         layer_num = atoi(tmp);
         printf("%d\n",layer_num); 
-        cfg  = (int *)malloc(sizeof(int)*layer_num);
+        cfg_list[i]  = (int *)malloc(sizeof(int)*layer_num);
         printf("Done\n");
         cfg_list[i] = cfg;
         printf("HERE?\n");
