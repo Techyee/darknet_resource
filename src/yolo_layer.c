@@ -53,8 +53,6 @@ layer make_yolo_layer(int batch, int w, int h, int n, int total, int *mask, int 
     l.backward_gpu = backward_yolo_layer_gpu;
     l.output_gpu = cuda_make_array(l.output, batch*l.outputs);
     l.delta_gpu = cuda_make_array(l.delta, batch*l.outputs);
-    printf("cudahostalloc for yolo is disabled for unified memory. check cuda_layer.c code line 56.\n");
-    //unified memory test. disable cudaHostAllocation.
     
     free(l.output);
     if (cudaSuccess == cudaHostAlloc(&l.output, batch*l.outputs*sizeof(float), cudaHostRegisterMapped)) l.output_pinned = 1;

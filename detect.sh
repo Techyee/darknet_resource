@@ -1,4 +1,4 @@
-./darknet detector test ./cfg/coco.data ./yolov3-tiny.cfg ./yolov3-tiny.weights  -dont_show -ext_output test.csv 33 < input_1.txt 
+./darknet detector test ./cfg/coco.data ./yolov3-tiny.cfg ./yolov3-tiny.weights  -dont_show -ext_output test.csv 33 < input.txt 
 #./darknet detector test ./cfg/coco.data ./yolov3-tiny.cfg ./yolov3-tiny.weights -dont_show -ext_output < ./data/test_mult.txt > res2.txt &
 #./darknet detector test ./cfg/coco.data ./yolov3-tiny.cfg ./yolov3-tiny.weights -dont_show -ext_output < ./data/test_mult.txt > res3.txt &
 #./darknet detector test ./cfg/coco.data ./yolov3-tiny.cfg ./yolov3-tiny.weights -dont_show -ext_output < ./data/test_mult.txt > res4.txt & 

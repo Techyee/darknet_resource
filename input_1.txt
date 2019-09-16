@@ -1,3 +1,1 @@
 /home/nvidia/darknet_resource/data/dog.jpg
-/home/nvidia/darknet_resource/data/eagle.jpg
-/home/nvidia/darknet_resource/data/horses.jpg

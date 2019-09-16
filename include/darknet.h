@@ -589,6 +589,7 @@ typedef struct network {
     int subdivisions;
     layer *layers;
     float *output;
+    float *output_global;
     learning_rate_policy policy;
 
     float learning_rate;

@@ -49,27 +49,40 @@ extern int* test_extern_arr2;
 void forward_network_gpu(network net, network_state state)
 {
     cudaDeviceSynchronize();
-    //printf("\n");
     state.workspace = net.workspace;
     state.workspace_cpu = net.workspace_cpu;
-    int i;
-    int *res_arr;
-    double _time;
-    double time;
-    float* temp_output_ptr;
+
+    int i;                  //iterator.
+    int *res_arr;           //results of csv file parsing. represents CPU/GPU allocation.
+    double _time;           //exec time value.
+    double time;            //exec time value.
+    float* temp_output_ptr; //temp for layer output ptr.
+    layer *lptr;            //layer pointer.
 
     res_arr = test_extern_arr;
-    if(net.t_idx == 2){
-        res_arr = test_extern_arr2;
+
+    /*THIS CODE IS SLOW    
+    //reassign memory space of layer if necessary.
+    for(i = 0; i < net.n; ++i){
+        if(res_arr[i] != res_arr[i+1]){//computation resource change
+            layer *lptr = &(net.layers[i]);
+            if(res_arr[i] == 0){//if prev resource was CPU
+                lptr->output = cuda_make_array_global(lptr->output, 
+                        lptr->batch * lptr->outputs);
+            }
+            else{//if prev resource was GPU
+                lptr->output_gpu = cuda_make_array_global(lptr->output,
+                        lptr->batch * lptr->outputs);
+            }
+        }
     }
+    */
+
+    //original inference.
     for(i = 0; i < net.n; ++i){
         state.index = i;
-        
-        //testing net manipulation.
-        layer *lptr = &(net.layers[i]);
-        lptr->output = lptr->output_gpu;
-        printf("address value of outputs. CPU: %d, GPU: %d\n",lptr->output, lptr->output_gpu);
-        //!testing net manipulation.
+
+        lptr = &(net.layers[i]);
         layer l = net.layers[i];
         if(l.delta_gpu && state.train){
             fill_ongpu(l.outputs * l.batch, 0, l.delta_gpu, 1);
@@ -77,9 +90,15 @@ void forward_network_gpu(network net, network_state state)
 #ifdef SRC_SWITCH       
         time  = get_time_point();
         if (res_arr[i] == 0){
+            if(res_arr[i+1] == 1)
+                lptr->output = cuda_make_array_global(lptr->output, lptr->batch * lptr->outputs);
+            l = net.layers[i];
             l.forward(l,state);
         }
         else{
+            if(res_arr[i+1] == 0)
+                lptr->output_gpu = cuda_make_array_global(lptr->output, lptr->batch * lptr->outputs);
+            l = net.layers[i];
             l.forward_gpu(l, state);
             CHECK_CUDA(cudaDeviceSynchronize());
         }
@@ -97,6 +116,7 @@ void forward_network_gpu(network net, network_state state)
             cudaStreamSynchronize(get_cuda_stream());
 
 #ifdef SRC_SWITCH
+
         if(res_arr[i] == 0){//currently running on CPU
             if(res_arr[i+1] == 0){//next is running on CPU
                 state.input = l.output;    
@@ -104,12 +124,14 @@ void forward_network_gpu(network net, network_state state)
             else{//next is running on GPU
                 printf("[network_kernels.cu line 78] push_cuda_overhead :");
                 _time = get_time_point();
-                //unified mem test. cancel push and use (l.output).
-                state.input = l.output_gpu;
+                //unified mem test. cancel push and use l.output.
+                state.input = l.output;
                 
                 //original pinned mem version. 
-                //cuda_push_array(l.output_gpu, l.output, l.batch*l.outputs);
-                //state.input = l.output_gpu;
+                /*
+                cuda_push_array(l.output_gpu, l.output, l.batch*l.outputs);
+                state.input = l.output_gpu;
+                */
                 
                 printf(" %8.5f milli-seconds,sizeof output :%d \n",((double)get_time_point() - _time)/1000,l.batch*l.outputs);
                 
@@ -120,7 +142,7 @@ void forward_network_gpu(network net, network_state state)
                 printf("[network_kernels.cu line 86] pull_cuda_overhead :");
                 _time = get_time_point();
                 //unified mem test. cancel push and use l.output_gpu.
-                state.input = l.output;
+                state.input = l.output_gpu;
                 
                 //original pinned mem version.
                 //cuda_pull_array(l.output_gpu, l.output, l.batch*l.outputs);

@@ -230,20 +230,35 @@ float *cuda_make_array(float *x, size_t n)
 {
     float *x_gpu;
     size_t size = sizeof(float)*n;
-    cudaError_t status = cudaMallocManaged((void **)&x_gpu, size, cudaMemAttachGlobal);
-    //cudaError_t status = cudaMalloc((void **)&x_gpu, size);
+    //cudaError_t status = cudaMallocManaged((void **)&x_gpu, size, cudaMemAttachGlobal);
+    cudaError_t status = cudaMalloc((void **)&x_gpu, size);
     if (status != cudaSuccess) fprintf(stderr, " Try to set subdivisions=64 in your cfg-file. \n");
     CHECK_CUDA(status);
     if(x){
-        //status = cudaMemcpy(x_gpu, x, size, cudaMemcpyHostToDevice);
         status = cudaMemcpyAsync(x_gpu, x, size, cudaMemcpyHostToDevice, get_cuda_stream());
         CHECK_CUDA(status);
         cudaDeviceSynchronize();
-        //memcpy(x_gpu,x,size);
     }
     if(!x_gpu) error("Cuda malloc failed\n");
     return x_gpu;
 }
+
+float *cuda_make_array_global(float *x, size_t n)
+{
+    float *x_gpu;
+    size_t size = sizeof(float)*n;
+    cudaError_t status = cudaMallocManaged((void **)&x_gpu, size, cudaMemAttachGlobal);
+    if (status != cudaSuccess) fprintf(stderr, "Try to set subdivisions=64 in your cfg-file. \n");
+    CHECK_CUDA(status);
+    if(x){
+        status = cudaMemcpyAsync(x_gpu, x, size, cudaMemcpyHostToDevice, get_cuda_stream());
+        CHECK_CUDA(status);
+        cudaDeviceSynchronize();
+    }
+    if(!x_gpu) error("Cuda malloc failed\n");
+    return x_gpu;
+}
+
 
 void cuda_random(float *x_gpu, size_t n)
 {
