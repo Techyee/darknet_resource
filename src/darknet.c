@@ -517,7 +517,6 @@ int main(int argc, char **argv)
 #endif
     _g_detector_params = (DetectorParams*)malloc(sizeof(DetectorParams));
     test_extern_arr = (int*)malloc(sizeof(int)*25);
-    test_extern_arr2 = (int*)malloc(sizeof(int)*25);
     int j;
     int i;
     int k;
@@ -601,7 +600,7 @@ int main(int argc, char **argv)
     }
 
     // get process num
-    int process_num = find_int_arg(argc, argv, "-process_num", 0);
+    int process_num = find_int_arg(argc, argv, "-process_num", 1);
     int pid;
 
     // get resource configurations
