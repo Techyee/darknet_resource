@@ -471,21 +471,20 @@ void* create_shared_memory(size_t size) {
 // # of layers, 0 or 1, 0 or 1, ..... (0: cpu, 1: gpu)
 int ** store_res_cfg(int res_cfg_num, char ** rpaths){
 
-    char *buffer;
+    char *buffer = NULL;
     char *tmp;
     int size;
     int layer_num;
     FILE *fp = NULL;
     int ** cfg_list = (int **)malloc(sizeof(int *)*res_cfg_num);
     for(int i =0; i < res_cfg_num; i ++){
-        printf("%s\n",rpaths[i]);
         fp = fopen(rpaths[i], "r");
 
         //read size of file
         fseek(fp, 0, SEEK_END);
         size = ftell(fp);
 
-        buffer = (char *)calloc(0,size + 1);
+        buffer = (char *)realloc(buffer,size + 1);
 
         fseek(fp, 0, SEEK_SET);
         fread(buffer, size, 1, fp);
@@ -493,15 +492,12 @@ int ** store_res_cfg(int res_cfg_num, char ** rpaths){
        
         tmp = strtok(buffer, ",");
         layer_num = atoi(tmp);
-        printf("%d\n",layer_num); 
         cfg_list[i]  = (int *)malloc(sizeof(int)*layer_num);
-        printf("HERE?\n");
         for(int j= 0; j < layer_num; j++){
             cfg_list[i][j]=atoi(strtok(NULL,","));
         }
         // set last layer on CPU 
         cfg_list[i][layer_num-1] = 0;
-        free(buffer);
     }
     return cfg_list;
 }
@@ -514,7 +510,8 @@ int main(int argc, char **argv)
 #endif
     _g_detector_params = (DetectorParams*)malloc(sizeof(DetectorParams));
     test_extern_arr = (int*)malloc(sizeof(int)*25);
-    test_extern_arr2 = (int*)malloc(sizeof(int)*25);
+    //test_extern_arr2 = (int*)malloc(sizeof(int)*25);
+    test_extern_arr2 = NULL;
     int j;
     int i;
     int k;
