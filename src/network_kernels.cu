@@ -42,9 +42,10 @@ float * get_network_output_gpu_layer(network net, int i);
 float * get_network_delta_gpu_layer(network net, int i);
 float * get_network_output_gpu(network net);
 
-extern int test_extern;
 extern int* test_extern_arr;
-extern int* test_extern_arr2;
+extern int identifier;
+extern int * queue;
+extern pthread_mutex_t *gpu_lock;
 
 void forward_network_gpu(network net, network_state state)
 {
@@ -58,44 +59,50 @@ void forward_network_gpu(network net, network_state state)
     double time;
 
     res_arr = test_extern_arr;
-    if(net.t_idx == 2){
-        res_arr = test_extern_arr2;
-    }
     for(i = 0; i < net.n; ++i){
-//      printf("external integer test : %d\n",test_extern_arr[i]);
+        
         state.index = i;
         layer l = net.layers[i];
+        
         if(l.delta_gpu && state.train){
             fill_ongpu(l.outputs * l.batch, 0, l.delta_gpu, 1);
-        }
-#ifdef SRC_SWITCH       
+        }   
+        
         time  = get_time_point();
-        if (res_arr[i] == 0){
+        
+        if (res_arr[i] == 0){ // on cpu
             if (l.type == CONVOLUTIONAL && net.quantized == 1 && l.index >=1 && l.activation != LINEAR) {
-                l.forward_quant(l, state);
+                l.forward_quant(l, state); // w/ quantize
             }
             else {
-                l.forward(l,state);
+                l.forward(l,state);   //  w/o quantize
             }
         }
-        else{
+        else{ // on gpu 
+            
+            // gpu access control by mutex
+            while( pthread_mutex_trylock(gpu_lock)){
+                printf("Process %d put into wait\n", identifier)
+                enqueue(queue, getpid());
+                kill(getpid(), SIGSTOP);
+
+                continue;
+            }
+            
+            printf("Process %d executes\n", identifier);
+            
             l.forward_gpu(l, state);
             CHECK_CUDA(cudaDeviceSynchronize());
         }
-        //printf("layer: %3d type: %15s - Predicted in %8.5f milli-seconds.\n", i, get_layer_string(l.type), ((double)get_time_point() -time) / 1000);
-#endif
 
-#ifdef EXE_TIME
-        double time = get_time_point();
-        printf("%3dth %15s\n",i, get_layer_string(l.type));
-        l.forward_gpu(l, state);
-        CHECK_CUDA(cudaDeviceSynchronize());
-        printf("%10.3f\n\n",((double)get_time_point() - time) / 1000);
-#endif
+        printf("layer: %3d type: %15s - Predicted in %8.5f milli-seconds.\n", i, get_layer_string(l.type), ((double)get_time_point() -time) / 1000);
+        
+        pthread_mutex_unlock(gpu_lock);
+        kill( dequeue(queue), SIGCONT);
+
         if(net.wait_stream)
             cudaStreamSynchronize(get_cuda_stream());
 
-#ifdef SRC_SWITCH
         if(res_arr[i] == 0){//currently running on CPU
             if(res_arr[i+1] == 0){//next is running on CPU
                 state.input = l.output;    
@@ -120,11 +127,6 @@ void forward_network_gpu(network net, network_state state)
                 state.input = l.output_gpu;
             }
         }
-#endif
-
-#ifdef EXE_TIME
-        state.input = l.output_gpu;
-#endif
     }
 }
 
@@ -538,16 +540,12 @@ float *network_predict_gpu(network net, float *input)
     state.net = net;
     //state.input = cuda_make_array(input, size);   // memory will be allocated in the parse_network_cfg_custom() 
     
-    if (net.t_idx == 1){
-        res_arr = test_extern_arr;
-    }
-    else{
-        res_arr = test_extern_arr2;
-    }
+    res_arr = test_extern_arr;
+
     if (res_arr[0] == 0){//first network runs on cpu.
         memcpy(net.input_pinned_cpu, input, size*sizeof(float));
         state.input = net.input_pinned_cpu;
-  //      printf("this is input%d\n",*state.input);
+    //      printf("this is input%d\n",*state.input);
     }
     else{//first network runs on gpu.
         state.input = net.input_state_gpu;
@@ -564,4 +562,47 @@ float *network_predict_gpu(network net, float *input)
     float *out = get_network_output_gpu(net);
     //cuda_free(state.input);   // will be freed in the free_network()
     return out;
+}
+
+
+////////////// GPU ACCESSING MANIGNING //////////////
+void swap(int *xp, int *yp)
+{
+    int temp = *xp;
+    *xp = *yp;
+    *yp = temp;
+}
+
+void bubbleSort(int arr[], int n)
+{
+   int i, j;
+   for (i = 0; i < n-1; i++)      
+ 
+       // Last i elements are already in place   
+       for (j = 0; j < n-i-1; j++) 
+           if (arr[j] < arr[j+1])
+              swap(&arr[j], &arr[j+1]);
+}
+
+void enqueue(int* q, int val)
+{
+  for (int i=0; i<N; i++){
+	if (q[i] == 0){
+	q[i] = val;
+	break;
+	}
+  }  
+}
+
+int dequeue(int* q)
+{
+	/* sort */
+	bubbleSort(q, N);	
+
+	int tmp =  q[0];
+	for (int i=0; q[i]>0; i++){		
+	q[i] = q[i+1];
+	}
+
+	return tmp;
 }

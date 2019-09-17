@@ -9,6 +9,11 @@
 #if defined(_MSC_VER) && defined(_DEBUG)
 #include <crtdbg.h>
 #include <pthread.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <sys/resource.h>
 #endif
 
 #include "parser.h"
@@ -16,6 +21,9 @@
 #include "dark_cuda.h"
 #include "blas.h"
 #include "connected_layer.h"
+
+#define MYMUTEX "/mymutex"
+#define MYQUEUE  "/mycond"
 
 extern void predict_classifier(char *datacfg, char *cfgfile, char *weightfile, char *filename, int top);
 extern void run_voxel(int argc, char **argv);
@@ -39,7 +47,8 @@ extern void run_super(int argc, char **argv);
 //global variables for runtime switching.
 extern int test_extern = 1972;
 extern int *test_extern_arr = NULL;
-extern int *test_extern_arr2 = NULL;
+extern int * queue;
+extern pthread_mutex_t *gpu_lock;
 
 // processes identifier & shared memory
 extern int identifier = -1;
@@ -502,6 +511,50 @@ int ** store_res_cfg(int res_cfg_num, char ** rpaths){
     return cfg_list;
 }
 
+//////////////// GPU ACESSING MANAGEING ////////////////
+void swap(int *xp, int *yp)
+{
+    int temp = *xp;
+    *xp = *yp;
+    *yp = temp;
+}
+
+void bubbleSort(int arr[], int n)
+{
+   int i, j;
+   for (i = 0; i < n-1; i++)      
+ 
+       // Last i elements are already in place   
+       for (j = 0; j < n-i-1; j++) 
+           if (arr[j] < arr[j+1])
+              swap(&arr[j], &arr[j+1]);
+}
+
+void enqueue(int* q, int val)
+{
+  for (int i=0; i<N; i++){
+	if (q[i] == 0){
+	q[i] = val;
+	break;
+	}
+  }  
+}
+
+int dequeue(int* q)
+{
+	/* sort */
+	bubbleSort(q, N);	
+
+	int tmp =  q[0];
+	for (int i=0; q[i]>0; i++){		
+	q[i] = q[i+1];
+	}
+
+	return tmp;
+}
+
+
+
 
 int main(int argc, char **argv)
 {
@@ -509,80 +562,15 @@ int main(int argc, char **argv)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
     _g_detector_params = (DetectorParams*)malloc(sizeof(DetectorParams));
-    test_extern_arr = (int*)malloc(sizeof(int)*25);
-    test_extern_arr2 = (int*)malloc(sizeof(int)*25);
-    //test_extern_arr2 = NULL;
     int j;
     int i;
     int k;
-    //load device alloc config from csv file.
-    // int temp_idx;
-    // char str_temp[1024];
-    // char *p;
-    // int cnt;
-    // int alloc_idx[25];
-
-    // //open file and load cfg.
-    // FILE *pFile = NULL;
-    // cnt = 0;
-    // pFile = fopen("test.csv", "r");
-    // if(pFile !=NULL)
-    // {
-    //     fgets(str_temp,1024,pFile);
-    //     p = strtok(str_temp, ",");
-    //     while (p != NULL){
-    //         alloc_idx[cnt]=atoi(p);
-    //         cnt++;
-    //         p=strtok(NULL,",");
-    //     }
-    // }
-    // fclose(pFile);
-    // test_extern_arr = alloc_idx;
-    // for(cnt=0;cnt<24;cnt++){
-    //     printf("csv reading test : %d\n",test_extern_arr[cnt]);
-    // }
-
-    // //DEPRICATED CODE::initialize meta_params for per-layer source alloc.
-    // /*
-    // //cpu = 0, gpu = 1. default test: all gpu.
-    // for(i=0;i<24;i++){
-    //     test_extern_arr[i] = 1;
-    //     test_extern_arr2[i] = 0;
-    // }
-    // for(k=0;k<20;k++){
-    //     test_extern_arr[k] = 0;
-    // }
-    // //CONV on GPU.
     
-    // test_extern_arr[0] = 1;
-    // test_extern_arr[2] = 1;
-    // test_extern_arr[4] = 1;
-    // test_extern_arr[6] = 1;
-    // test_extern_arr[8] = 1;
-    // test_extern_arr[10] = 1; 
-    // test_extern_arr[12] = 1; 
-    // test_extern_arr[13] = 1;
-    // test_extern_arr[14] = 1;
-    // test_extern_arr[15] = 1;
-    // test_extern_arr[18] = 1;
-    // test_extern_arr[21] = 1;
-    // test_extern_arr[22] = 1;
-    // */
-    // for (i=0;i<24;i++){
-    //     test_extern_arr2[i]=0;
-    // }
-
-    // test_extern_arr[24] = 0;
-    // test_extern_arr[24] = 0;
-    // //src customization. last layer must return data to cpu.
     for (i = 0; i < argc; ++i) {
 		if (!argv[i]) continue;
 		strip_args(argv[i]);
 	}
 
-    //test_resize("data/bad.jpg");
-    //test_box();
-    //test_convolutional_layer();
     if(argc < 2){
         fprintf(stderr, "usage: %s <function>\n", argv[0]);
         return 0;
@@ -621,11 +609,51 @@ int main(int argc, char **argv)
     shmem_ready = (int *)create_shared_memory(sizeof(int)*process_num);
     shmem_go = (int *)create_shared_memory(sizeof(int));
     shmem_timer = (struct timespec *)create_shared_memory(sizeof(struct timespec));
+    
     // init shared memory
-    for(int i = 0; i < process_num; i++){
-        shmem_ready[i] = 0;
-        shmem_go[0] = 0;
+    memset(shmem_ready, 0, sizeof(int)*process_num);
+	memset(shmem_go, 0, sizeof(int));
+
+
+    int queue_id, mutex_id;
+    int mode = S_IRWXU | S_IRWXG;
+
+    mutex_id = shm_open(MYMUTEX, O_CREAT | O_RDWR | O_TRUNC, mode);
+    if (mutex_id < 0) {
+        perror("shm_open failed with " MYMUTEX);
+        return -1;
     }
+    if (ftruncate(mutex_id, sizeof(pthread_mutex_t)) == -1) {
+        perror("ftruncate failed with " MYMUTEX);
+        return -1;
+    }
+    gpu_lock = (pthread_mutex_t *)mmap(NULL, sizeof(pthread_mutex_t), PROT_READ | PROT_WRITE, MAP_SHARED, mutex_id, 0);
+    if (gpu_lock == MAP_FAILED) {
+        perror("mmap failed with " MYMUTEX);
+        return -1;
+    }
+    /* cond */
+    queue_id = shm_open(MYQUEUE, O_CREAT | O_RDWR | O_TRUNC, mode);
+    if (queue_id < 0) {
+        perror("shm_open failed with " MYQUEUE);
+        return -1;
+    }
+    if (ftruncate(queue_id, sizeof(int)) == -1) {
+        perror("ftruncate failed with " MYQUEUE);
+        return -1;
+    }
+    queue = (int *)mmap(NULL, N*sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED, queue_id, 0);
+    if (queue == MAP_FAILED) {
+        perror("ftruncate failed with " MYQUEUE);
+        return -1;
+    }
+
+    /* set mutex shared between processes */
+    pthread_mutexattr_t mattr;
+    pthread_mutexattr_setpshared(&mattr, PTHREAD_PROCESS_SHARED);
+    pthread_mutex_init(gpu_lock, &mattr);
+    pthread_mutexattr_destroy(&mattr);
+   
 
     if(process_num){
         pid = fork();
