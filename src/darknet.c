@@ -49,9 +49,9 @@ extern void run_super(int argc, char **argv);
 //global variables for runtime switching.
 extern int test_extern = 1972;
 extern int *test_extern_arr = NULL;
-int * queue = NULL;
-pthread_mutex_t *gpu_lock = NULL;
-int N = 0;
+extern int * queue = NULL;
+extern pthread_mutex_t *gpu_lock = NULL;
+extern int N = 0;
 
 // processes identifier & shared memory
 extern int identifier = -1;

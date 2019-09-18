@@ -63,7 +63,7 @@ void forward_network_gpu(network net, network_state state)
     int *res_arr;
     double _time;
     double time;
-
+    int err;
     res_arr = test_extern_arr;
     for(i = 0; i < net.n; ++i){
         
@@ -87,7 +87,8 @@ void forward_network_gpu(network net, network_state state)
         else{ // on gpu 
             
             // gpu access control by mutex
-            while( pthread_mutex_trylock(gpu_lock)){
+            while( err = pthread_mutex_trylock(gpu_lock)){
+                printf("ERROR: %d\n",err);
                 printf("Process %d put into wait\n", identifier);
                 enqueue(queue, getpid());
                 kill(getpid(), SIGSTOP);
@@ -100,7 +101,7 @@ void forward_network_gpu(network net, network_state state)
             l.forward_gpu(l, state);
             CHECK_CUDA(cudaDeviceSynchronize());
         }
-        ret = setpriority(PRIO_PROCESS, getpid(), -10-i);
+        setpriority(PRIO_PROCESS, getpid(), -10-identifier);
         printf("layer: %3d type: %15s - Predicted in %8.5f milli-seconds.\n", i, get_layer_string(l.type), ((double)get_time_point() -time) / 1000);
         
         pthread_mutex_unlock(gpu_lock);
