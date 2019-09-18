@@ -699,7 +699,23 @@ int main(int argc, char **argv)
         }
 #endif
         setpriority(PRIO_PROCESS, getpid(), -10-identifier);
+        
         test_extern_arr = shmem_rescfg[identifier];
+
+        while( err = pthread_mutex_trylock(gpu_lock)){
+                printf("ERROR: %d\n",err);
+                printf("Process %d put into wait\n", identifier);
+                enqueue(queue, getpid());
+                kill(getpid(), SIGSTOP);
+                setpriority(PRIO_PROCESS, getpid(), -20);
+                continue;
+            }    
+        
+        printf("Process %d executes\n", identifier);
+        sleep(1);
+        setpriority(PRIO_PROCESS, getpid(), -10-identifier);        
+        pthread_mutex_unlock(gpu_lock);
+        kill( dequeue(queue), SIGCONT);
         if (0 == strcmp(argv[1], "average")){
             average(argc, argv);
         } else if (0 == strcmp(argv[1], "yolo")){
