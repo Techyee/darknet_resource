@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <time.h>
 #include <assert.h>
+#include <unistd.h>
+#include <signal.h>
 
 #include "network.h"
 #include "image.h"
@@ -41,6 +43,8 @@
 float * get_network_output_gpu_layer(network net, int i);
 float * get_network_delta_gpu_layer(network net, int i);
 float * get_network_output_gpu(network net);
+void enqueue(int* q, int val);
+int dequeue(int* q);
 
 extern int* test_extern_arr;
 extern int identifier;
@@ -83,7 +87,7 @@ void forward_network_gpu(network net, network_state state)
             
             // gpu access control by mutex
             while( pthread_mutex_trylock(gpu_lock)){
-                printf("Process %d put into wait\n", identifier)
+                printf("Process %d put into wait\n", identifier);
                 enqueue(queue, getpid());
                 kill(getpid(), SIGSTOP);
 
