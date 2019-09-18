@@ -1,3 +1,4 @@
+#include <signal.h>
 #include "darknet.h"
 #include "network.h"
 #include "region_layer.h"
@@ -1549,8 +1550,6 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
     list *plist = get_paths(filename);
     char **paths = (char **)list_to_array(plist);
 
-    printf("path: %s\n", paths[0]);
-
     int m = plist->size;
 
     
@@ -1578,10 +1577,8 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
     
     sleep(0.1);
     
-    printf("identifier: %d Wait for timer\n", identifier);
-    
-    clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, shmem_timer, NULL);
-    
+    err = clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, shmem_timer, NULL);
+    assert(err == 0);
     printf("\nidentifier: %d, Starting at %8.5f\n", identifier ,get_time_point()/1000);
     printf("///////// Period : %f //////////\n", ms_period);
     
