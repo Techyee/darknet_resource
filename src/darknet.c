@@ -6,14 +6,16 @@
 #include <signal.h>
 #include <unistd.h>
 #include <sys/mman.h>
-#if defined(_MSC_VER) && defined(_DEBUG)
-#include <crtdbg.h>
 #include <pthread.h>
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/resource.h>
+
+#if defined(_MSC_VER) && defined(_DEBUG)
+#include <crtdbg.h>
+
 #endif
 
 #include "parser.h"
@@ -47,9 +49,9 @@ extern void run_super(int argc, char **argv);
 //global variables for runtime switching.
 extern int test_extern = 1972;
 extern int *test_extern_arr = NULL;
-extern int * queue = NULL;
-extern pthread_mutex_t *gpu_lock = NULL;
-extern int N = 0;
+int * queue = NULL;
+pthread_mutex_t *gpu_lock = NULL;
+int N = 0;
 
 // processes identifier & shared memory
 extern int identifier = -1;
@@ -617,41 +619,41 @@ int main(int argc, char **argv)
 
 
     int queue_id, mutex_id;
-    //int mode = S_IRWXU | S_IRWXG;
-    //
-    // mutex_id = shm_open(MYMUTEX, O_CREAT | O_RDWR | O_TRUNC, mode);
-    // if (mutex_id < 0) {
-    //     perror("shm_open failed with " MYMUTEX);
-    //     return -1;
-    // }
-    // if (ftruncate(mutex_id, sizeof(pthread_mutex_t)) == -1) {
-    //     perror("ftruncate failed with " MYMUTEX);
-    //     return -1;
-    // }
-    // gpu_lock = (pthread_mutex_t *)mmap(NULL, sizeof(pthread_mutex_t), PROT_READ | PROT_WRITE, MAP_SHARED, mutex_id, 0);
-    // if (gpu_lock == MAP_FAILED) {
-    //     perror("mmap failed with " MYMUTEX);
-    //     return -1;
-    // }
-    // /* cond */
-    // queue_id = shm_open(MYQUEUE, O_CREAT | O_RDWR | O_TRUNC, mode);
-    // if (queue_id < 0) {
-    //     perror("shm_open failed with " MYQUEUE);
-    //     return -1;
-    // }
-    // if (ftruncate(queue_id, sizeof(int)) == -1) {
-    //     perror("ftruncate failed with " MYQUEUE);
-    //     return -1;
-    // }
-    // queue = (int *)mmap(NULL, N*sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED, queue_id, 0);
-    // if (queue == MAP_FAILED) {
-    //     perror("ftruncate failed with " MYQUEUE);
-    //     return -1;
-    // }
+    int mode = S_IRWXU | S_IRWXG;
+    
+    mutex_id = shm_open(MYMUTEX, O_CREAT | O_RDWR | O_TRUNC, mode);
+    if (mutex_id < 0) {
+        perror("shm_open failed with " MYMUTEX);
+        return -1;
+    }
+    if (ftruncate(mutex_id, sizeof(pthread_mutex_t)) == -1) {
+        perror("ftruncate failed with " MYMUTEX);
+        return -1;
+    }
+    gpu_lock = (pthread_mutex_t *)mmap(NULL, sizeof(pthread_mutex_t), PROT_READ | PROT_WRITE, MAP_SHARED, mutex_id, 0);
+    if (gpu_lock == MAP_FAILED) {
+        perror("mmap failed with " MYMUTEX);
+        return -1;
+    }
+    /* cond */
+    queue_id = shm_open(MYQUEUE, O_CREAT | O_RDWR | O_TRUNC, mode);
+    if (queue_id < 0) {
+        perror("shm_open failed with " MYQUEUE);
+        return -1;
+    }
+    if (ftruncate(queue_id, sizeof(int)) == -1) {
+        perror("ftruncate failed with " MYQUEUE);
+        return -1;
+    }
+    queue = (int *)mmap(NULL, N*sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED, queue_id, 0);
+    if (queue == MAP_FAILED) {
+        perror("ftruncate failed with " MYQUEUE);
+        return -1;
+    }
 
 
-    gpu_lock = (pthread_mutex_t *)create_shared_memory(sizeof(pthread_mutex_t));
-    queue = (int *)create_shared_memory(sizeof(int)*process_num);
+    // gpu_lock = (pthread_mutex_t *)create_shared_memory(sizeof(pthread_mutex_t));
+    // queue = (int *)create_shared_memory(sizeof(int)*process_num);
     /* set mutex shared between processes */
     pthread_mutexattr_t mattr;
     pthread_mutexattr_setpshared(&mattr, PTHREAD_PROCESS_SHARED);
