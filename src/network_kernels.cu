@@ -46,6 +46,7 @@ extern int* test_extern_arr;
 extern int identifier;
 extern int * queue;
 extern pthread_mutex_t *gpu_lock;
+extern int N;
 
 void forward_network_gpu(network net, network_state state)
 {
