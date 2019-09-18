@@ -1502,11 +1502,13 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
     char **names = get_labels_custom(name_list, &names_size); //get_labels(name_list);
     network net;
     image **alphabet = load_alphabet();
+    
     if(quantized){
         net = parse_network_cfg_custom(cfgfile, 11, 1);
     }else{
         net = parse_network_cfg_custom(cfgfile, 1, 1); // set batch=1
     }
+    
     if (weightfile) {
         load_weights(&net, weightfile);
     }
@@ -1520,7 +1522,9 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
             name_list, names_size, net.layers[net.n - 1].classes, cfgfile);
         if (net.layers[net.n - 1].classes > names_size) getchar();
     }
+    
     srand(2222222);
+    
     if (quantized) {
         time = get_time_point();
         printf("\n\n Quantinization! \n\n");
@@ -1533,6 +1537,7 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
     char *json_buf = NULL;
     int json_image_id = 0;
     FILE* json_file = NULL;
+    
     if (outfile) {
         json_file = fopen(outfile, "wb");
         char *tmp = "[\n";
@@ -1540,10 +1545,8 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
     }
     int j;
     float nms = .45;
-    if(quantized){
-       // nms = 0.2;
-    }
     int k;
+    
     list *plist = get_paths(filename);
     char **paths = (char **)list_to_array(plist);
 
@@ -1579,33 +1582,20 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
     }
     
     sleep(0.1);
+    
     printf("identifier: %d Wait for timer\n", identifier);
+    
     clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, shmem_timer, NULL);
+    
     printf("\nidentifier: %d, Starting at %8.5f\n", identifier ,get_time_point()/1000);
     printf("///////// Period : %f //////////\n", ms_period);
+    
     err = clock_gettime(CLOCK_MONOTONIC, &release_time);
     assert(err ==0);
+    
     time = get_time_point();
+    
     for (k =0; k< m; k++){
-        //time = get_time_point();
-        /*
-        if (filename) {
-            strncpy(input, filename, 256);
-            if (strlen(input) > 0)
-                if (input[strlen(input) - 1] == 0x0d) input[strlen(input) - 1] = 0;
-        }
-        else {
-            printf("Enter Image Path: ");
-            fflush(stdout);
-            input = fgets(input, 256, stdin);
-            if (!input) break;
-            strtok(input, "\n");
-        }
-        */
-
-        //image im;
-        //image sized = load_image_resize(input, net.w, net.h, net.c, &im);
-        
 
         ///// IMAGE PREPROCESSING /////
 
@@ -1616,25 +1606,20 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
         else sized = resize_image(im, net.w, net.h);
         layer l = net.layers[net.n - 1];
 
-        //box *boxes = calloc(l.w*l.h*l.n, sizeof(box));
-        //float **probs = calloc(l.w*l.h*l.n, sizeof(float*));
-        //for(j = 0; j < l.w*l.h*l.n; ++j) probs[j] = (float*)calloc(l.classes, sizeof(float));
-
-        ///// IMAGE PREPROCESSING /////    
-
         float *X = sized.data;
          
         //time = get_time_point();
         network_predict(net, X);
-        //network_predict_image(&net, im); letterbox = 1;
         //printf("%s: Predicted in %lf milli-seconds.\n", input, ((double)get_time_point() - time) / 1000);
-        //printf("%s: Predicted in %f seconds.\n", input, (what_time_is_it_now()-time));
 
         int nboxes = 0;
         detection *dets = get_network_boxes(&net, im.w, im.h, thresh, hier_thresh, 0, 1, &nboxes, letter_box);
+        
         if (nms) do_nms_sort(dets, nboxes, l.classes, nms);
+        
         draw_detections_v3(im, dets, nboxes, thresh, names, alphabet, l.classes, ext_output);
         save_image(im, "predictions");
+
         if (!dont_show) {
             show_image(im, "predictions");
         }
@@ -1686,11 +1671,8 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
             destroy_all_windows_cv();
         }
 
-        //if (filename) break;
-        //for(iter=0;iter<25;iter++){
-        //    test_extern_arr[iter] = 0;
-        //}
-        printf("%s: Predicted in %lf milli-seconds.\n", input, ((double)get_time_point() - time) / 1000);
+        printf("\n%s: Predicted in %lf milli-seconds.\n\n", input, ((double)get_time_point() - time) / 1000);
+        
         timespec_add(&release_time, &period);
         clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &release_time, NULL);
         time = get_time_point();

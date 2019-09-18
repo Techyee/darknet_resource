@@ -63,7 +63,6 @@ void forward_network_gpu(network net, network_state state)
     int *res_arr;
     double _time;
     double time;
-    int err;
     res_arr = test_extern_arr;
     for(i = 0; i < net.n; ++i){
         
@@ -87,22 +86,19 @@ void forward_network_gpu(network net, network_state state)
         else{ // on gpu 
             
             // gpu access control by mutex
-            while( err = pthread_mutex_trylock(gpu_lock)){
-                printf("ERROR: %d\n",err);
-                printf("Process %d put into wait\n", identifier);
+            while(pthread_mutex_trylock(gpu_lock)){
+                //printf("[Process %d put into wait]\n", identifier);
                 enqueue(queue, getpid());
                 kill(getpid(), SIGSTOP);
                 setpriority(PRIO_PROCESS, getpid(), -20);
                 continue;
             }
             
-            printf("Process %d executes\n", identifier);
-            
             l.forward_gpu(l, state);
             CHECK_CUDA(cudaDeviceSynchronize());
         }
         setpriority(PRIO_PROCESS, getpid(), -10-identifier);
-        printf("layer: %3d type: %15s - Predicted in %8.5f milli-seconds.\n", i, get_layer_string(l.type), ((double)get_time_point() -time) / 1000);
+        printf("[Process %d] layer: %3d type: %15s - Predicted in %8.5f milli-seconds.\n", identifier, i, get_layer_string(l.type), ((double)get_time_point() -time) / 1000);
         
         pthread_mutex_unlock(gpu_lock);
         kill( dequeue(queue), SIGCONT);
@@ -559,7 +555,7 @@ float *network_predict_gpu(network net, float *input)
         _time_cp = get_time_point();//init timer.
         memcpy(net.input_pinned_cpu, input, size * sizeof(float));
         cuda_push_array(state.input, net.input_pinned_cpu, size);
-        printf("end of memcpy+cuda_push, time is  %8.5f millisec\n",((double)get_time_point()-_time_cp)/1000);
+        //printf("end of memcpy+cuda_push, time is  %8.5f millisec\n",((double)get_time_point()-_time_cp)/1000);
     }
     state.truth = 0;
     state.train = 0;
