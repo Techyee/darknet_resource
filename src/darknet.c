@@ -55,9 +55,8 @@ extern int N = 0;
 
 // processes identifier & shared memory
 extern int identifier = -1;
-extern int *shmem_ready = NULL;
-extern int *shmem_go = NULL;
 extern int **shmem_rescfg = NULL;
+extern int *shmem_pid = NULL;
 extern struct timespec *shmem_timer = NULL;
 
 //DetectorParameter structure for multi-threading.
@@ -595,6 +594,7 @@ int main(int argc, char **argv)
         printf("No information about resource configuration\n");
         exit(-1);
     }
+    
     list *rlist = get_paths(res_cfg);
     char **rpaths = (char **)list_to_array(rlist);
     int res_cfg_num = rlist->size;
@@ -604,19 +604,14 @@ int main(int argc, char **argv)
         exit(-1);
     }
 
-    // make shared pointer for resource configuration 
-    shmem_rescfg = (int **)create_shared_memory(sizeof(int **));
-    shmem_rescfg = store_res_cfg(res_cfg_num,rpaths);
-
     // shared memory
-    shmem_ready = (int *)create_shared_memory(sizeof(int)*process_num);
-    shmem_go = (int *)create_shared_memory(sizeof(int));
+    shmem_rescfg = (int **)create_shared_memory(sizeof(int **));
+    shmem_pid = (int *)create_shared_memory(sizeof(int)*process_num);
     shmem_timer = (struct timespec *)create_shared_memory(sizeof(struct timespec));
+    shmem_rescfg = store_res_cfg(res_cfg_num,rpaths);
     
     // init shared memory
-    memset(shmem_ready, 0, sizeof(int)*process_num);
-	memset(shmem_go, 0, sizeof(int));
-
+    memset(shmem_pid,0, sizeof(int)*process_num);
 
     int queue_id, mutex_id;
     int mode = S_IRWXU | S_IRWXG;
@@ -675,20 +670,12 @@ int main(int argc, char **argv)
     }
 
     if(identifier == -1){ /* mother process */ 
-        /* get ready sign from children */
-        int ready_sig = 0;
-        while(!ready_sig){
-            sleep(1);
-            printf("waiting for ready_sign\n");
-            ready_sig = shmem_ready[0];
-            for(int i = 1; i < process_num; i++){
-                ready_sig *= shmem_ready[i];
-            }
+
+        sleep(5);
+        for (int i = 0; i < process_num; i++){
+            kill(shmem_pid[i],SIGCONT);
         }
-        printf("Ready_sign has been set\n");
-        /* send go sign to children */
-        shmem_go[0] = 1;
-        puts("Set go sign");
+        
         wait();
     }else{ /* child process */
 #ifndef GPU
