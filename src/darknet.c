@@ -698,6 +698,7 @@ int main(int argc, char **argv)
             CHECK_CUDA(cudaSetDeviceFlags(cudaDeviceScheduleBlockingSync));
         }
 #endif
+        setpriority(PRIO_PROCESS, getpid(), -10-identifier);
         test_extern_arr = shmem_rescfg[identifier];
         if (0 == strcmp(argv[1], "average")){
             average(argc, argv);

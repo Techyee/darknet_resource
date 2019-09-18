@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <unistd.h>
 #include <signal.h>
+#include <sys/resource.h>
 
 #include "network.h"
 #include "image.h"
@@ -90,7 +91,7 @@ void forward_network_gpu(network net, network_state state)
                 printf("Process %d put into wait\n", identifier);
                 enqueue(queue, getpid());
                 kill(getpid(), SIGSTOP);
-
+                setpriority(PRIO_PROCESS, getpid(), -20);
                 continue;
             }
             
@@ -99,7 +100,7 @@ void forward_network_gpu(network net, network_state state)
             l.forward_gpu(l, state);
             CHECK_CUDA(cudaDeviceSynchronize());
         }
-
+        ret = setpriority(PRIO_PROCESS, getpid(), -10-i);
         printf("layer: %3d type: %15s - Predicted in %8.5f milli-seconds.\n", i, get_layer_string(l.type), ((double)get_time_point() -time) / 1000);
         
         pthread_mutex_unlock(gpu_lock);
