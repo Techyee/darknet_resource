@@ -111,20 +111,16 @@ void forward_network_gpu(network net, network_state state)
                 state.input = l.output;    
             }
             else{//next is running on GPU
-                //printf("[network_kernels.cu line 78] push_cuda_overhead :");
                 _time = get_time_point();
-                cuda_push_array(l.output_gpu, l.output, l.batch*l.outputs);
-                state.input = l.output_gpu;
-                //printf(" %8.5f milli-seconds,sizeof output :%d \n",((double)get_time_point() - _time)/1000,l.batch*l.outputs);
+                //cuda_push_array(l.output_gpu, l.output, l.batch*l.outputs);
+                state.input = l.output;
             }
         }
         else{//currently running on GPU
             if(res_arr[i+1] == 0){//next is running on CPU
-                //printf("[network_kernels.cu line 86] pull_cuda_overhead :");
                 _time = get_time_point();
-                cuda_pull_array(l.output_gpu, l.output, l.batch*l.outputs);
-                state.input = l.output;
-                //printf(" %8.5f milli-seconds, sizeof output:%d \n",((double)get_time_point() - _time)/1000,l.batch*l.outputs);
+                //cuda_pull_array(l.output_gpu, l.output, l.batch*l.outputs);
+                state.input = l.output_gpu;
             }
             else{//next is running on GPU
                 state.input = l.output_gpu;
@@ -531,8 +527,10 @@ float *get_network_output_gpu(network net)
 
 float *network_predict_gpu(network net, float *input)
 {
-    int* res_arr; // change the scope of memory according to resource allocation.
-    double _time_cp; //gpu_memcpy_timer.
+    int* res_arr;           // change the scope of memory according to resource allocation.
+    float* temp_ptr[net.n]; // temporary pointers for cudaMalloc or malloc memories.
+    double _time_cp;        // gpu_memcpy_timer.
+    int i;
 
     double _time = get_time_point();
     if (net.gpu_index != cuda_get_device())
@@ -555,14 +553,50 @@ float *network_predict_gpu(network net, float *input)
         _time_cp = get_time_point();//init timer.
         memcpy(net.input_pinned_cpu, input, size * sizeof(float));
         cuda_push_array(state.input, net.input_pinned_cpu, size);
-        //printf("end of memcpy+cuda_push, time is  %8.5f millisec\n",((double)get_time_point()-_time_cp)/1000);
     }
     state.truth = 0;
     state.train = 0;
     state.delta = 0;
-    //printf("end of net_pred_gpu, time is %8.5f millisec\n",((double)get_time_point()-_time)/1000);
+
+    //allocate unified cuda memories.
+    printf("start of unified memory reallocation\n");
+    for(i = 0; i < net.n; ++i){
+        if((res_arr[i] != res_arr[i+1]) || (i==8) || (i==13) || (i==19)){//computation resource change || route layer target.
+            layer *lptr = &(net.layers[i]);
+            if(res_arr[i] == 0){//if prev resource was CPU
+                temp_ptr[i] = lptr->output;
+                lptr->output = cuda_make_array_global(lptr->output,lptr->batch * lptr->outputs);
+            }
+            else{//if prev resource was GPU
+                temp_ptr[i] = lptr->output_gpu;
+                lptr->output_gpu = cuda_make_array_global(lptr->output,lptr->batch * lptr->outputs);
+            }
+        }
+    }
+    printf("end of unified memory reallocation\n");
+    //!allocated.
+
     forward_network_gpu(net, state);
     float *out = get_network_output_gpu(net);
+
+    //free cuda memories and return original memory pointer.
+    printf("start of returning memory reallocation\n");
+    for(i=0; i<net.n; ++i){
+        if(res_arr[i] != res_arr[i+1]){
+            layer *lptr = &(net.layers[i]);
+            if(res_arr[i] == 0){
+                cuda_free(lptr->output);
+                lptr->output = temp_ptr[i];
+            }
+            else{
+                cuda_free(lptr->output_gpu);
+                lptr->output_gpu = temp_ptr[i];
+            }
+        }
+    }
+    printf("end of returning memory reallocation\n");
+    //!freed.
+
     //cuda_free(state.input);   // will be freed in the free_network()
     return out;
 }

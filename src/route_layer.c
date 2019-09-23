@@ -3,6 +3,8 @@
 #include "blas.h"
 #include <stdio.h>
 
+extern int* test_extern_arr;
+
 route_layer make_route_layer(int batch, int n, int *input_layers, int *input_sizes)
 {
     fprintf(stderr,"route ");
@@ -76,7 +78,16 @@ void forward_route_layer(const route_layer l, network_state state)
     int offset = 0;
     for(i = 0; i < l.n; ++i){
         int index = l.input_layers[i];
-        float *input = state.net.layers[index].output;
+        
+        //route layers should lookup the allocation status of previous layers.
+        //change the input pointer according to resource allocation array.
+        float *input;
+        if(test_extern_arr[index] == 0)
+            input = state.net.layers[index].output;
+        else
+            input = state.net.layers[index].output_gpu;
+        //!pointer allocation
+        
         int input_size = l.input_sizes[i];
         for(j = 0; j < l.batch; ++j){
             copy_cpu(input_size, input + j*input_size, 1, l.output + offset + j*l.outputs, 1);
@@ -107,7 +118,15 @@ void forward_route_layer_gpu(const route_layer l, network_state state)
     int offset = 0;
     for(i = 0; i < l.n; ++i){
         int index = l.input_layers[i];
-        float *input = state.net.layers[index].output_gpu;
+        
+        //change the input pointer according to resource allocation array.
+        float *input;
+        if(test_extern_arr[index] == 0)
+            input = state.net.layers[index].output;
+        else
+            input = state.net.layers[index].output_gpu;
+        //!pointer allocation
+        
         int input_size = l.input_sizes[i];
         for(j = 0; j < l.batch; ++j){
             //copy_ongpu(input_size, input + j*input_size, 1, l.output_gpu + offset + j*l.outputs, 1);
