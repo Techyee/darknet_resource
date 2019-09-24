@@ -147,6 +147,8 @@ connected_layer make_connected_layer(int batch, int steps, int inputs, int outpu
     }
 #ifdef CUDNN
     create_convolutional_cudnn_tensors(&l);
+    l.groups = 1;
+    l.dilation = 1;
     cudnn_convolutional_setup(&l, cudnn_fastest);   // cudnn_fastest, cudnn_smallest
     l.workspace_size = get_connected_workspace_size(l);
 #endif  // CUDNN

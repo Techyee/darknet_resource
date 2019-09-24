@@ -762,7 +762,7 @@ void predict_classifier(char *datacfg, char *cfgfile, char *weightfile, char *fi
     set_batch_network(&net, 1);
     srand(2222222);
 
-    fuse_conv_batchnorm(net);
+    //fuse_conv_batchnorm(net);
     calculate_binary_weights(net);
 
     list *options = read_data_cfg(datacfg);
