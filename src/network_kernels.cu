@@ -507,15 +507,15 @@ float *get_network_output_layer_gpu(network net, int i)
     double _time = get_time_point();
     layer l = net.layers[i];
     if(l.type != REGION){
-        printf("l.type is %s\n",get_layer_string(l.type));
-        printf("test_extern_arr : %d\n",test_extern_arr[i]);
+        //printf("l.type is %s\n",get_layer_string(l.type));
+        //printf("test_extern_arr : %d\n",test_extern_arr[i]);
         if(test_extern_arr[i] == 1){//from gpu
-            printf("pulled from gpu.\n");
+            //printf("pulled from gpu.\n");
             cuda_pull_array(l.output_gpu, l.output, l.outputs*l.batch);
         }
     }
 
-    printf("end of get_net_output, time is %8.5f millisec\n",((double)get_time_point() - _time)/1000);
+    //printf("end of get_net_output, time is %8.5f millisec\n",((double)get_time_point() - _time)/1000);
     return l.output;
 }
 
@@ -523,7 +523,7 @@ float *get_network_output_gpu(network net)
 {
     int i;
     for(i = net.n-1; i > 0; --i) if(net.layers[i].type != COST) break;
-    printf("target layer i is %d.\n",i);
+    //printf("target layer i is %d.\n",i);
     return get_network_output_layer_gpu(net, i);
 }
 
@@ -561,7 +561,7 @@ float *network_predict_gpu(network net, float *input)
     state.delta = 0;
 
     //allocate unified cuda memories.
-    printf("start of unified memory reallocation\n");
+    //printf("start of unified memory reallocation\n");
     for(i = 0; i < net.n; ++i){
         if((res_arr[i] != res_arr[i+1]) || (i==8) || (i==13) || (i==19)){//computation resource change || route layer target.
             layer *lptr = &(net.layers[i]);
@@ -575,14 +575,14 @@ float *network_predict_gpu(network net, float *input)
             }
         }
     }
-    printf("end of unified memory reallocation\n");
+    //printf("end of unified memory reallocation\n");
     //!allocated.
 
     forward_network_gpu(net, state);
     float *out = get_network_output_gpu(net);
 
     //free cuda memories and return original memory pointer.
-    printf("start of returning memory reallocation\n");
+    //printf("start of returning memory reallocation\n");
     for(i=0; i<net.n; ++i){
         if(res_arr[i] != res_arr[i+1]){
             layer *lptr = &(net.layers[i]);
@@ -596,7 +596,7 @@ float *network_predict_gpu(network net, float *input)
             }
         }
     }
-    printf("end of returning memory reallocation\n");
+    //printf("end of returning memory reallocation\n");
     //!freed.
 
     //cuda_free(state.input);   // will be freed in the free_network()
