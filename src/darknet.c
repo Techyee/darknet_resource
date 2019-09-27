@@ -694,10 +694,13 @@ int main(int argc, char **argv)
         //redirect stdout & stderr to certain file.
         int fd;                 //fd
         char output_idx[4];     //idx of output file
-        char output_name[50];   //name of output file
+        char output_name[100];   //name of output file
+        char file_extension[20];
+        sprintf(file_extension,"%s",".txt");
         sprintf(output_idx,"%d",identifier);
         strcpy(output_name,"multiprocresult_");
         strcat(output_name,output_idx);
+        strcat(output_name,file_extension);
         if((fd = open(output_name, O_RDWR | O_CREAT,0666))==-1){
             perror("open");
             return 1;
