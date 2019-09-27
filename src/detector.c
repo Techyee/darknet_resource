@@ -1495,7 +1495,17 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
 {
 
     int iter;
-    double time;
+    double time; 
+    double time_pre;
+    double time_pre_end;
+    double time_predict;
+    double time_predict_end;
+    double time_post;
+    double time_post_end;
+    double time_pre_arr[100];
+    double time_predict_arr[100];
+    double time_post_arr[100];
+
     list *options = read_data_cfg(datacfg);
     char *name_list = option_find_str(options, "names", "data/names.list");
     int names_size = 0;
@@ -1584,13 +1594,13 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
     
     err = clock_gettime(CLOCK_MONOTONIC, &release_time);
     assert(err ==0);
-    
-    time = get_time_point();
-    
+    double t_period;
+    double t_period_end;
+
     for (k =0; k< m; k++){
-
+        t_period = get_time_point();
         ///// IMAGE PREPROCESSING /////
-
+        time_pre = get_time_point();
         input = paths[k];
         image im = load_image(input, 0, 0, net.c);
         image sized;
@@ -1599,18 +1609,24 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
         layer l = net.layers[net.n - 1];
 
         float *X = sized.data;
-         
-        //time = get_time_point();
-        network_predict(net, X);
-        //printf("%s: Predicted in %lf milli-seconds.\n", input, ((double)get_time_point() - time) / 1000);
+        time_pre_end = get_time_point();
+        ///// IMAGE PREPROCESSING /////
 
+        time_predict = get_time_point();
+        network_predict(net, X);
+        time_predict_end = get_time_point();
+
+
+        ///// IMAGE POSTPROCESSING /////
+        time_post = get_time_point();
+        /*
         int nboxes = 0;
         detection *dets = get_network_boxes(&net, im.w, im.h, thresh, hier_thresh, 0, 1, &nboxes, letter_box);
         
         if (nms) do_nms_sort(dets, nboxes, l.classes, nms);
         
         draw_detections_v3(im, dets, nboxes, thresh, names, alphabet, l.classes, ext_output);
-        save_image(im, "predictions");
+        //save_image(im, "predictions");
 
         if (!dont_show) {
             show_image(im, "predictions");
@@ -1662,12 +1678,18 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
             wait_until_press_key_cv();
             destroy_all_windows_cv();
         }
-
-        printf("\n%s: Predicted in %lf milli-seconds.\n\n", input, ((double)get_time_point() - time) / 1000);
-        
+        */
+        time_post_end = get_time_point();
+        printf("PRE : %8.5f, PREDICT :%8.5f, POST :%8.5f, TOTAL :%8.5f\n",
+                time_pre_arr[k] = (time_pre_end-time_pre)/1000,
+                time_predict_arr[k] = (time_predict_end-time_predict)/1000,
+                time_post_arr[k] = (time_post_end-time_post)/1000,
+                (time_post_end - time_pre)/1000);
         timespec_add(&release_time, &period);
         clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &release_time, NULL);
-        time = get_time_point();
+        t_period_end = get_time_point();
+        printf("period == %8.5f\n",t_period_end - t_period);
+
     }
 
 
@@ -1676,7 +1698,7 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
         fwrite(tmp, sizeof(char), strlen(tmp), json_file);
         fclose(json_file);
     }
-
+    
     // free memory
     free_ptrs((void**)names, net.layers[net.n - 1].classes);
     free_list_contents_kvp(options);
@@ -1690,9 +1712,12 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
         }
         free(alphabet[j]);
     }
-    free(alphabet);
+    for (j=0;j<100;j++)
+        printf("%8.5f %8.5f %8.5f\n",time_pre_arr[j],time_predict_arr[j],time_post_arr[j]);
 
+    free(alphabet);
     free_network(net);
+
 }
 
 

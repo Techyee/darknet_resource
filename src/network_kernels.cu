@@ -55,7 +55,7 @@ extern int N;
 
 void forward_network_gpu(network net, network_state state)
 {
-    //cudaDeviceSynchronize();
+    cudaDeviceSynchronize();
     //printf("\n");
     state.workspace = net.workspace;
     state.workspace_cpu = net.workspace_cpu;
@@ -98,7 +98,7 @@ void forward_network_gpu(network net, network_state state)
             CHECK_CUDA(cudaDeviceSynchronize());
         }
         setpriority(PRIO_PROCESS, getpid(), -10-identifier);
-        printf("[Process %d] layer: %3d type: %15s - Predicted in %8.5f milli-seconds.\n", identifier, i, get_layer_string(l.type), ((double)get_time_point() -time) / 1000);
+        //printf("[Process %d] layer: %3d type: %15s - Predicted in %8.5f milli-seconds.\n", identifier, i, get_layer_string(l.type), ((double)get_time_point() -time) / 1000);
         
         pthread_mutex_unlock(gpu_lock);
         kill( dequeue(queue), SIGCONT);
@@ -507,13 +507,15 @@ float *get_network_output_layer_gpu(network net, int i)
     double _time = get_time_point();
     layer l = net.layers[i];
     if(l.type != REGION){
+        printf("l.type is %s\n",get_layer_string(l.type));
+        printf("test_extern_arr : %d\n",test_extern_arr[i]);
         if(test_extern_arr[i] == 1){//from gpu
-            //printf("pulled from gpu.\n");
+            printf("pulled from gpu.\n");
             cuda_pull_array(l.output_gpu, l.output, l.outputs*l.batch);
         }
     }
 
-    //printf("end of get_net_output, time is %8.5f millisec\n",((double)get_time_point() - _time)/1000);
+    printf("end of get_net_output, time is %8.5f millisec\n",((double)get_time_point() - _time)/1000);
     return l.output;
 }
 
@@ -521,7 +523,7 @@ float *get_network_output_gpu(network net)
 {
     int i;
     for(i = net.n-1; i > 0; --i) if(net.layers[i].type != COST) break;
-    //printf("target layer i is %d.\n",i);
+    printf("target layer i is %d.\n",i);
     return get_network_output_layer_gpu(net, i);
 }
 

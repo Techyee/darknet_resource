@@ -11,6 +11,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <string.h>
 #include <sys/resource.h>
 
 #if defined(_MSC_VER) && defined(_DEBUG)
@@ -508,7 +509,6 @@ int ** store_res_cfg(int res_cfg_num, char ** rpaths){
             cfg_list[i][j]=atoi(strtok(NULL,","));
         }
         // set last layer on CPU 
-        cfg_list[i][layer_num-1] = 0;
     }
     return cfg_list;
 }
@@ -686,10 +686,28 @@ int main(int argc, char **argv)
             CHECK_CUDA(cudaSetDeviceFlags(cudaDeviceScheduleBlockingSync));
         }
 #endif
+        //set CPU execution priority.
         setpriority(PRIO_PROCESS, getpid(), -10-identifier);
-        
+        //allocate resource configuration of each process.
         test_extern_arr = shmem_rescfg[identifier];
+    
+        //redirect stdout & stderr to certain file.
+        int fd;                 //fd
+        char output_idx[4];     //idx of output file
+        char output_name[50];   //name of output file
+        sprintf(output_idx,"%d",identifier);
+        strcpy(output_name,"multiprocresult_");
+        strcat(output_name,output_idx);
+        if((fd = open(output_name, O_RDWR | O_CREAT,0666))==-1){
+            perror("open");
+            return 1;
+        }
+        dup2(fd,STDOUT_FILENO);
+        dup2(fd,STDERR_FILENO);
+        close(fd);
+        //!stdout redirection.
 
+        //original darknet main process.
         if (0 == strcmp(argv[1], "average")){
             average(argc, argv);
         } else if (0 == strcmp(argv[1], "yolo")){
