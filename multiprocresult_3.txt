@@ -25,303 +25,215 @@
   22 conv    255       1 x 1/ 1     26 x  26 x 256 ->   26 x  26 x 255 0.088 BF
   23 yolo
 [yolo] params: iou loss: mse, iou_norm: 0.75, cls_norm: 1.00, scale_x_y: 1.00
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.22000 millisec
 Total BFLOPS 5.571 
  Allocate additional workspace_size = 52.43 MB 
 Loading weights from ./yolov3-tiny.weights...
  seen 64 
 Done!
 
-identifier: 3, Starting at 4589380913.32400
+identifier: 3, Starting at 4590311567.84300
 ///////// Period : 220.000000 //////////
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.14600 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE : 13.23100, PREDICT :16.93800, POST : 0.00000, TOTAL :30.16900
-period == 220108.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.16300 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE : 13.71600, PREDICT :14.61900, POST : 0.00000, TOTAL :28.33500
-period == 219959.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.23600 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE : 43.09000, PREDICT :15.93400, POST : 0.00000, TOTAL :59.02400
-period == 219945.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.14600 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE : 15.17800, PREDICT :13.86300, POST : 0.00000, TOTAL :29.04100
-period == 219963.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.35300 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE : 12.30400, PREDICT :18.22500, POST : 0.00100, TOTAL :30.53000
-period == 219935.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.20700 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE : 13.11900, PREDICT :14.59800, POST : 0.00000, TOTAL :27.71700
-period == 219942.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.56200 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE : 12.44200, PREDICT :23.62700, POST : 0.00000, TOTAL :36.06900
-period == 219953.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.40700 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE : 12.84800, PREDICT :13.61000, POST : 0.00000, TOTAL :26.45800
-period == 219955.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.18000 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE : 11.23900, PREDICT :11.57400, POST : 0.00000, TOTAL :22.81300
-period == 219962.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.37000 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE : 16.03600, PREDICT :16.60200, POST : 0.00000, TOTAL :32.63800
-period == 219944.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.66800 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE : 15.14800, PREDICT :15.76500, POST : 0.00100, TOTAL :30.91400
-period == 219929.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.14800 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE :  9.73600, PREDICT :12.02300, POST : 0.00000, TOTAL :21.75900
-period == 220010.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.36500 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE : 13.43300, PREDICT :23.87700, POST : 0.00000, TOTAL :37.31200
-period == 219958.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  1.48100 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE : 14.05200, PREDICT :22.71600, POST : 0.00100, TOTAL :36.76900
-period == 219939.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.17200 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE : 12.71800, PREDICT :15.68000, POST : 0.00000, TOTAL :28.39800
-period == 219959.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.81400 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE : 13.87400, PREDICT :19.35300, POST : 0.00100, TOTAL :33.22800
-period == 219929.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.35300 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE : 12.73000, PREDICT :18.48600, POST : 0.00000, TOTAL :31.21600
-period == 219962.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.18400 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE : 10.53100, PREDICT :14.29500, POST : 0.00000, TOTAL :24.82600
-period == 219950.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.18600 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE : 13.33100, PREDICT :25.77100, POST : 0.00000, TOTAL :39.10200
-period == 219955.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.69200 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE : 15.54600, PREDICT :23.39300, POST : 0.00000, TOTAL :38.94000
-period == 219898.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.17600 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE :  9.39700, PREDICT :20.09300, POST : 0.00000, TOTAL :29.49000
-period == 220052.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.18300 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE : 13.55600, PREDICT :19.53300, POST : 0.00000, TOTAL :33.09000
-period == 219956.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.14800 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE : 12.15700, PREDICT :15.61600, POST : 0.00000, TOTAL :27.77300
-period == 219944.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.14800 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE : 12.52800, PREDICT :11.64600, POST : 0.00000, TOTAL :24.17400
-period == 218340.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.14500 millisec
-start of returning memory reallocation
-end of returning memory reallocation
-PRE :  9.46100, PREDICT :24.94800, POST : 0.00000, TOTAL :34.40900
-period == 219954.00000
-start of unified memory reallocation
-end of unified memory reallocation
-target layer i is 23.
-l.type is yolo
-test_extern_arr : 1
-pulled from gpu.
-end of get_net_output, time is  0.64500 millisec
-start of returning memory reallocation
-end of returning memory reallocation
+PRE : 13.59700, PREDICT :18.44400, POST : 0.00000, TOTAL :32.04100
+PRE : 14.25900, PREDICT :19.53700, POST : 0.00000, TOTAL :33.79600
+PRE : 13.78300, PREDICT :14.56100, POST : 0.00000, TOTAL :28.34400
+PRE : 12.78800, PREDICT :14.25200, POST : 0.00000, TOTAL :27.04000
+PRE : 12.77100, PREDICT :14.31900, POST : 0.00000, TOTAL :27.09000
+PRE : 13.68200, PREDICT :12.66300, POST : 0.00000, TOTAL :26.34500
+PRE : 12.90300, PREDICT :19.67000, POST : 0.00000, TOTAL :32.57300
+PRE : 13.16600, PREDICT :19.51500, POST : 0.00000, TOTAL :32.68100
+PRE : 11.63200, PREDICT :14.62900, POST : 0.00000, TOTAL :26.26200
+PRE : 16.52000, PREDICT :16.88900, POST : 0.00000, TOTAL :33.41000
+PRE : 15.49600, PREDICT :11.94400, POST : 0.00000, TOTAL :27.44000
+PRE : 12.44900, PREDICT :15.20300, POST : 0.00000, TOTAL :27.65200
+PRE : 11.43500, PREDICT :12.02900, POST : 0.00000, TOTAL :23.46500
+PRE : 12.87000, PREDICT :20.38500, POST : 0.00000, TOTAL :33.25500
+PRE : 13.17300, PREDICT :14.16800, POST : 0.00000, TOTAL :27.34100
+PRE : 14.31200, PREDICT :18.46500, POST : 0.00000, TOTAL :32.77700
+PRE : 13.22100, PREDICT :17.97700, POST : 0.00000, TOTAL :31.19800
+PRE : 11.00900, PREDICT :16.25100, POST : 0.00000, TOTAL :27.26000
+PRE : 13.82100, PREDICT :18.74400, POST : 0.00000, TOTAL :32.56500
+PRE : 14.37400, PREDICT :22.28600, POST : 0.00000, TOTAL :36.66000
+PRE : 14.20600, PREDICT : 9.48900, POST : 0.00000, TOTAL :23.69500
+PRE : 13.95900, PREDICT :20.74000, POST : 0.00000, TOTAL :34.69900
+PRE : 12.67300, PREDICT :14.94000, POST : 0.00000, TOTAL :27.61300
+PRE : 14.29100, PREDICT :15.61700, POST : 0.00000, TOTAL :29.90800
+PRE :  9.93500, PREDICT :16.08700, POST : 0.00000, TOTAL :26.02200
+PRE : 14.46800, PREDICT :15.77800, POST : 0.00000, TOTAL :30.24600
+PRE : 12.62900, PREDICT :14.39400, POST : 0.00000, TOTAL :27.02300
+PRE : 15.66500, PREDICT :21.01000, POST : 0.00000, TOTAL :36.67500
+PRE : 11.39400, PREDICT :22.67000, POST : 0.00000, TOTAL :34.06500
+PRE : 13.20300, PREDICT :17.44200, POST : 0.00000, TOTAL :30.64500
+PRE : 11.67100, PREDICT :16.37700, POST : 0.00000, TOTAL :28.04800
+PRE : 11.54500, PREDICT :12.18700, POST : 0.00000, TOTAL :23.73200
+PRE : 13.13100, PREDICT :23.23700, POST : 0.00000, TOTAL :36.36800
+PRE : 13.83400, PREDICT :18.14300, POST : 0.00000, TOTAL :31.97700
+PRE : 12.13200, PREDICT :12.18400, POST : 0.00000, TOTAL :24.31600
+PRE : 10.37600, PREDICT :12.28700, POST : 0.00000, TOTAL :22.66300
+PRE : 13.68900, PREDICT :19.90600, POST : 0.00000, TOTAL :33.59500
+PRE : 13.02800, PREDICT :12.71500, POST : 0.00000, TOTAL :25.74300
+PRE : 12.67800, PREDICT :17.05100, POST : 0.00000, TOTAL :29.72900
+PRE : 11.11500, PREDICT :19.25700, POST : 0.00000, TOTAL :30.37200
+PRE : 13.11100, PREDICT :12.99400, POST : 0.00000, TOTAL :26.10500
+PRE : 14.24600, PREDICT :15.76400, POST : 0.00000, TOTAL :30.01000
+PRE : 12.37900, PREDICT :12.24300, POST : 0.00000, TOTAL :24.62300
+PRE : 13.47600, PREDICT :21.44400, POST : 0.00000, TOTAL :34.92000
+PRE :  9.80100, PREDICT :18.77300, POST : 0.00000, TOTAL :28.57400
+PRE : 15.59400, PREDICT :10.24400, POST : 0.00000, TOTAL :25.83800
+PRE : 15.27600, PREDICT :14.49500, POST : 0.00000, TOTAL :29.77100
+PRE : 13.92300, PREDICT :19.88100, POST : 0.00000, TOTAL :33.80400
+PRE : 14.12300, PREDICT :12.99600, POST : 0.00000, TOTAL :27.11900
+PRE : 12.02300, PREDICT :17.73700, POST : 0.00000, TOTAL :29.76000
+PRE : 11.09600, PREDICT :13.44000, POST : 0.00000, TOTAL :24.53600
+PRE : 13.42900, PREDICT :23.87900, POST : 0.00000, TOTAL :37.30800
+PRE : 12.90900, PREDICT :11.53700, POST : 0.00000, TOTAL :24.44600
+PRE : 12.86000, PREDICT :19.37000, POST : 0.00000, TOTAL :32.23000
+PRE : 14.47700, PREDICT :20.60400, POST : 0.00000, TOTAL :35.08100
+PRE : 11.85900, PREDICT :18.19100, POST : 0.00000, TOTAL :30.05000
+PRE : 15.47600, PREDICT :14.29700, POST : 0.00000, TOTAL :29.77300
+PRE : 12.87700, PREDICT :21.72400, POST : 0.00000, TOTAL :34.60100
+PRE : 13.19300, PREDICT :17.39300, POST : 0.00000, TOTAL :30.58600
+PRE : 13.62300, PREDICT :24.87000, POST : 0.00100, TOTAL :38.49400
+PRE : 10.99900, PREDICT :19.40700, POST : 0.00000, TOTAL :30.40600
+PRE : 11.41600, PREDICT :22.74000, POST : 0.00000, TOTAL :34.15600
+PRE : 12.28700, PREDICT :15.19700, POST : 0.00000, TOTAL :27.48400
+PRE : 10.60900, PREDICT :17.62800, POST : 0.00000, TOTAL :28.23800
+PRE : 12.03300, PREDICT :15.10400, POST : 0.00000, TOTAL :27.13700
+PRE : 12.09000, PREDICT :17.46700, POST : 0.00000, TOTAL :29.55700
+PRE : 11.56700, PREDICT :12.69800, POST : 0.00000, TOTAL :24.26500
+PRE : 10.80700, PREDICT : 9.57300, POST : 0.00000, TOTAL :20.38000
+PRE : 12.35500, PREDICT :13.53500, POST : 0.00000, TOTAL :25.89000
+PRE : 13.22200, PREDICT :19.94300, POST : 0.00000, TOTAL :33.16500
+PRE : 13.14100, PREDICT :16.80500, POST : 0.00000, TOTAL :29.94700
+PRE : 12.80100, PREDICT :15.25000, POST : 0.00000, TOTAL :28.05200
+PRE : 10.83600, PREDICT :33.06200, POST : 0.00100, TOTAL :43.89900
+PRE : 13.13800, PREDICT :23.61300, POST : 0.00000, TOTAL :36.75100
+PRE : 13.08900, PREDICT :15.03900, POST : 0.00000, TOTAL :28.12800
+PRE : 14.08600, PREDICT :15.90400, POST : 0.00000, TOTAL :29.99000
+PRE : 10.22100, PREDICT :21.40800, POST : 0.00000, TOTAL :31.62900
+PRE : 16.02900, PREDICT :16.95700, POST : 0.00000, TOTAL :32.98600
+PRE : 10.81900, PREDICT :14.72800, POST : 0.00000, TOTAL :25.54800
+PRE : 11.05500, PREDICT :19.09500, POST : 0.00000, TOTAL :30.15000
+PRE : 10.93200, PREDICT :19.51000, POST : 0.00000, TOTAL :30.44200
+PRE : 12.28600, PREDICT :20.61400, POST : 0.00000, TOTAL :32.90000
+PRE : 14.28300, PREDICT :17.49300, POST : 0.00000, TOTAL :31.77600
+PRE : 14.63700, PREDICT :15.14000, POST : 0.00000, TOTAL :29.77700
+PRE : 12.08900, PREDICT :12.87400, POST : 0.00000, TOTAL :24.96300
+PRE : 14.83100, PREDICT :15.32200, POST : 0.00000, TOTAL :30.15300
+PRE : 13.60200, PREDICT :33.55600, POST : 0.00000, TOTAL :47.15800
+PRE : 13.08500, PREDICT :14.79500, POST : 0.00000, TOTAL :27.88000
+PRE : 13.29000, PREDICT :18.39600, POST : 0.00000, TOTAL :31.68600
+PRE : 15.01500, PREDICT :21.33100, POST : 0.00000, TOTAL :36.34600
+PRE : 15.22800, PREDICT :14.50800, POST : 0.00000, TOTAL :29.73600
+PRE : 11.30500, PREDICT :14.41400, POST : 0.00000, TOTAL :25.71900
+PRE : 13.67500, PREDICT :14.79400, POST : 0.00000, TOTAL :28.46900
+PRE : 34.82300, PREDICT :22.82400, POST : 0.00100, TOTAL :57.64800
+PRE : 13.24400, PREDICT :14.00300, POST : 0.00000, TOTAL :27.24700
+PRE : 11.61300, PREDICT :14.73900, POST : 0.00000, TOTAL :26.35200
+PRE : 14.81500, PREDICT :14.79200, POST : 0.00000, TOTAL :29.60800
+PRE : 11.26600, PREDICT :15.91100, POST : 0.00000, TOTAL :27.17700
+PRE : 40.49300, PREDICT :16.01200, POST : 0.00000, TOTAL :56.50500
+PRE : 11.08800, PREDICT :18.39600, POST : 0.00000, TOTAL :29.48500
+13.59700 18.44400  0.00000
+14.25900 19.53700  0.00000
+13.78300 14.56100  0.00000
+12.78800 14.25200  0.00000
+12.77100 14.31900  0.00000
+13.68200 12.66300  0.00000
+12.90300 19.67000  0.00000
+13.16600 19.51500  0.00000
+11.63200 14.62900  0.00000
+16.52000 16.88900  0.00000
+15.49600 11.94400  0.00000
+12.44900 15.20300  0.00000
+11.43500 12.02900  0.00000
+12.87000 20.38500  0.00000
+13.17300 14.16800  0.00000
+14.31200 18.46500  0.00000
+13.22100 17.97700  0.00000
+11.00900 16.25100  0.00000
+13.82100 18.74400  0.00000
+14.37400 22.28600  0.00000
+14.20600  9.48900  0.00000
+13.95900 20.74000  0.00000
+12.67300 14.94000  0.00000
+14.29100 15.61700  0.00000
+ 9.93500 16.08700  0.00000
+14.46800 15.77800  0.00000
+12.62900 14.39400  0.00000
+15.66500 21.01000  0.00000
+11.39400 22.67000  0.00000
+13.20300 17.44200  0.00000
+11.67100 16.37700  0.00000
+11.54500 12.18700  0.00000
+13.13100 23.23700  0.00000
+13.83400 18.14300  0.00000
+12.13200 12.18400  0.00000
+10.37600 12.28700  0.00000
+13.68900 19.90600  0.00000
+13.02800 12.71500  0.00000
+12.67800 17.05100  0.00000
+11.11500 19.25700  0.00000
+13.11100 12.99400  0.00000
+14.24600 15.76400  0.00000
+12.37900 12.24300  0.00000
+13.47600 21.44400  0.00000
+ 9.80100 18.77300  0.00000
+15.59400 10.24400  0.00000
+15.27600 14.49500  0.00000
+13.92300 19.88100  0.00000
+14.12300 12.99600  0.00000
+12.02300 17.73700  0.00000
+11.09600 13.44000  0.00000
+13.42900 23.87900  0.00000
+12.90900 11.53700  0.00000
+12.86000 19.37000  0.00000
+14.47700 20.60400  0.00000
+11.85900 18.19100  0.00000
+15.47600 14.29700  0.00000
+12.87700 21.72400  0.00000
+13.19300 17.39300  0.00000
+13.62300 24.87000  0.00100
+10.99900 19.40700  0.00000
+11.41600 22.74000  0.00000
+12.28700 15.19700  0.00000
+10.60900 17.62800  0.00000
+12.03300 15.10400  0.00000
+12.09000 17.46700  0.00000
+11.56700 12.69800  0.00000
+10.80700  9.57300  0.00000
+12.35500 13.53500  0.00000
+13.22200 19.94300  0.00000
+13.14100 16.80500  0.00000
+12.80100 15.25000  0.00000
+10.83600 33.06200  0.00100
+13.13800 23.61300  0.00000
+13.08900 15.03900  0.00000
+14.08600 15.90400  0.00000
+10.22100 21.40800  0.00000
+16.02900 16.95700  0.00000
+10.81900 14.72800  0.00000
+11.05500 19.09500  0.00000
+10.93200 19.51000  0.00000
+12.28600 20.61400  0.00000
+14.28300 17.49300  0.00000
+14.63700 15.14000  0.00000
+12.08900 12.87400  0.00000
+14.83100 15.32200  0.00000
+13.60200 33.55600  0.00000
+13.08500 14.79500  0.00000
+13.29000 18.39600  0.00000
+15.01500 21.33100  0.00000
+15.22800 14.50800  0.00000
+11.30500 14.41400  0.00000
+13.67500 14.79400  0.00000
+34.82300 22.82400  0.00100
+13.24400 14.00300  0.00000
+11.61300 14.73900  0.00000
+14.81500 14.79200  0.00000
+11.26600 15.91100  0.00000
+40.49300 16.01200  0.00000
+11.08800 18.39600  0.00000
+emory reallocation
 PRE : 14.13900, PREDICT :17.93800, POST : 0.00000, TOTAL :32.07800
 period == 219937.00000
 start of unified memory reallocation
