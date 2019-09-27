@@ -1594,11 +1594,11 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
     
     err = clock_gettime(CLOCK_MONOTONIC, &release_time);
     assert(err ==0);
-    double t_period;
-    double t_period_end;
+    //double t_period;
+    //double t_period_end;
 
     for (k =0; k< m; k++){
-        t_period = get_time_point();
+        //t_period = get_time_point();
         ///// IMAGE PREPROCESSING /////
         time_pre = get_time_point();
         input = paths[k];
@@ -1687,8 +1687,8 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
                 (time_post_end - time_pre)/1000);
         timespec_add(&release_time, &period);
         clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &release_time, NULL);
-        t_period_end = get_time_point();
-        printf("period == %8.5f\n",t_period_end - t_period);
+        //t_period_end = get_time_point();
+        //printf("period == %8.5f\n",t_period_end - t_period);
 
     }
 
