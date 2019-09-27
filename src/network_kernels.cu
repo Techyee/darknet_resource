@@ -84,7 +84,7 @@ void forward_network_gpu(network net, network_state state)
             }
         }
         else{ // on gpu 
-            
+            printf("[%2dth] Request : %8.5f\n",i,get_time_point());
             // gpu access control by mutex
             while(pthread_mutex_trylock(gpu_lock)){
                 //printf("[Process %d put into wait]\n", identifier);
@@ -93,7 +93,7 @@ void forward_network_gpu(network net, network_state state)
                 setpriority(PRIO_PROCESS, getpid(), -20);
                 continue;
             }
-            
+            printf("[%2dth] Excess  : %8.5f\n",i,get_time_point());
             l.forward_gpu(l, state);
             CHECK_CUDA(cudaDeviceSynchronize());
         }
@@ -101,6 +101,7 @@ void forward_network_gpu(network net, network_state state)
         //printf("[Process %d] layer: %3d type: %15s - Predicted in %8.5f milli-seconds.\n", identifier, i, get_layer_string(l.type), ((double)get_time_point() -time) / 1000);
         
         pthread_mutex_unlock(gpu_lock);
+        printf("[%2dth] Finish  : %8.5f\n",i,get_time_point());
         kill( dequeue(queue), SIGCONT);
 
         if(net.wait_stream)

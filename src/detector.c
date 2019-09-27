@@ -1600,6 +1600,7 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
     for (k =0; k< m; k++){
         //t_period = get_time_point();
         ///// IMAGE PREPROCESSING /////
+        printf("=====================JOB %d=====================\n",k);
         time_pre = get_time_point();
         input = paths[k];
         image im = load_image(input, 0, 0, net.c);
@@ -1681,6 +1682,7 @@ void periodic_detector(char *datacfg, char *cfgfile, char *weightfile, char *fil
         */
         time_post_end = get_time_point();
         printf("PRE : %8.5f, PREDICT :%8.5f, POST :%8.5f, TOTAL :%8.5f\n",
+                k,
                 time_pre_arr[k] = (time_pre_end-time_pre)/1000,
                 time_predict_arr[k] = (time_predict_end-time_predict)/1000,
                 time_post_arr[k] = (time_post_end-time_post)/1000,

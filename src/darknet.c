@@ -709,7 +709,7 @@ int main(int argc, char **argv)
         dup2(fd,STDERR_FILENO);
         close(fd);
         //!stdout redirection.
-
+        printf("My pid: %d, my_identifier: %d\n",getpid(),identifier);
         //original darknet main process.
         if (0 == strcmp(argv[1], "average")){
             average(argc, argv);
