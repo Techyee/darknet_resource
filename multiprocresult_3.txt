@@ -1,0 +1,1240 @@
+   layer   filters  size/strd(dil)      input                output
+   0 conv     16       3 x 3/ 1    416 x 416 x   3 ->  416 x 416 x  16 0.150 BF
+   1 max               2 x 2/ 2    416 x 416 x  16 ->  208 x 208 x  16 0.003 BF
+   2 conv     32       3 x 3/ 1    208 x 208 x  16 ->  208 x 208 x  32 0.399 BF
+   3 max               2 x 2/ 2    208 x 208 x  32 ->  104 x 104 x  32 0.001 BF
+   4 conv     64       3 x 3/ 1    104 x 104 x  32 ->  104 x 104 x  64 0.399 BF
+   5 max               2 x 2/ 2    104 x 104 x  64 ->   52 x  52 x  64 0.001 BF
+   6 conv    128       3 x 3/ 1     52 x  52 x  64 ->   52 x  52 x 128 0.399 BF
+   7 max               2 x 2/ 2     52 x  52 x 128 ->   26 x  26 x 128 0.000 BF
+   8 conv    256       3 x 3/ 1     26 x  26 x 128 ->   26 x  26 x 256 0.399 BF
+   9 max               2 x 2/ 2     26 x  26 x 256 ->   13 x  13 x 256 0.000 BF
+  10 conv    512       3 x 3/ 1     13 x  13 x 256 ->   13 x  13 x 512 0.399 BF
+  11 max               2 x 2/ 1     13 x  13 x 512 ->   13 x  13 x 512 0.000 BF
+  12 conv   1024       3 x 3/ 1     13 x  13 x 512 ->   13 x  13 x1024 1.595 BF
+  13 conv    256       1 x 1/ 1     13 x  13 x1024 ->   13 x  13 x 256 0.089 BF
+  14 conv    512       3 x 3/ 1     13 x  13 x 256 ->   13 x  13 x 512 0.399 BF
+  15 conv    255       1 x 1/ 1     13 x  13 x 512 ->   13 x  13 x 255 0.044 BF
+  16 yolo
+[yolo] params: iou loss: mse, iou_norm: 0.75, cls_norm: 1.00, scale_x_y: 1.00
+  17 route  13
+  18 conv    128       1 x 1/ 1     13 x  13 x 256 ->   13 x  13 x 128 0.011 BF
+  19 upsample                 2x    13 x  13 x 128 ->   26 x  26 x 128
+  20 route  19 8
+  21 conv    256       3 x 3/ 1     26 x  26 x 384 ->   26 x  26 x 256 1.196 BF
+  22 conv    255       1 x 1/ 1     26 x  26 x 256 ->   26 x  26 x 255 0.088 BF
+  23 yolo
+[yolo] params: iou loss: mse, iou_norm: 0.75, cls_norm: 1.00, scale_x_y: 1.00
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.22000 millisec
+Total BFLOPS 5.571 
+ Allocate additional workspace_size = 52.43 MB 
+Loading weights from ./yolov3-tiny.weights...
+ seen 64 
+Done!
+
+identifier: 3, Starting at 4589380913.32400
+///////// Period : 220.000000 //////////
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.14600 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.23100, PREDICT :16.93800, POST : 0.00000, TOTAL :30.16900
+period == 220108.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.16300 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.71600, PREDICT :14.61900, POST : 0.00000, TOTAL :28.33500
+period == 219959.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.23600 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 43.09000, PREDICT :15.93400, POST : 0.00000, TOTAL :59.02400
+period == 219945.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.14600 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 15.17800, PREDICT :13.86300, POST : 0.00000, TOTAL :29.04100
+period == 219963.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.35300 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 12.30400, PREDICT :18.22500, POST : 0.00100, TOTAL :30.53000
+period == 219935.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.20700 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.11900, PREDICT :14.59800, POST : 0.00000, TOTAL :27.71700
+period == 219942.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.56200 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 12.44200, PREDICT :23.62700, POST : 0.00000, TOTAL :36.06900
+period == 219953.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.40700 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 12.84800, PREDICT :13.61000, POST : 0.00000, TOTAL :26.45800
+period == 219955.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.18000 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 11.23900, PREDICT :11.57400, POST : 0.00000, TOTAL :22.81300
+period == 219962.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.37000 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 16.03600, PREDICT :16.60200, POST : 0.00000, TOTAL :32.63800
+period == 219944.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.66800 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 15.14800, PREDICT :15.76500, POST : 0.00100, TOTAL :30.91400
+period == 219929.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.14800 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE :  9.73600, PREDICT :12.02300, POST : 0.00000, TOTAL :21.75900
+period == 220010.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.36500 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.43300, PREDICT :23.87700, POST : 0.00000, TOTAL :37.31200
+period == 219958.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  1.48100 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 14.05200, PREDICT :22.71600, POST : 0.00100, TOTAL :36.76900
+period == 219939.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.17200 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 12.71800, PREDICT :15.68000, POST : 0.00000, TOTAL :28.39800
+period == 219959.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.81400 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.87400, PREDICT :19.35300, POST : 0.00100, TOTAL :33.22800
+period == 219929.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.35300 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 12.73000, PREDICT :18.48600, POST : 0.00000, TOTAL :31.21600
+period == 219962.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.18400 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 10.53100, PREDICT :14.29500, POST : 0.00000, TOTAL :24.82600
+period == 219950.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.18600 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.33100, PREDICT :25.77100, POST : 0.00000, TOTAL :39.10200
+period == 219955.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.69200 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 15.54600, PREDICT :23.39300, POST : 0.00000, TOTAL :38.94000
+period == 219898.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.17600 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE :  9.39700, PREDICT :20.09300, POST : 0.00000, TOTAL :29.49000
+period == 220052.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.18300 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.55600, PREDICT :19.53300, POST : 0.00000, TOTAL :33.09000
+period == 219956.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.14800 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 12.15700, PREDICT :15.61600, POST : 0.00000, TOTAL :27.77300
+period == 219944.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.14800 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 12.52800, PREDICT :11.64600, POST : 0.00000, TOTAL :24.17400
+period == 218340.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.14500 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE :  9.46100, PREDICT :24.94800, POST : 0.00000, TOTAL :34.40900
+period == 219954.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.64500 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 14.13900, PREDICT :17.93800, POST : 0.00000, TOTAL :32.07800
+period == 219937.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.14700 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 12.34100, PREDICT :13.93500, POST : 0.00000, TOTAL :26.27600
+period == 219965.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.22800 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 15.24400, PREDICT :16.78500, POST : 0.00000, TOTAL :32.02900
+period == 219945.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.14900 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 11.79800, PREDICT :13.87700, POST : 0.00000, TOTAL :25.67500
+period == 219955.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.35100 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 12.69800, PREDICT :18.56700, POST : 0.00000, TOTAL :31.26500
+period == 219944.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.46800 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 11.18200, PREDICT :11.40700, POST : 0.00000, TOTAL :22.58900
+period == 219938.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.19700 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 11.11500, PREDICT :15.19200, POST : 0.00000, TOTAL :26.30700
+period == 219965.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.50200 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.48100, PREDICT :17.63100, POST : 0.00000, TOTAL :31.11200
+period == 219951.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.35000 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.30500, PREDICT :19.58700, POST : 0.00000, TOTAL :32.89200
+period == 219949.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.18400 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.27500, PREDICT :18.56700, POST : 0.00000, TOTAL :31.84200
+period == 219958.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.18200 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 12.08600, PREDICT :11.93500, POST : 0.00000, TOTAL :24.02100
+period == 219937.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.17200 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 14.92400, PREDICT : 9.86100, POST : 0.00000, TOTAL :24.78500
+period == 219956.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.62300 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.40700, PREDICT :19.91900, POST : 0.00000, TOTAL :33.32600
+period == 219951.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.32200 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 12.21200, PREDICT :19.45500, POST : 0.00000, TOTAL :31.66700
+period == 219951.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.15600 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 10.67200, PREDICT :14.60500, POST : 0.00000, TOTAL :25.27700
+period == 219952.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  1.48800 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 12.66000, PREDICT :31.19900, POST : 0.00000, TOTAL :43.86000
+period == 219949.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.60300 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 14.60200, PREDICT :20.30200, POST : 0.00000, TOTAL :34.90400
+period == 219955.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.18700 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 12.81700, PREDICT :17.25600, POST : 0.00000, TOTAL :30.07300
+period == 219954.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.19400 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.74800, PREDICT :15.71000, POST : 0.00000, TOTAL :29.45800
+period == 219952.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.69600 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 14.40200, PREDICT :21.60200, POST : 0.00000, TOTAL :36.00400
+period == 219939.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.14800 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 15.99200, PREDICT :14.46700, POST : 0.00000, TOTAL :30.45900
+period == 219955.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.27400 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 15.08400, PREDICT :14.88200, POST : 0.00000, TOTAL :29.96600
+period == 218318.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.18900 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.46500, PREDICT :13.46100, POST : 0.00000, TOTAL :26.92600
+period == 219945.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.17800 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 14.48100, PREDICT :14.92900, POST : 0.00000, TOTAL :29.41000
+period == 219962.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.20100 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 12.43900, PREDICT :15.05400, POST : 0.00000, TOTAL :27.49300
+period == 219955.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.61200 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 11.34700, PREDICT :18.57300, POST : 0.00000, TOTAL :29.92000
+period == 219931.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.18600 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.06800, PREDICT :17.15200, POST : 0.00000, TOTAL :30.22000
+period == 219930.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.21300 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE :  9.30700, PREDICT :14.98800, POST : 0.00000, TOTAL :24.29500
+period == 220018.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.50900 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.15900, PREDICT :17.56800, POST : 0.00100, TOTAL :30.72800
+period == 219949.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.49200 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 14.83000, PREDICT :30.33000, POST : 0.00000, TOTAL :45.16000
+period == 219941.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.41400 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 12.24000, PREDICT :17.58400, POST : 0.00000, TOTAL :29.82400
+period == 219966.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.36700 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 15.77900, PREDICT :17.39200, POST : 0.00100, TOTAL :33.17200
+period == 219941.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.18700 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.21600, PREDICT :13.63500, POST : 0.00000, TOTAL :26.85100
+period == 219935.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.25200 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.53300, PREDICT :10.22300, POST : 0.00000, TOTAL :23.75600
+period == 219960.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.14900 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.95800, PREDICT :24.52500, POST : 0.00000, TOTAL :38.48300
+period == 219947.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.15100 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 11.33800, PREDICT :19.65900, POST : 0.00000, TOTAL :30.99700
+period == 219955.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.17500 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 12.07800, PREDICT :17.33400, POST : 0.00000, TOTAL :29.41200
+period == 219946.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.30800 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 12.58000, PREDICT :17.62500, POST : 0.00000, TOTAL :30.20500
+period == 219957.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.21800 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 34.66600, PREDICT :20.25000, POST : 0.00000, TOTAL :54.91600
+period == 219932.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.14800 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 12.42500, PREDICT :13.44500, POST : 0.00000, TOTAL :25.87000
+period == 219943.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.19900 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 12.40600, PREDICT :16.14400, POST : 0.00100, TOTAL :28.55100
+period == 219958.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.14700 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 11.89000, PREDICT :14.87300, POST : 0.00000, TOTAL :26.76400
+period == 219949.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.18300 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 11.16000, PREDICT :12.92700, POST : 0.00000, TOTAL :24.08700
+period == 219944.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.23400 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 12.71600, PREDICT :14.00300, POST : 0.00000, TOTAL :26.71900
+period == 219914.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.18400 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.21900, PREDICT :16.11900, POST : 0.00000, TOTAL :29.33800
+period == 218447.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.23100 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.45600, PREDICT :14.71000, POST : 0.00000, TOTAL :28.16600
+period == 219952.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.24200 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.14000, PREDICT :15.13200, POST : 0.00000, TOTAL :28.27200
+period == 219910.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.15400 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 11.21800, PREDICT :19.97200, POST : 0.00000, TOTAL :31.19100
+period == 219983.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.15100 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.48800, PREDICT :15.33600, POST : 0.00000, TOTAL :28.82400
+period == 219956.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.15300 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.30400, PREDICT :11.76900, POST : 0.00000, TOTAL :25.07300
+period == 219958.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.26300 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 14.11800, PREDICT :20.50400, POST : 0.00000, TOTAL :34.62200
+period == 219941.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.18300 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.82000, PREDICT :12.15900, POST : 0.00000, TOTAL :25.97900
+period == 219962.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.15700 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 16.28900, PREDICT : 9.99000, POST : 0.00000, TOTAL :26.27900
+period == 219945.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.19000 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 11.17400, PREDICT :14.60400, POST : 0.00000, TOTAL :25.77800
+period == 219962.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.14600 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 11.38000, PREDICT :17.39100, POST : 0.00000, TOTAL :28.77100
+period == 219950.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.50800 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 10.36100, PREDICT :23.42700, POST : 0.00000, TOTAL :33.78900
+period == 219937.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.22100 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 14.20700, PREDICT :12.94600, POST : 0.00000, TOTAL :27.15300
+period == 219964.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  1.31000 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 14.57600, PREDICT :14.46900, POST : 0.00000, TOTAL :29.04500
+period == 219941.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.14600 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 15.79600, PREDICT :14.54700, POST : 0.00000, TOTAL :30.34300
+period == 219930.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.21600 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 15.86300, PREDICT :20.11500, POST : 0.00000, TOTAL :35.97800
+period == 220001.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.35600 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 14.06100, PREDICT :18.34200, POST : 0.00000, TOTAL :32.40300
+period == 219949.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.21400 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.08600, PREDICT :14.68900, POST : 0.00000, TOTAL :27.77500
+period == 219979.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.18800 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 12.59400, PREDICT :13.36000, POST : 0.00000, TOTAL :25.95400
+period == 219923.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.58700 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 14.49500, PREDICT :33.43900, POST : 0.00000, TOTAL :47.93400
+period == 219947.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.18700 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 14.41800, PREDICT :12.23500, POST : 0.00000, TOTAL :26.65300
+period == 219944.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.14600 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 14.77400, PREDICT :13.70500, POST : 0.00000, TOTAL :28.47900
+period == 219965.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.21800 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 10.69200, PREDICT :14.35500, POST : 0.00000, TOTAL :25.04800
+period == 219915.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.14900 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 13.46700, PREDICT :19.61200, POST : 0.00000, TOTAL :33.07900
+period == 218296.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  1.25800 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE :  6.37700, PREDICT :19.92000, POST : 0.00100, TOTAL :26.29800
+period == 220017.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.18600 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 12.66700, PREDICT :14.20200, POST : 0.00000, TOTAL :26.86900
+period == 219951.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.19100 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 11.21000, PREDICT :16.98200, POST : 0.00000, TOTAL :28.19200
+period == 219949.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.21800 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 14.33200, PREDICT :13.88600, POST : 0.00000, TOTAL :28.21800
+period == 219950.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.15300 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 10.78100, PREDICT :12.43600, POST : 0.00000, TOTAL :23.21700
+period == 219949.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.23300 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 41.35700, PREDICT :12.91700, POST : 0.00000, TOTAL :54.27400
+period == 219949.00000
+start of unified memory reallocation
+end of unified memory reallocation
+target layer i is 23.
+l.type is yolo
+test_extern_arr : 1
+pulled from gpu.
+end of get_net_output, time is  0.78800 millisec
+start of returning memory reallocation
+end of returning memory reallocation
+PRE : 10.64200, PREDICT :16.55100, POST : 0.00100, TOTAL :27.19400
+period == 219957.00000
+13.23100 16.93800  0.00000
+13.71600 14.61900  0.00000
+43.09000 15.93400  0.00000
+15.17800 13.86300  0.00000
+12.30400 18.22500  0.00100
+13.11900 14.59800  0.00000
+12.44200 23.62700  0.00000
+12.84800 13.61000  0.00000
+11.23900 11.57400  0.00000
+16.03600 16.60200  0.00000
+15.14800 15.76500  0.00100
+ 9.73600 12.02300  0.00000
+13.43300 23.87700  0.00000
+14.05200 22.71600  0.00100
+12.71800 15.68000  0.00000
+13.87400 19.35300  0.00100
+12.73000 18.48600  0.00000
+10.53100 14.29500  0.00000
+13.33100 25.77100  0.00000
+15.54600 23.39300  0.00000
+ 9.39700 20.09300  0.00000
+13.55600 19.53300  0.00000
+12.15700 15.61600  0.00000
+12.52800 11.64600  0.00000
+ 9.46100 24.94800  0.00000
+14.13900 17.93800  0.00000
+12.34100 13.93500  0.00000
+15.24400 16.78500  0.00000
+11.79800 13.87700  0.00000
+12.69800 18.56700  0.00000
+11.18200 11.40700  0.00000
+11.11500 15.19200  0.00000
+13.48100 17.63100  0.00000
+13.30500 19.58700  0.00000
+13.27500 18.56700  0.00000
+12.08600 11.93500  0.00000
+14.92400  9.86100  0.00000
+13.40700 19.91900  0.00000
+12.21200 19.45500  0.00000
+10.67200 14.60500  0.00000
+12.66000 31.19900  0.00000
+14.60200 20.30200  0.00000
+12.81700 17.25600  0.00000
+13.74800 15.71000  0.00000
+14.40200 21.60200  0.00000
+15.99200 14.46700  0.00000
+15.08400 14.88200  0.00000
+13.46500 13.46100  0.00000
+14.48100 14.92900  0.00000
+12.43900 15.05400  0.00000
+11.34700 18.57300  0.00000
+13.06800 17.15200  0.00000
+ 9.30700 14.98800  0.00000
+13.15900 17.56800  0.00100
+14.83000 30.33000  0.00000
+12.24000 17.58400  0.00000
+15.77900 17.39200  0.00100
+13.21600 13.63500  0.00000
+13.53300 10.22300  0.00000
+13.95800 24.52500  0.00000
+11.33800 19.65900  0.00000
+12.07800 17.33400  0.00000
+12.58000 17.62500  0.00000
+34.66600 20.25000  0.00000
+12.42500 13.44500  0.00000
+12.40600 16.14400  0.00100
+11.89000 14.87300  0.00000
+11.16000 12.92700  0.00000
+12.71600 14.00300  0.00000
+13.21900 16.11900  0.00000
+13.45600 14.71000  0.00000
+13.14000 15.13200  0.00000
+11.21800 19.97200  0.00000
+13.48800 15.33600  0.00000
+13.30400 11.76900  0.00000
+14.11800 20.50400  0.00000
+13.82000 12.15900  0.00000
+16.28900  9.99000  0.00000
+11.17400 14.60400  0.00000
+11.38000 17.39100  0.00000
+10.36100 23.42700  0.00000
+14.20700 12.94600  0.00000
+14.57600 14.46900  0.00000
+15.79600 14.54700  0.00000
+15.86300 20.11500  0.00000
+14.06100 18.34200  0.00000
+13.08600 14.68900  0.00000
+12.59400 13.36000  0.00000
+14.49500 33.43900  0.00000
+14.41800 12.23500  0.00000
+14.77400 13.70500  0.00000
+10.69200 14.35500  0.00000
+13.46700 19.61200  0.00000
+ 6.37700 19.92000  0.00100
+12.66700 14.20200  0.00000
+11.21000 16.98200  0.00000
+14.33200 13.88600  0.00000
+10.78100 12.43600  0.00000
+41.35700 12.91700  0.00000
+10.64200 16.55100  0.00100
