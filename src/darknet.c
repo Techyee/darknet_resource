@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include "darknet.h"
 #include <time.h>
 #include <stdlib.h>
@@ -13,6 +14,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <sys/resource.h>
+#include <sched.h>
 
 #if defined(_MSC_VER) && defined(_DEBUG)
 #include <crtdbg.h>
@@ -671,7 +673,7 @@ int main(int argc, char **argv)
 
     if(identifier == -1){ /* mother process */ 
 
-        sleep(5);
+        sleep(20);
         for (int i = 0; i < process_num; i++){
             kill(shmem_pid[i],SIGCONT);
         }
@@ -686,6 +688,12 @@ int main(int argc, char **argv)
             CHECK_CUDA(cudaSetDeviceFlags(cudaDeviceScheduleBlockingSync));
         }
 #endif
+        cpu_set_t mask;
+        CPU_ZERO(&mask);
+        CPU_SET(0, &mask);
+        CPU_SET(1, &mask);
+        sched_setaffinity(0,sizeof(mask), &mask);
+
         //set CPU execution priority.
         setpriority(PRIO_PROCESS, getpid(), -10-identifier);
         //allocate resource configuration of each process.
