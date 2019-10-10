@@ -673,7 +673,7 @@ int main(int argc, char **argv)
 
     if(identifier == -1){ /* mother process */ 
 
-        sleep(20);
+        sleep(100);
         for (int i = 0; i < process_num; i++){
             kill(shmem_pid[i],SIGCONT);
         }
@@ -691,7 +691,7 @@ int main(int argc, char **argv)
         cpu_set_t mask;
         CPU_ZERO(&mask);
         CPU_SET(0, &mask);
-        CPU_SET(1, &mask);
+//      CPU_SET(1, &mask);
         sched_setaffinity(0,sizeof(mask), &mask);
 
         //set CPU execution priority.
@@ -704,9 +704,10 @@ int main(int argc, char **argv)
         char output_idx[4];     //idx of output file
         char output_name[100];   //name of output file
         char file_extension[20];
+        
         sprintf(file_extension,"%s",".txt");
         sprintf(output_idx,"%d",identifier);
-        strcpy(output_name,"multiprocresult_");
+        strcpy(output_name,"multi_log/multiprocresult_");
         strcat(output_name,output_idx);
         strcat(output_name,file_extension);
         if((fd = open(output_name, O_RDWR | O_CREAT,0666))==-1){
