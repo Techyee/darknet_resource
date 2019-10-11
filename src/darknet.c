@@ -59,6 +59,7 @@ extern int N = 0;
 // processes identifier & shared memory
 extern int identifier = -1;
 extern int **shmem_rescfg = NULL;
+extern char **shmem_mlist = NULL;
 extern int *shmem_pid = NULL;
 extern struct timespec *shmem_timer = NULL;
 
@@ -586,11 +587,13 @@ int main(int argc, char **argv)
         exit(-1);
     }
 
-    // get process num
+    //////// GET PROCESS NUMBER /////////
     int process_num = find_int_arg(argc, argv, "-process_num", 1);
     int pid;    
     N = process_num;
-    // get resource configurations
+
+
+    ///////// GET RESOURCE CONFIGURATIONS /////////
     char * res_cfg = find_char_arg(argc,argv,"-res_cfg",0);
     if(res_cfg == 0){
         printf("No information about resource configuration\n");
@@ -606,13 +609,61 @@ int main(int argc, char **argv)
         exit(-1);
     }
 
-    // shared memory
+    //////////// GET MODEL CONFIGURATIONS ////////////
+    char * model_list = find_char_arg(argc,argv,"-models",0);
+    if(model_list == 0){
+        printf("No information about models\n");
+        exit(-1);
+    }
+
+    list *mlist = get_paths(model_list);
+    char **mpaths = (char **)list_to_array(mlist);
+    int model_list_number = mlist->size;
+
+    if(process_num != model_list_number){
+        printf("Model lists and process number doesn't mach!\n");
+        exit(-1);
+    }
+
+    /////////// GET WEIGHT CONFIGURATIONS ////////////
+    char * weight_list = find_char_arg(argc,argv,"-weights",0);
+    if(weight_list == 0){
+        printf("No information about weights\n");
+        exit(-1);
+    }
+
+    list *wlist = get_paths(weight_list);
+    char **wpaths = (char **)list_to_array(wlist);
+    int weight_list_number = wlist->size;
+
+    if(process_num != weight_list_number){
+        printf("Weight lists and process number doesn't mach!\n");
+        exit(-1);        
+    }
+
+    /////////// GET DATA CONFIGURATIONS ////////////
+    char * data_list = find_char_arg(argc,argv,"-data",0);
+    if(data_list == 0){
+        printf("No information about datas\n");
+        exit(-1);
+    }
+
+    list *dlist = get_paths(data_list);
+    char **dpaths = (char **)list_to_array(dlist);
+    int data_list_number = wlist->size;
+
+    if(process_num != data_list_number){
+        printf("Data lists and process number doesn't mach!\n");
+        exit(-1);        
+    }
+
+    /////// DEFINE SHARED MEMORY ////////
     shmem_rescfg = (int **)create_shared_memory(sizeof(int **));
     shmem_pid = (int *)create_shared_memory(sizeof(int)*process_num);
     shmem_timer = (struct timespec *)create_shared_memory(sizeof(struct timespec));
-    shmem_rescfg = store_res_cfg(res_cfg_num,rpaths);
     
     // init shared memory
+    shmem_rescfg = store_res_cfg(res_cfg_num,rpaths);
     memset(shmem_pid,0, sizeof(int)*process_num);
 
     int queue_id, mutex_id;
@@ -688,17 +739,25 @@ int main(int argc, char **argv)
             CHECK_CUDA(cudaSetDeviceFlags(cudaDeviceScheduleBlockingSync));
         }
 #endif
+        // CPU Affinity setting //
         cpu_set_t mask;
         CPU_ZERO(&mask);
         CPU_SET(0, &mask);
-//      CPU_SET(1, &mask);
         sched_setaffinity(0,sizeof(mask), &mask);
 
         //set CPU execution priority.
         setpriority(PRIO_PROCESS, getpid(), -10-identifier);
+        
         //allocate resource configuration of each process.
         test_extern_arr = shmem_rescfg[identifier];
-    
+        
+        ///// data cfg
+        argv[3] = dpaths[identifier]
+        ///// model cfg
+        argv[4] = mpaths[identifier]
+        ///// weight cfg
+        argv[5] = wpaths[identifier]
+        
         //redirect stdout & stderr to certain file.
         int fd;                 //fd
         char output_idx[4];     //idx of output file
