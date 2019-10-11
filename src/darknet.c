@@ -752,11 +752,11 @@ int main(int argc, char **argv)
         test_extern_arr = shmem_rescfg[identifier];
         
         ///// data cfg
-        argv[3] = dpaths[identifier]
+        argv[3] = dpaths[identifier];
         ///// model cfg
-        argv[4] = mpaths[identifier]
+        argv[4] = mpaths[identifier];
         ///// weight cfg
-        argv[5] = wpaths[identifier]
+        argv[5] = wpaths[identifier];
         
         //redirect stdout & stderr to certain file.
         int fd;                 //fd
