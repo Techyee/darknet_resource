@@ -724,7 +724,7 @@ int main(int argc, char **argv)
 
     if(identifier == -1){ /* mother process */ 
 
-        sleep(100);
+        sleep(20);
         for (int i = 0; i < process_num; i++){
             kill(shmem_pid[i],SIGCONT);
         }
@@ -753,11 +753,13 @@ int main(int argc, char **argv)
         
         ///// data cfg
         argv[3] = dpaths[identifier];
+        printf("[%d], data path %s\n",identifier, argv[3]);
         ///// model cfg
         argv[4] = mpaths[identifier];
+        printf("[%d], model path %s\n",identifier, argv[4]);
         ///// weight cfg
         argv[5] = wpaths[identifier];
-        
+        printf("[%d], weight path %s\n",identifier, argv[5]);
         //redirect stdout & stderr to certain file.
         int fd;                 //fd
         char output_idx[4];     //idx of output file
