@@ -1740,7 +1740,6 @@ void run_detector(int argc, char **argv)
     float thresh = find_float_arg(argc, argv, "-thresh", .25);    // 0.24
     float iou_thresh = find_float_arg(argc, argv, "-iou_thresh", .5);    // 0.5 for mAP
     float hier_thresh = find_float_arg(argc, argv, "-hier", .5);
-    float period = find_float_arg(argc, argv, "-period", 33);
     int cam_index = find_int_arg(argc, argv, "-c", 0);
     int frame_skip = find_int_arg(argc, argv, "-s", 0);
     int num_of_clusters = find_int_arg(argc, argv, "-num_of_clusters", 5);
@@ -1751,7 +1750,6 @@ void run_detector(int argc, char **argv)
     int ext_output = find_arg(argc, argv, "-ext_output");
     int save_labels = find_arg(argc, argv, "-save_labels");
     int quantized = find_int_arg(argc, argv, "-quantized", 0);
-    char *filename = find_char_arg(argc, argv, "-filename", 0);
     
     if (argc < 4) {
         fprintf(stderr, "usage: %s %s [train/test/valid/demo/map] [data] [cfg] [weights (optional)]\n", argv[0], argv[1]);
@@ -1785,7 +1783,9 @@ void run_detector(int argc, char **argv)
 
     char *datacfg = argv[3];
     char *cfg = argv[4];
-    char *weights = (argc > 5) ? argv[5] : 0;
+    char *weights = argv[5];
+    float period = atoi(argv[6]);
+    char *filename = argv[7];
     if (weights)
         if (strlen(weights) > 0)
             if (weights[strlen(weights) - 1] == 0x0d) weights[strlen(weights) - 1] = 0;
