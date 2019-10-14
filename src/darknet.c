@@ -614,14 +614,14 @@ int main(int argc, char **argv)
     int pid;    
     N = process_num;
 
-    char * taskset = find_char_arg(argc, argv, "taskset", 0);
+    char * taskset = find_char_arg(argc, argv, "-taskset", 0);
     if (taskset == 0){
         puts("No information about taskset");
         exit(-1);
     }
 
     list *tlist = get_paths(taskset);
-    char **tpaths = (char **)list_to_array(tpaths);
+    char **tpaths = (char **)list_to_array(tlist);
     int task_num = tlist->size;
 
     if( process_num != task_num){
