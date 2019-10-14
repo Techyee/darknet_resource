@@ -768,7 +768,7 @@ int main(int argc, char **argv)
         
         sprintf(file_extension,"%s",".txt");
         sprintf(output_idx,"%d",identifier);
-        strcpy(output_name,"multi_log/multiprocresult_");
+        strcpy(output_name,"logs/multi_log/multiprocresult_");
         strcat(output_name,output_idx);
         strcat(output_name,file_extension);
         if((fd = open(output_name, O_RDWR | O_CREAT,0666))==-1){
