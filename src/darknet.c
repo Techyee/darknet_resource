@@ -558,7 +558,29 @@ int dequeue(int* q)
 	return tmp;
 }
 
-
+void get_task_info(char * mytask, char ** argv){
+    list * info_list = get_paths(mytask);
+    char ** info = (char **)list_to_array(info_list);
+    int info_num = info_list->size;
+    if (info_num != 7){
+        printf("[%d task] Something wrong with task info\n",identifier);
+        exit(-1);
+    }
+    // task type (e.g classification, dection, nlp...)
+    argv[1] = info[0];
+    // submodule of task
+    argv[2] = info[1];
+    // label of data
+    argv[3] = info[2];
+    // model (e.g vgg, yolo, resnet ...)
+    argv[4] = info[3];
+    // weight 
+    argv[5] = info[4];
+    // period
+    argv[6] = info[5];
+    // input image
+    argv[7] = info[6];
+}
 
 
 int main(int argc, char **argv)
@@ -592,9 +614,23 @@ int main(int argc, char **argv)
     int pid;    
     N = process_num;
 
+    char * taskset = find_char_arg(argc, argv, "taskset", 0);
+    if (taskset == 0){
+        puts("No information about taskset");
+        exit(-1);
+    }
+
+    list *tlist = get_paths(taskset);
+    char **tpaths = (char **)list_to_array(tpaths);
+    int task_num = tlist->size;
+
+    if( process_num != task_num){
+        puts("Task number and process number doesn't mach!\n");
+        exit(-1);
+    }
 
     ///////// GET RESOURCE CONFIGURATIONS /////////
-    char * res_cfg = find_char_arg(argc,argv,"-res_cfg",0);
+    char * res_cfg = find_char_arg(argc,argv,"-resource",0);
     if(res_cfg == 0){
         printf("No information about resource configuration\n");
         exit(-1);
@@ -609,53 +645,53 @@ int main(int argc, char **argv)
         exit(-1);
     }
 
-    //////////// GET MODEL CONFIGURATIONS ////////////
-    char * model_list = find_char_arg(argc,argv,"-models",0);
-    if(model_list == 0){
-        printf("No information about models\n");
-        exit(-1);
-    }
+    // //////////// GET MODEL CONFIGURATIONS ////////////
+    // char * model_list = find_char_arg(argc,argv,"-models",0);
+    // if(model_list == 0){
+    //     printf("No information about models\n");
+    //     exit(-1);
+    // }
 
-    list *mlist = get_paths(model_list);
-    char **mpaths = (char **)list_to_array(mlist);
-    int model_list_number = mlist->size;
+    // list *mlist = get_paths(model_list);
+    // char **mpaths = (char **)list_to_array(mlist);
+    // int model_list_number = mlist->size;
 
-    if(process_num != model_list_number){
-        printf("Model lists and process number doesn't mach!\n");
-        exit(-1);
-    }
+    // if(process_num != model_list_number){
+    //     printf("Model lists and process number doesn't mach!\n");
+    //     exit(-1);
+    // }
 
-    /////////// GET WEIGHT CONFIGURATIONS ////////////
-    char * weight_list = find_char_arg(argc,argv,"-weights",0);
-    if(weight_list == 0){
-        printf("No information about weights\n");
-        exit(-1);
-    }
+    // /////////// GET WEIGHT CONFIGURATIONS ////////////
+    // char * weight_list = find_char_arg(argc,argv,"-weights",0);
+    // if(weight_list == 0){
+    //     printf("No information about weights\n");
+    //     exit(-1);
+    // }
 
-    list *wlist = get_paths(weight_list);
-    char **wpaths = (char **)list_to_array(wlist);
-    int weight_list_number = wlist->size;
+    // list *wlist = get_paths(weight_list);
+    // char **wpaths = (char **)list_to_array(wlist);
+    // int weight_list_number = wlist->size;
 
-    if(process_num != weight_list_number){
-        printf("Weight lists and process number doesn't mach!\n");
-        exit(-1);        
-    }
+    // if(process_num != weight_list_number){
+    //     printf("Weight lists and process number doesn't mach!\n");
+    //     exit(-1);        
+    // }
 
-    /////////// GET DATA CONFIGURATIONS ////////////
-    char * data_list = find_char_arg(argc,argv,"-data",0);
-    if(data_list == 0){
-        printf("No information about datas\n");
-        exit(-1);
-    }
+    // /////////// GET DATA CONFIGURATIONS ////////////
+    // char * data_list = find_char_arg(argc,argv,"-data",0);
+    // if(data_list == 0){
+    //     printf("No information about datas\n");
+    //     exit(-1);
+    // }
 
-    list *dlist = get_paths(data_list);
-    char **dpaths = (char **)list_to_array(dlist);
-    int data_list_number = wlist->size;
+    // list *dlist = get_paths(data_list);
+    // char **dpaths = (char **)list_to_array(dlist);
+    // int data_list_number = wlist->size;
 
-    if(process_num != data_list_number){
-        printf("Data lists and process number doesn't mach!\n");
-        exit(-1);        
-    }
+    // if(process_num != data_list_number){
+    //     printf("Data lists and process number doesn't mach!\n");
+    //     exit(-1);        
+    // }
 
     /////// DEFINE SHARED MEMORY ////////
     shmem_rescfg = (int **)create_shared_memory(sizeof(int **));
@@ -747,18 +783,17 @@ int main(int argc, char **argv)
 
         //set CPU execution priority.
         setpriority(PRIO_PROCESS, getpid(), -10-identifier);
+        char * mytask = tpaths[identifier];
         
         //allocate resource configuration of each process.
+
         test_extern_arr = shmem_rescfg[identifier];
-        
+        get_task_info(mytask, argv);
         ///// data cfg
-        argv[3] = dpaths[identifier];
         printf("[%d], data path %s\n",identifier, argv[3]);
         ///// model cfg
-        argv[4] = mpaths[identifier];
         printf("[%d], model path %s\n",identifier, argv[4]);
         ///// weight cfg
-        argv[5] = wpaths[identifier];
         printf("[%d], weight path %s\n",identifier, argv[5]);
         //redirect stdout & stderr to certain file.
         int fd;                 //fd
