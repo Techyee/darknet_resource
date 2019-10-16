@@ -13,6 +13,11 @@
 #include <sys/time.h>
 #endif
 
+extern int *test_extern_arr;
+extern int identifier;
+extern int * shmem_pid;
+extern struct timespec *shmem_timer;
+
 float validate_classifier_single(char *datacfg, char *filename, char *weightfile, network *existing_net, int topk_custom);
 
 float *get_regression_values(char **labels, int n)
@@ -1227,6 +1232,115 @@ void demo_classifier(char *datacfg, char *cfgfile, char *weightfile, int cam_ind
     }
 #endif
 }
+void periodic_classifier(char *data, char *cfg, char *weights, char *filename, int quantized ,float period)
+{
+    if (quantized){
+        net = parse_network_cfg_custom(cfg,11, 0);
+    }else{
+        net = parse_network_cfg_custom(cfg, 1, 0);
+    }
+
+    if(weightfile){
+        load_weights(&net, weightfile);
+    }
+    set_batch_network(&net, 1);
+    srand(2222222);
+
+    //fuse_conv_batchnorm(net);
+    calculate_binary_weights(net);
+    
+    if (quantized) {
+        time = get_time_point();
+        printf("\n\n Quantinization! \n\n");
+        quantinization_and_get_multipliers(net);
+        printf(" Quantization: %8.5f\n\n", ((double)get_time_point() - time)/ 1000);
+    }
+
+    list *options = read_data_cfg(datacfg);
+
+    char *name_list = option_find_str(options, "names", 0);
+    if(!name_list) name_list = option_find_str(options, "labels", "data/labels.list");
+    int classes = option_find_int(options, "classes", 2);
+    if (top == 0) top = option_find_int(options, "top", 1);
+    if (top > classes) top = classes;
+
+    int i = 0;
+    char **names = get_labels(name_list);
+    clock_t time;
+    int* indexes = (int*)calloc(top, sizeof(int));
+    
+    list *plist = get_paths(filename);
+    char **paths = (char **)list_to_array(plist);
+    
+    int m = plist->size;
+
+    struct timespec period, release_time;
+    int err;
+
+    period.tv_sec = 0;
+    period.tv_nsec = ms_period*1000000;
+
+    shmem_pid[identifier] = getpid();
+    kill(getpid(),SIGSTOP);
+
+
+    // set timer 
+    if(identifier == 0){
+        struct timespec snooze;
+        snooze.tv_sec = 0;
+        snooze.tv_nsec = 1000*1000000;
+        err = clock_gettime(CLOCK_MONOTONIC, shmem_timer);
+
+        timespec_add(shmem_timer,&snooze);
+        assert(err ==0);
+        printf("Timer has been set\n");
+    }
+    
+    sleep(0.1);
+    
+    err = clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, shmem_timer, NULL);
+    assert(err == 0);
+    printf("\nidentifier: %d, Starting at %8.5f\n", identifier ,get_time_point()/1000);
+    printf("///////// Period : %f //////////\n", ms_period);
+    
+    err = clock_gettime(CLOCK_MONOTONIC, &release_time);
+    assert(err ==0);
+
+    char buff[256];
+    char *input = buff;
+    //int size = net.w;
+
+    for (int k =0; k < 5; k++){
+
+        printf("=====================JOB %d=====================\n",k);
+
+        input = paths[k];
+        image im = load_image_color(input, 0, 0);
+        image resized = resize_min(im, net.w);
+        image r = crop_image(resized, (resized.w - net.w)/2, (resized.h - net.h)/2, net.w, net.h);
+        //image r = resize_min(im, size);
+        //resize_network(&net, r.w, r.h);
+        printf("image size w: %d h: %d\n", r.w, r.h);
+
+        float *X = r.data;
+        time=clock();
+        float *predictions = network_predict(net, X);
+        if(net.hierarchy) hierarchy_predictions(predictions, net.outputs, net.hierarchy, 0);
+        top_k(predictions, net.outputs, top, indexes);
+        printf("%s: Predicted in %f seconds.\n", input, sec(clock()-time));
+        for(i = 0; i < top; ++i){
+            int index = indexes[i];
+            if(net.hierarchy) printf("%d, %s: %f, parent: %s \n",index, names[index], predictions[index], (net.hierarchy->parent[index] >= 0) ? names[net.hierarchy->parent[index]] : "Root");
+            else printf("%s: %f\n",names[index], predictions[index]);
+        }
+        if(r.data != im.data) free_image(r);
+        free_image(im);
+        
+        timespec_add(&release_time, &period);
+        clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &release_time, NULL);
+    }
+
+}
 
 
 void run_classifier(int argc, char **argv)
@@ -1267,9 +1381,11 @@ void run_classifier(int argc, char **argv)
     int clear = find_arg(argc, argv, "-clear");
     char *data = argv[3];
     char *cfg = argv[4];
-    char *weights = (argc > 5) ? argv[5] : 0;
-    char *filename = (argc > 6) ? argv[6]: 0;
-    char *layer_s = (argc > 7) ? argv[7]: 0;
+    char *weights = argv[5];
+    float period = atoi(argv[6]);
+    char *filename = argv[7]
+    // not sure layer_s exist for, need to look up
+    //char *layer_s = (argc > 7) ? argv[7]: 0;
     int layer = layer_s ? atoi(layer_s) : -1;
     if(0==strcmp(argv[2], "predict")) predict_classifier(data, cfg, weights, filename, top);
     else if(0==strcmp(argv[2], "try")) try_classifier(data, cfg, weights, filename, atoi(layer_s));
@@ -1284,4 +1400,5 @@ void run_classifier(int argc, char **argv)
     else if(0==strcmp(argv[2], "valid10")) validate_classifier_10(data, cfg, weights);
     else if(0==strcmp(argv[2], "validcrop")) validate_classifier_crop(data, cfg, weights);
     else if(0==strcmp(argv[2], "validfull")) validate_classifier_full(data, cfg, weights);
+    else if(0==strcmp(argv[2], "periodic")) periodic_classifier(data, cfg, weights, filename, quantized ,period);
 }
