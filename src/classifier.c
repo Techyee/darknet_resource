@@ -1,3 +1,15 @@
+#include <signal.h>
+#include "darknet.h"
+#include "network.h"
+#include "region_layer.h"
+#include "cost_layer.h"
+#include "utils.h"
+#include "parser.h"
+#include "box.h"
+#include "demo.h"
+#include "option_list.h"
+#include <time.h>
+#include <unistd.h>
 #include "network.h"
 #include "utils.h"
 #include "parser.h"
@@ -1232,12 +1244,14 @@ void demo_classifier(char *datacfg, char *cfgfile, char *weightfile, int cam_ind
     }
 #endif
 }
-void periodic_classifier(char *data, char *cfg, char *weights, char *filename, int quantized ,float period)
+void periodic_classifier(char *datacfg, char *cfgfile, char *weightfile, char *filename, int quantized ,float ms_period, int top)
 {
+    network net;
+    double time;
     if (quantized){
-        net = parse_network_cfg_custom(cfg,11, 0);
+        net = parse_network_cfg_custom(cfgfile,11, 0);
     }else{
-        net = parse_network_cfg_custom(cfg, 1, 0);
+        net = parse_network_cfg_custom(cfgfile, 1, 0);
     }
 
     if(weightfile){
@@ -1266,7 +1280,6 @@ void periodic_classifier(char *data, char *cfg, char *weights, char *filename, i
 
     int i = 0;
     char **names = get_labels(name_list);
-    clock_t time;
     int* indexes = (int*)calloc(top, sizeof(int));
     
     list *plist = get_paths(filename);
@@ -1323,11 +1336,11 @@ void periodic_classifier(char *data, char *cfg, char *weights, char *filename, i
         printf("image size w: %d h: %d\n", r.w, r.h);
 
         float *X = r.data;
-        time=clock();
+//        time=clock();
         float *predictions = network_predict(net, X);
         if(net.hierarchy) hierarchy_predictions(predictions, net.outputs, net.hierarchy, 0);
         top_k(predictions, net.outputs, top, indexes);
-        printf("%s: Predicted in %f seconds.\n", input, sec(clock()-time));
+//        printf("%s: Predicted in %f seconds.\n", input, sec(clock()-time));
         for(i = 0; i < top; ++i){
             int index = indexes[i];
             if(net.hierarchy) printf("%d, %s: %f, parent: %s \n",index, names[index], predictions[index], (net.hierarchy->parent[index] >= 0) ? names[net.hierarchy->parent[index]] : "Root");
@@ -1383,9 +1396,10 @@ void run_classifier(int argc, char **argv)
     char *cfg = argv[4];
     char *weights = argv[5];
     float period = atoi(argv[6]);
-    char *filename = argv[7]
+    char *filename = argv[7];
+    int quantized = 0;
     // not sure layer_s exist for, need to look up
-    //char *layer_s = (argc > 7) ? argv[7]: 0;
+    char *layer_s = (argc > 8) ? argv[8]: 0;
     int layer = layer_s ? atoi(layer_s) : -1;
     if(0==strcmp(argv[2], "predict")) predict_classifier(data, cfg, weights, filename, top);
     else if(0==strcmp(argv[2], "try")) try_classifier(data, cfg, weights, filename, atoi(layer_s));
@@ -1400,5 +1414,5 @@ void run_classifier(int argc, char **argv)
     else if(0==strcmp(argv[2], "valid10")) validate_classifier_10(data, cfg, weights);
     else if(0==strcmp(argv[2], "validcrop")) validate_classifier_crop(data, cfg, weights);
     else if(0==strcmp(argv[2], "validfull")) validate_classifier_full(data, cfg, weights);
-    else if(0==strcmp(argv[2], "periodic")) periodic_classifier(data, cfg, weights, filename, quantized ,period);
+    else if(0==strcmp(argv[2], "periodic")) periodic_classifier(data, cfg, weights, filename, quantized ,period, top);
 }

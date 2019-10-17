@@ -1,5 +1,5 @@
 classifier
-predict
+periodic
 cfg/imagenet1k.data
 cfg/extraction.cfg
 weights/extraction.weights
