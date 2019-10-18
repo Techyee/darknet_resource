@@ -65,6 +65,9 @@ void forward_network_gpu(network net, network_state state)
     double _time;
     double time;
     res_arr = test_extern_arr;
+    for (int i =0; i < sizeof(res_arr)/sizeof(int) ; i++)
+        printf("%d,",res_arr[i]);
+    puts("");
     for(i = 0; i < net.n; ++i){
         
         state.index = i;
