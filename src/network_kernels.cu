@@ -65,9 +65,6 @@ void forward_network_gpu(network net, network_state state)
     double _time;
     double time;
     res_arr = test_extern_arr;
-    for (int i =0; i < sizeof(res_arr)/sizeof(int) ; i++)
-        printf("%d,",res_arr[i]);
-    puts("");
     for(i = 0; i < net.n; ++i){
         
         state.index = i;
@@ -90,7 +87,7 @@ void forward_network_gpu(network net, network_state state)
 //            printf("[%2dth] Finish  : %8.5f\n",i,get_time_point());
         }
         else{ // on gpu 
-//            printf("[%2dth] Request : %8.5f\n",i,get_time_point());
+            //            printf("[%2dth] Request : %8.5f\n",i,get_time_point());
             // gpu access control by mutex
             while(pthread_mutex_trylock(gpu_lock)){
                 //printf("[Process %d put into wait]\n", identifier);

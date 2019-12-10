@@ -562,26 +562,39 @@ void get_task_info(char * mytask, char ** argv){
     list * info_list = get_paths(mytask);
     char ** info = (char **)list_to_array(info_list);
     int info_num = info_list->size;
-    if (info_num != 7){
-        printf("[%d task] Something wrong with task info\n",identifier);
-        exit(-1);
-    }
-    // task type (e.g classification, dection, nlp...)
-    argv[1] = info[0];
-    // submodule of task
-    argv[2] = info[1];
-    // label of data
-    argv[3] = info[2];
-    // model (e.g vgg, yolo, resnet ...)
-    argv[4] = info[3];
-    // weight 
-    argv[5] = info[4];
-    // period
-    argv[6] = info[5];
-    // input image
-    argv[7] = info[6];
-}
+    if (0 == strcmp(info[0],"rnn")){
+        if (info_num != 5){
+            printf("[%d task] Something wrong with task info\n",identifier);
+            exit(-1);
+        }
 
+        argv[1] = info[0];
+        argv[2] = info[1];
+        argv[3] = info[2];
+        argv[4] = info[3];
+        argv[5] = info[4];
+    }
+    else{
+        if (info_num != 7){
+            printf("[%d task] Something wrong with task info\n",identifier);
+            exit(-1);
+        }
+        // task type (e.g classification, dection, nlp...)
+        argv[1] = info[0];
+        // submodule of task
+        argv[2] = info[1];
+        // label of data
+        argv[3] = info[2];
+        // model (e.g vgg, yolo, resnet ...)
+        argv[4] = info[3];
+        // weight 
+        argv[5] = info[4];
+        // period
+        argv[6] = info[5];
+        // input image
+        argv[7] = info[6];
+    }
+}
 
 int main(int argc, char **argv)
 {
